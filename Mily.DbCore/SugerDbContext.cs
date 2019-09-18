@@ -62,6 +62,7 @@ namespace Mily.DbCore
             {
                 DataInfoCacheService = new DbCache()
             };
+            #if RELEASE
             Emily.Aop.OnError = (Ex) =>
             {
                 var Logs = $"SQL语句：{Ex.Sql}[SQL参数：{Ex.Parametres}]";
@@ -78,6 +79,7 @@ namespace Mily.DbCore
                         LogFactoryExtension.WriteSqlWarn(Logs);
                 });
             };
+            #endif
             //Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
             //Emily.CodeFirst.InitTables(ModelTypes);
             return Emily;
@@ -93,6 +95,7 @@ namespace Mily.DbCore
             {
                 DataInfoCacheService = new DbCache()
             };
+            #if RELEASE
             Emily.Aop.OnError = (Ex) =>
             {
                 var Logs = $"SQL语句：{Ex.Sql}[SQL参数：{Ex.Parametres}]";
@@ -109,6 +112,7 @@ namespace Mily.DbCore
                         LogFactoryExtension.WriteSqlWarn(Logs);
                 });
             };
+            #endif
             //Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
             //Emily.CodeFirst.InitTables(ModelTypes);
             return Emily;
@@ -132,7 +136,8 @@ namespace Mily.DbCore
                          { "KeyId", Guid.NewGuid() },
                          { "CreateUser", null },
                          { "CreateUserId", null },
-                         { "CreateTime", DateTime.Now }
+                         { "CreateTime", DateTime.Now },
+                         { "IsDelete", false }
                     };
                     XExp.SetProptertiesValue(DataValue, t);
                 });
@@ -145,7 +150,8 @@ namespace Mily.DbCore
                        { "KeyId", Guid.NewGuid() },
                        { "CreateUser", null },
                        { "CreateUserId", null },
-                       { "CreateTime", DateTime.Now }
+                       { "CreateTime", DateTime.Now },
+                       { "IsDelete", false }
                 };
                 XExp.SetProptertiesValue(DataValue, entity);
                 Insert = (db == DBType.MSSQL ? DB_MSSQL().Insertable(entity) : DB_MYSQL().Insertable(entity));

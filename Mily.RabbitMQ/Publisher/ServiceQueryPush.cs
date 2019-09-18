@@ -8,8 +8,7 @@ namespace Mily.RabbitMQ.Publisher
 {
     public class ServiceQueryPush
     {
-        public static ServiceQueryPush QueryPush => new Lazy<ServiceQueryPush>().Value;
-        public async Task<bool> PushMQAsync<T>(T Entity, MQEnum MQType = MQEnum.Push) where T : class, new()
+        public static async Task<bool> PushMQAsync<T>(T Entity, MQEnum MQType = MQEnum.Push) where T : class, new()
         {
             //推送模式
             //推送模式下需指定管道名称和路由键值名称
@@ -39,7 +38,7 @@ namespace Mily.RabbitMQ.Publisher
             }
             return await RabbitMQFactory.SendMQAsync(entity).ContinueWith(t => { return t.IsCompleted ? true : false; });
         }
-        public bool PushMQ<T>(T Entity, MQEnum MQType = MQEnum.Push) where T : class, new()
+        public static bool PushMQ<T>(T Entity, MQEnum MQType = MQEnum.Push) where T : class, new()
         {
             //推送模式
             //推送模式下需指定管道名称和路由键值名称
