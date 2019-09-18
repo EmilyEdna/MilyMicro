@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Mily.Extension.SocketClient.SocketCommon;
 using System.Linq.Expressions;
 using System.Reflection;
+using Mily.Extension.Attributes;
 
 namespace Mily.Extension.SocketClient
 {
@@ -114,6 +115,7 @@ namespace Mily.Extension.SocketClient
                     }
                     try
                     {
+                        JudgeAttribute(Collection.GetMethod(data.Method));
                         var result = JsonConvert.SerializeObject(((Task<ActionResult<Object>>)Collection.GetMethod(data.Method).Invoke(Controller, parameters)).Result.Value);
                         InitClient(Client, NetType.Listen, result.ToString());
                     }
@@ -147,6 +149,15 @@ namespace Mily.Extension.SocketClient
                 Client.DisConnect();
                 LogFactoryExtension.WriteWarn(typeof(NetSocketAsyncClinet).FullName, "DisSocket", null, "Socket断开链接", null);
             }
+        }
+        /// <summary>
+        /// 调用方法前检查有特性
+        /// </summary>
+        /// <param name="Method"></param>
+        private static void JudgeAttribute(MethodInfo Method)
+        {
+            InvokeAttribute Invokes = (Method.GetCustomAttribute(typeof(InvokeAttribute)) as InvokeAttribute);
+            Invokes.Name
         }
     }
 }
