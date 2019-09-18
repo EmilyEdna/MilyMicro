@@ -18,6 +18,7 @@ namespace Mily.Service.SocketServ
         public static List<String> Result = new List<String>();
         public static SocketCodition NetCodition => new SocketCodition();
         public static ManualResetEvent ResetEvent = new ManualResetEvent(true);
+        private static object Locker = new object();
         /// <summary>
         /// 服务器端
         /// </summary>
@@ -42,12 +43,14 @@ namespace Mily.Service.SocketServ
             {
                 while (true)
                 {
-                    string Key = Event.Session.ID.ToString();
-                    if (!Session.ContainsKey(Key))
-                        Session.Add(Key, Event);
-                    SocketInit(Server, Event);
-                    Console.WriteLine(Server);
-                    base.SessionReceive(Server, Event);
+                    lock (Locker)
+                    {
+                        string Key = Event.Session.ID.ToString();
+                        if (!Session.ContainsKey(Key))
+                            Session.Add(Key, Event);
+                        SocketInit(Server, Event);
+                        base.SessionReceive(Server, Event);
+                    }
                     ResetEvent.WaitOne();
                     ResetEvent.Reset();
                 }

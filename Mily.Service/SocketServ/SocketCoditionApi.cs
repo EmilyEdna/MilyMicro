@@ -55,6 +55,7 @@ namespace Mily.Service.SocketServ
             }
             return await Task.Run<Object>(() =>
             {
+                Thread.Sleep(1500);
                 if (SocketCodition.Result.FirstOrDefault() != null)
                     return JsonConvert.DeserializeObject<Object>(SocketCodition.Result.FirstOrDefault());
                 else
