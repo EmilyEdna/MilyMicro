@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mily.DbCore\Mily.DbCore.csproj" />
+    <ProjectReference Include="..\Mily.Extension\Mily.Extension.csproj" />
+    <ProjectReference Include="..\Mily.Setting\Mily.Setting.csproj" />
+  </ItemGroup>
+
+</Project>
