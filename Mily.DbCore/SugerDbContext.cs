@@ -37,15 +37,17 @@ namespace Mily.DbCore
                     SlaveConnectionConfigs = new List<SlaveConnectionConfig>() { new SlaveConnectionConfig()  {
                         HitRate =100, ConnectionString=MilyConfig.ConnectionStringSlave}
                     }},
-                    //new ConnectionConfig() {
-                    //ConfigId="MYSQL",
-                    //ConnectionString = BaseConfig.ConnectionString2,
-                    //DbType = DbType.MySql,
-                    //IsAutoCloseConnection = true,
-                    //InitKeyType = InitKeyType.Attribute,
-                    //SlaveConnectionConfigs = new List<SlaveConnectionConfig>() { new SlaveConnectionConfig()  {
-                    //    HitRate =100, ConnectionString=BaseConfig.ConnectionStringSlave}
-                    //}},
+                    #if RELEASE
+                    new ConnectionConfig() {
+                    ConfigId="MYSQL",
+                    ConnectionString = MilyConfig.ConnectionString2,
+                    DbType = DbType.MySql,
+                    IsAutoCloseConnection = true,
+                    InitKeyType = InitKeyType.Attribute,
+                    SlaveConnectionConfigs = new List<SlaveConnectionConfig>() { new SlaveConnectionConfig()  {
+                        HitRate =100, ConnectionString=MilyConfig.ConnectionStringSlave}
+                    }},
+                    #endif
                 };
                 SqlSugarClient Db = new SqlSugarClient(Configs);
                 return Db;

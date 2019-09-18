@@ -20,6 +20,9 @@ namespace Miliy.MainApi.Controllers
     [ApiController]
     public class SystemController : BaseApiController
     {
+        [AcceptVerbs("GET", "POST")]
+        [Author(Roles.Read)]
+        public async Task<ActionResult<Object>> test() => await Task.Run(() => 12);
         #region 管理员API
         #region 获取后台管理员
         /// <summary>

@@ -62,36 +62,51 @@ namespace Mily.Extension.SocketClient
                     .FirstOrDefault();
                 if (Collection != null)
                 {
-                    Collection.GetMethod(data.Method).GetParameters().ToList().ForEach(item =>
+                    var ParameterCollentcion = Collection.GetMethod(data.Method).GetParameters().ToList();
+                    var Controller = Activator.CreateInstance(Collection);
+                    Object[] parameters = null;
+                    if (ParameterCollentcion.Count >= 2)
                     {
-                        string ParamName = item.Name;
-                        string TypeName = item.ParameterType.Name;
-                        if (!TypeName.Contains("Nullable`1"))
+                        ParameterCollentcion.ForEach(item =>
                         {
-                            var CheckParam = data.HashData.Keys.ToList().Where(t => t == ParamName).FirstOrDefault();
-                            if (CheckParam.IsNullOrEmpty())
+                            string ParamName = item.Name;
+                            string TypeName = item.ParameterType.Name;
+                            if (!TypeName.IsContainsIn("Nullable`1"))
                             {
-                                InitClient(Client, NetType.Listen, "必需参数不正确");
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            var ParamCount = Collection.GetMethod(data.Method).GetParameters().Count();
-                            var RequestCount = data.HashData.Count();
-                            if (ParamCount > RequestCount)
-                                for (int index = RequestCount; index < ParamCount; index++)
+                                var CheckParam = data.HashData.Keys.ToList().Where(t => t == ParamName).FirstOrDefault();
+                                if (CheckParam.IsNullOrEmpty())
                                 {
-                                    data.HashData.Add(index.ToString(), null);
+                                    InitClient(Client, NetType.Listen, "必需参数不正确");
+                                    return;
                                 }
-                        }
-                    });
+                            }
+                            else
+                            {
+                                var ParamCount = Collection.GetMethod(data.Method).GetParameters().Count();
+                                var RequestCount = data.HashData.Count();
+                                if (ParamCount > RequestCount)
+                                    for (int index = RequestCount; index < ParamCount; index++)
+                                    {
+                                        data.HashData.Add(index.ToString(), null);
+                                    }
+                            }
+                        });
+                        parameters = data.HashData.Values.ToArray();
+                    }
+                   if (ParameterCollentcion.Count == 1)
+                    {
+                        Type TargetType = ParameterCollentcion.FirstOrDefault().ParameterType;
+                        Object ViewModel = Activator.CreateInstance(TargetType);
+                        data.HashData.Keys.ToEachs(item =>
+                        {
+                            TargetType.GetProperty(item).SetValue(ViewModel, data.HashData[item]);
+                        });
+                        parameters = new[] { ViewModel };
+                    }
                     try
                     {
-                        var Controller = Activator.CreateInstance(Collection);
-                        Object[] parameters = data.HashData.Values.ToArray();
                         var result = JsonConvert.SerializeObject(((Task<ActionResult<Object>>)Collection.GetMethod(data.Method).Invoke(Controller, parameters)).Result.Value);
-                        InitClient(Client, NetType.Listen, result);
+                        InitClient(Client, NetType.Listen, result.ToString());
                     }
                     catch (Exception ex)
                     {

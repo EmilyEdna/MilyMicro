@@ -102,7 +102,7 @@ namespace Mily.Extension.SocketClient
                         });
                         parameters = data.HashData.Values.ToArray();
                     }
-                    else
+                    if (ParameterCollentcion.Count == 1)
                     {
                         Type TargetType = ParameterCollentcion.FirstOrDefault().ParameterType;
                         Object ViewModel = Activator.CreateInstance(TargetType);
