@@ -121,12 +121,7 @@ namespace Mily.Extension.SocketClient
                     }
                     catch (Exception ex)
                     {
-                        string Parameter = string.Empty;
-                        ex.TargetSite.GetParameters().ToList().ForEach(t =>
-                        {
-                            Parameter += "[" + t.Name + "]";
-                        });
-                        LogFactoryExtension.WriteError(ex.Source, ex.TargetSite.Name, Parameter, ex.Message, data.Path);
+                        RecoverExcetion(ex,data.Path);
                         InitClient(Client, NetType.Listen, JsonConvert.SerializeObject(new { Error = "系统出现异常!" }));
                         return;
                     }
@@ -151,13 +146,26 @@ namespace Mily.Extension.SocketClient
             }
         }
         /// <summary>
+        /// 异常记录
+        /// </summary>
+        /// <param name="ex"></param>
+        private static void RecoverExcetion(Exception ex,string Path) {
+            string Parameter = string.Empty;
+            ex.TargetSite.GetParameters().ToList().ForEach(t =>
+            {
+                Parameter += "[" + t.Name + "]";
+            });
+            LogFactoryExtension.WriteError(ex.Source, ex.TargetSite.Name, Parameter, ex.Message, Path);
+        }
+
+        /// <summary>
         /// 调用方法前检查有特性
         /// </summary>
         /// <param name="Method"></param>
         private static void JudgeAttribute(MethodInfo Method)
         {
             InvokeAttribute Invokes = (Method.GetCustomAttribute(typeof(InvokeAttribute)) as InvokeAttribute);
-            Invokes.Name
+            //Invokes.Name
         }
     }
 }
