@@ -10,7 +10,5 @@ namespace Mily.OtherApi.Controllers
     [ApiController]
     public class OhterController : BaseApiController
     {
-        [HttpGet]
-        public async Task<ActionResult<Object>> GetValue(string key, long? age) => await Task.Run(() => (key + "123"));
     }
 }

@@ -117,15 +117,22 @@ namespace Mily.Extension.SocketClient
                         var result = JsonConvert.SerializeObject(((Task<ActionResult<Object>>)Collection.GetMethod(data.Method).Invoke(Controller, parameters)).Result.Value);
                         InitClient(Client, NetType.Listen, result.ToString());
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        string Parameter = string.Empty;
+                        ex.TargetSite.GetParameters().ToList().ForEach(t =>
+                        {
+                            Parameter += "[" + t.Name + "]";
+                        });
+                        LogFactoryExtension.WriteError(ex.Source, ex.TargetSite.Name, Parameter, ex.Message, data.Path);
+                        InitClient(Client, NetType.Listen, JsonConvert.SerializeObject(new { Error = "系统出现异常!" }));
                         return;
                     }
                 }
             }
             else
             {
-                //LogFactoryExtension.WriteWarn(typeof(NetSocketAsyncClinet).FullName, "DataHandler", null, "Socket注册", null);
+                LogFactoryExtension.WriteInfo(typeof(NetSocketAsyncClinet).FullName, "DataHandler", null, "Socket注册", null);
             }
         }
         /// <summary>
