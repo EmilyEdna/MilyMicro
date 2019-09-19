@@ -21,8 +21,7 @@ namespace Miliy.MainApi.Controllers
     public class SystemController : BaseApiController
     {
         [AcceptVerbs("GET", "POST")]
-        [Author(Roles.Read)]
-        [Invoke(Roles.Read)]
+        [Author(Roles.Update)]
         public async Task<ActionResult<Object>> test() => await Task.Run(() => 12);
         #region 管理员API
         #region 获取后台管理员
@@ -88,11 +87,13 @@ namespace Miliy.MainApi.Controllers
             var RoleAdmin = await SysService.Login(ViewModel);
             if (RoleAdmin == null)
                 return "登录失败!";
-            claimIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, RoleAdmin.RolePermissionId.ToString()));
-            claimIdentity.AddClaim(new Claim(ClaimTypes.Name, RoleAdmin.AdminName));
-            claimIdentity.AddClaim(new Claim(ClaimTypes.Role, RoleAdmin.HandlerRole));
             if (HttpContext != null)
+            {
+                claimIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, RoleAdmin.RolePermissionId.ToString()));
+                claimIdentity.AddClaim(new Claim(ClaimTypes.Name, RoleAdmin.AdminName));
+                claimIdentity.AddClaim(new Claim(ClaimTypes.Role, RoleAdmin.HandlerRole));
                 await HttpContext.SignInAsync(new ClaimsPrincipal(claimIdentity), new AuthenticationProperties { IsPersistent = true });
+            }
             return "登录成功!";
         }
         #endregion

@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using XExten.CacheFactory.RedisCache;
+using XExten.CacheFactory;
 using XExten.Common;
 using XExten.XCore;
 
@@ -98,7 +98,7 @@ namespace Mily.MainLogic.LogicImplement
                 .Where(t => t.PassWord.Equals(ViewModel.PassWord))
                 .Select<AdminRoleViewModel>().First();
             if (AdminRole != null)
-                await RedisCaches.StringSetAsync<AdminRoleViewModel>(AdminRole.GetType().FullName, AdminRole);
+                await Caches.RedisCacheSetAsync(AdminRole.GetType().FullName, AdminRole,120);
             return AdminRole;
         }
         #endregion
