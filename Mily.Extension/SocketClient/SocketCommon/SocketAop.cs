@@ -75,12 +75,17 @@ namespace Mily.Extension.SocketClient.SocketCommon
                     if (ParameterCollentcion.Count == 1)
                     {
                         Type TargetType = ParameterCollentcion.FirstOrDefault().ParameterType;
-                        Object ViewModel = Activator.CreateInstance(TargetType);
-                        Cmd.HashData.Keys.ToEachs(item =>
+                        if (!TargetType.Namespace.ToUpper().Contains("SYSTEM"))
                         {
-                            TargetType.GetProperty(item).SetValue(ViewModel, Cmd.HashData[item]);
-                        });
-                        parameters = new[] { ViewModel };
+                            Object ViewModel = Activator.CreateInstance(TargetType);
+                            Cmd.HashData.Keys.ToEachs(item =>
+                            {
+                                TargetType.GetProperty(item).SetValue(ViewModel, Cmd.HashData[item]);
+                            });
+                            parameters = new[] { ViewModel };
+                        }
+                        else 
+                            parameters = new[] { Cmd.HashData.Values.FirstOrDefault() };
                     }
                     try
                     {
@@ -173,7 +178,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
         private static bool JudgeAttribute(MethodInfo Method)
         {
             AuthorAttribute Author = (Method.GetCustomAttribute(typeof(AuthorAttribute)) as AuthorAttribute);
-            return JudgeRoles(Author.Names);
+            return Author==null?true: JudgeRoles(Author.Names);
         }
         /// <summary>
         /// 检查权限

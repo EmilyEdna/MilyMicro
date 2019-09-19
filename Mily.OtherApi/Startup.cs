@@ -43,7 +43,7 @@ namespace Mily.OtherApi
             }
             ConfigInit.Init.InitConfigCollection(app, env, logger, Configuration);
             app.UseMvc();
-            NetSocketClinet.Socket(9090, typeof(BaseApiController));
+            NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
             //NetSocketClinet.Socket(9090, typeof(BaseApiController));
         }
     }
