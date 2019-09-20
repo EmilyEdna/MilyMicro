@@ -7,21 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="FileManager\**" />
-    <EmbeddedResource Remove="FileManager\**" />
-    <None Remove="FileManager\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BeetleX.FastHttpApi" Version="1.5.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Include="PeterKottas.DotNetCore.WindowsService" Version="2.0.11" />
     <PackageReference Include="XExten" Version="2.2.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="setting.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -30,5 +21,4 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-
 </Project>

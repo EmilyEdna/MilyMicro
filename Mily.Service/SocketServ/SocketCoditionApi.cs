@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -16,9 +17,11 @@ using System.Web;
 namespace Mily.Service.SocketServ
 {
     [ActionFilter]
+    [Options(AllowOrigin = "*")]
     [Controller(BaseUrl = "/Condition")]
     public class SocketCoditionApi
     {
+        [NotAction]
         public static void NetApiServProvider()
         {
             HttpApiServer ApiServ = new HttpApiServer();
@@ -37,6 +40,11 @@ namespace Mily.Service.SocketServ
             };
             ApiServ.Options.OutputStackTrace = true;
             ApiServ.Open();
+            ApiServ.HttpRequestNotfound += (o, e) =>
+            {
+                e.Cancel = true;
+                e.Response.Result(null);
+            };
         }
         #region Form提交方式或者Byte流方式
         /// <summary>
