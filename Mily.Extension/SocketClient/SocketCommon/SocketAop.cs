@@ -75,7 +75,8 @@ namespace Mily.Extension.SocketClient.SocketCommon
                     if (ParameterCollentcion.Count == 1)
                     {
                         Type TargetType = ParameterCollentcion.FirstOrDefault().ParameterType;
-                        if (!TargetType.Namespace.ToUpper().Contains("SYSTEM"))
+                        //是否为系统参数
+                        if (!TargetType.Namespace.ToUpper().IsContainsIn("SYSTEM"))
                         {
                             Object ViewModel = Activator.CreateInstance(TargetType);
                             Cmd.HashData.Keys.ToEachs(item =>

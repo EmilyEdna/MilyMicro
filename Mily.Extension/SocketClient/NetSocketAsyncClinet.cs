@@ -31,7 +31,6 @@ namespace Mily.Extension.SocketClient
                 string result = reader.Stream.ToPipeStream().ReadLine();
                 Commanding Command = ParseCmd.Parse(result);
                 SocketAop.RecordHandler(Command,BaseType, Client);
-
             };
             if (Boots)
                 SocketAop.InitClientAsync(Client, NetType.Connect);
