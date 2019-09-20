@@ -1,20 +1,21 @@
-﻿using BeetleX;
-using BeetleX.EventArgs;
+﻿using BeetleX.EventArgs;
 using BeetleX.FastHttpApi;
 using BeetleX.FastHttpApi.Data;
 using Mily.Service.ViewSetting;
+using Mily.Service.ViewSetting.ApiSettting;
+using Mily.Service.ViewSetting.SocketSetting;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json;
-using System.Text;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
-using Mily.Service.ViewSetting.SocketSetting;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace Mily.Service.SocketServ
 {
+    [ActionFilter]
     [Controller(BaseUrl = "/Condition")]
     public class SocketCoditionApi
     {
@@ -37,9 +38,64 @@ namespace Mily.Service.SocketServ
             ApiServ.Options.OutputStackTrace = true;
             ApiServ.Open();
         }
+        #region Form提交方式或者Byte流方式
+        /// <summary>
+        /// Byte流或者表单方式
+        /// </summary>
+        /// <param name="Context">上下文</param>
+        /// <returns></returns>
         [Post]
-        [JsonDataConvert] //ajax用
-        public async Task<Object> EventBusAsync(string RequestPath, Dictionary<string, object> MapData)
+        [NoDataConvert]
+        public async Task<Object> FormAsync(IHttpContext Context)
+        {
+            String Body = Context.Request.Stream.ReadString(Context.Request.Length);
+            Dictionary<String, Object> MapDate = new Dictionary<String, Object>();
+            String RequestPath = String.Empty;
+            Body.Split("&").ToList().ForEach(item =>
+            {
+                String Key = item.Split("=")[0];
+                String Data = item.Split("=")[1];
+                if (!Key.Equals("RequestPath"))
+                    MapDate.Add(Key, HttpUtility.UrlEncode(Data));
+                else
+                    RequestPath = Data;
+            });
+            return await JsonAsync(RequestPath, MapDate);
+        }
+        /// <summary>
+        /// Byte流或者表单方式
+        /// </summary>
+        /// <param name="Context">上下文</param>
+        /// <returns></returns>
+        [Post]
+        [NoDataConvert]
+        public Object Form(IHttpContext Context)
+        {
+            String Body = Context.Request.Stream.ReadString(Context.Request.Length);
+            Dictionary<String, Object> MapDate = new Dictionary<String, Object>();
+            String RequestPath = String.Empty;
+            Body.Split("&").ToList().ForEach(item =>
+            {
+                String Key = item.Split("=")[0];
+                String Data = item.Split("=")[1];
+                if (!Key.Equals("RequestPath"))
+                    MapDate.Add(Key, HttpUtility.UrlEncode(Data));
+                else
+                    RequestPath = Data;
+            });
+            return Json(RequestPath, MapDate);
+        }
+        #endregion
+        #region AJAX提交方式
+        /// <summary>
+        /// JSON请求方式
+        /// </summary>
+        /// <param name="RequestPath">请求地址格式如下Controller_FunctionName</param>
+        /// <param name="MapData">请求参数格式如下Data:{Key:key,Name:name}</param>
+        /// <returns></returns>
+        [Post]
+        [JsonDataConvert]
+        public async Task<Object> JsonAsync(String RequestPath, Dictionary<String, Object> MapData)
         {
             ParamCmd param = new ParamCmd
             {
@@ -62,9 +118,15 @@ namespace Mily.Service.SocketServ
                     return SocketCodition.Result.FirstOrDefault();
             });
         }
+        /// <summary>
+        /// JSON请求方式
+        /// </summary>
+        /// <param name="RequestPath">请求地址格式如下Controller_FunctionName</param>
+        /// <param name="MapData">请求参数格式如下Data:{Key:key,Name:name}</param>
+        /// <returns></returns>
         [Post]
-        [JsonDataConvert] //ajax用
-        public Object EventBus(string RequestPath, Dictionary<string, object> MapData)
+        [JsonDataConvert]
+        public Object Json(String RequestPath, Dictionary<String, Object> MapData)
         {
             ParamCmd param = new ParamCmd
             {
@@ -81,12 +143,42 @@ namespace Mily.Service.SocketServ
             try
             {
                 return JsonConvert.DeserializeObject<Object>(SocketCodition.Result.FirstOrDefault());
-
             }
             catch (Exception)
             {
                 return SocketCodition.Result.FirstOrDefault();
             }
         }
+        #endregion
+        #region 文件上传
+        /// <summary>
+        /// 文件上传
+        /// </summary>
+        /// <param name="DirName">目录名称</param>
+        /// <param name="Context">上下文</param>
+        /// <returns></returns>
+        [Post]
+        [MultiDataConvert]
+        public async Task<Object> UploadFile(String DirName, IHttpContext Context)
+        {
+            Char Separator = Path.DirectorySeparatorChar;
+            String Bin = $"{Directory.GetCurrentDirectory() + Separator}FileManager{Separator + DirName + DateTime.Now.ToString("yyyy-MM-dd") + Separator}";
+            List<String> Paths = new List<String>();
+            if (!Directory.Exists(Bin))
+                Directory.CreateDirectory(Bin);
+            foreach (PostFile Files in Context.Request.Files)
+            {
+                using (Stream stream = File.Create(Bin + Files.FileName))
+                {
+                    await Files.Data.CopyToAsync(stream);
+                }
+                Paths.Add($"{Separator}FileManager{Separator + DirName + DateTime.Now.ToString("yyyy-MM-dd") + Separator + Files.FileName}");
+            }
+            return Paths;
+        }
+        #endregion
+        #region 加载图片
+
+        #endregion
     }
 }

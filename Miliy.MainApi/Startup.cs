@@ -25,7 +25,7 @@ namespace Miliy.MainApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            ServInit.Init.InitServCollection(services);
+            ServInit.InitServCollection(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,7 +35,7 @@ namespace Miliy.MainApi
             {
                 app.UseDeveloperExceptionPage();
             }
-            ConfigInit.Init.InitConfigCollection(app, env, logger, Configuration);
+            ConfigInit.InitConfigCollection(app, env, logger, Configuration);
             app.UseMvc();
             NetSocketAsyncClinet.Socket(9090,typeof(BaseApiController));
             //NetSocketClinet.Socket(9090, typeof(BaseApiController));

@@ -15,8 +15,8 @@ namespace Mily.Extension.InitSystem
 {
     public class ConfigInit
     {
-        public static ConfigInit Init => new ConfigInit();
-        public void InitConfigCollection(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory logger, IConfiguration builder) {
+        public static String WebPath { get; set; }
+        public static void InitConfigCollection(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory logger, IConfiguration builder) {
             //Nlog
             logger.AddNLog();
             env.ConfigureNLog("Nlog.config");
@@ -34,8 +34,9 @@ namespace Mily.Extension.InitSystem
                 opt.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
             });
             SetConfig(builder);
+            WebPath = env.WebRootPath;
         }
-        private void SetConfig(IConfiguration Builder) {
+        private static void SetConfig(IConfiguration Builder) {
             MilyConfig.ConnectionString1= Builder.GetConnectionString("ConnectionString1");
             MilyConfig.ConnectionString2 = Builder.GetConnectionString("ConnectionString2");
             MilyConfig.ConnectionStringSlave = Builder.GetConnectionString("ConnectionStringSlave");

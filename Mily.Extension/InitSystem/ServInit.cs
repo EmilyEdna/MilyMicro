@@ -15,8 +15,7 @@ namespace Mily.Extension.InitSystem
 {
     public class ServInit
     {
-        public static ServInit Init => new ServInit();
-        public IServiceCollection InitServCollection(IServiceCollection services)
+        public static IServiceCollection InitServCollection(IServiceCollection services)
         {
             AutofocManage.CreateInstance().ServiceProvider(services);
             services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
