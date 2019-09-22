@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -29,6 +28,7 @@ namespace Mily.Service.SocketServ
             ApiServ.Options.LogLevel = LogType.Warring;
             ApiServ.Options.Host = Configuration.SOCKET_Host;
             ApiServ.Options.Port = Configuration.SOCKET_Port;
+            ApiServ.Options.StaticResourcePath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "UpLoadFile";
             ApiServ.ServerLog = (Server, Event) =>
             {
                 if (Event.Type == LogType.Error)
@@ -43,7 +43,8 @@ namespace Mily.Service.SocketServ
             ApiServ.HttpRequestNotfound += (o, e) =>
             {
                 e.Cancel = true;
-                e.Response.Result(null);
+                e.Response.SetStatus("404", "Not Found");
+                e.Response.Result("404 Not Found");
             };
         }
         #region Form提交方式或者Byte流方式
@@ -170,7 +171,7 @@ namespace Mily.Service.SocketServ
         public async Task<Object> UploadFile(String DirName, IHttpContext Context)
         {
             Char Separator = Path.DirectorySeparatorChar;
-            String Bin = $"{Directory.GetCurrentDirectory() + Separator}FileManager{Separator + DirName + DateTime.Now.ToString("yyyy-MM-dd") + Separator}";
+            String Bin = $"{Directory.GetCurrentDirectory() + Separator}UpLoadFile{Separator + DirName + DateTime.Now.ToString("yyyyMMdd") + Separator}";
             List<String> Paths = new List<String>();
             if (!Directory.Exists(Bin))
                 Directory.CreateDirectory(Bin);
@@ -180,13 +181,10 @@ namespace Mily.Service.SocketServ
                 {
                     await Files.Data.CopyToAsync(stream);
                 }
-                Paths.Add($"{Separator}FileManager{Separator + DirName + DateTime.Now.ToString("yyyy-MM-dd") + Separator + Files.FileName}");
+                Paths.Add($"{Separator}UpLoadFile{Separator + DirName + DateTime.Now.ToString("yyyyMMdd") + Separator + Files.FileName}");
             }
             return Paths;
         }
-        #endregion
-        #region 加载图片
-
         #endregion
     }
 }
