@@ -20,6 +20,7 @@ namespace Mily.Service.SocketServ
     [Controller(BaseUrl = "/Condition")]
     public class SocketCoditionApi
     {
+        #region InitApi
         [NotAction]
         public static void NetApiServProvider()
         {
@@ -47,6 +48,7 @@ namespace Mily.Service.SocketServ
                 e.Response.Result("404 Not Found");
             };
         }
+        #endregion
         #region Form提交方式或者Byte流方式
         /// <summary>
         /// Byte流或者表单方式
