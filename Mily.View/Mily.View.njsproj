@@ -34,6 +34,10 @@
       npm run build
     </PostBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="ApplacationConfig.js" />
+    <Content Include="package.json" />
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>
     <VisualStudio>
