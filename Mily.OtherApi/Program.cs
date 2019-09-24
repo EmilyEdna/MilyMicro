@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.WindowsServices;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using XExten.XCore;
 
 namespace Mily.OtherApi
@@ -14,32 +17,25 @@ namespace Mily.OtherApi
     {
         public static void Main(string[] args)
         {
-            if (!args.Contains("--Service:"))
-                CreateHostBuilder(args).Build().Run();
+            if (!args.Contains("--Service"))
+                CreateHostBuilder(args).UseStartup<Startup>().Build().Run();
             else
             {
-                args.ToEach<String>(item =>
+                //open cmd with administrator and input SC CREATE [SERVERNAME] BINPATH="[PROGRAM_URL]\*.EXE" --Service
+                args.ToEach<string>(item =>
                 {
-                    //open cmd with administrator and input SC CREATE [SERVERNAME] BINPATH="[PROGRAM_URL]\*.EXE" --Service:1024
-                    if (item.IsContainsIn("--Service:"))
+                    if (item.Trim().IsContainsIn("--Service:"))
                     {
-                        int Port = Convert.ToInt32(item.Split(":")[1]);
+                        int Port = Convert.ToInt32(item.Split(":")[1].Trim());
                         Startup.Port = Port + 1;
-                        CreateWebHostBuilder(args, Port);
+                        CreateHostBuilder(args).UseKestrel()
+                        .UseContentRoot(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName))//加载当前目录
+                        .UseUrls($"http://0.0.0.0:{Port}")//监听的IP和端口
+                        .UseStartup<Startup>().Build().RunAsService();
                     }
                 });
             }
         }
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
-        public static void CreateWebHostBuilder(string[] args, int Port) =>
-            WebHost.CreateDefaultBuilder(args).UseKestrel()
-                .UseContentRoot(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName))//加载当前目录
-                .UseUrls($"http://0.0.0.0:{Port}")//监听的IP和端口
-                .UseStartup<Startup>().Build().RunAsService();
+        public static IWebHostBuilder CreateHostBuilder(string[] args) => WebHost.CreateDefaultBuilder(args);
     }
 }
