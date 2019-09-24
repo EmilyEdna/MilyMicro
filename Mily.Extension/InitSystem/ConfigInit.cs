@@ -4,8 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Mily.Extension.Infrastructure.GeneralModel;
 using Mily.Setting;
-using NLog.Extensions.Logging;
-using NLog.Web;
+//using NLog.Extensions.Logging;
+//using NLog.Web;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,10 +16,10 @@ namespace Mily.Extension.InitSystem
     public class ConfigInit
     {
         public static String WebPath { get; set; }
-        public static void InitConfigCollection(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory logger, IConfiguration builder) {
+        public static void InitConfigCollection(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory logger, IConfiguration builder) {
             //Nlog
-            logger.AddNLog();
-            env.ConfigureNLog("Nlog.config");
+            //logger.AddNLog();
+            //env.ConfigureNLog("Nlog.config");
             //注册权限
             app.UseAuthentication();
             //注册异常中间件
@@ -32,6 +32,11 @@ namespace Mily.Extension.InitSystem
             app.UseSwaggerUI(opt =>
             {
                 opt.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+            });
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
             });
             SetConfig(builder);
             WebPath = env.WebRootPath;
