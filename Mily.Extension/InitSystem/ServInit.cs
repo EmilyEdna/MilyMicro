@@ -8,8 +8,6 @@ using Mily.Extension.Filters;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Mily.Extension.InitSystem
 {
@@ -28,11 +26,15 @@ namespace Mily.Extension.InitSystem
             //启用权限认证
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
             //设置数据格式
-            services.AddMvc().AddJsonOptions(opt =>
+            services.AddControllers(opt =>
+            {
+                opt.Filters.Add(typeof(ActionFilter));
+                opt.RespectBrowserAcceptHeader = true;
+            }).AddNewtonsoftJson(opt =>
             {
                 opt.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
                 opt.SerializerSettings.ContractResolver = new DefaultContractResolver();
-            });
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             //启用跨域
             services.AddCors(option =>
             {
@@ -50,11 +52,6 @@ namespace Mily.Extension.InitSystem
                 opt.SwaggerDoc("v1", new Info { Title = "Api", Version = "v1" });
                 //opt.IncludeXmlComments(Path.Combine(Directory.GetCurrentDirectory(), "Edna.ApiCore.xml"));
             });
-            services.AddMvc(opt =>
-            {
-                opt.Filters.Add(typeof(ActionFilter));
-                opt.RespectBrowserAcceptHeader = true;
-            }).SetCompatibilityVersion(CompatibilityVersion.Latest);
             return services;
         }
     }

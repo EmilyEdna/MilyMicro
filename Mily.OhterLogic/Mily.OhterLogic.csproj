@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\Mily.Setting\Mily.Setting.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" Version="3.0.0" />
   </ItemGroup>
-
 </Project>

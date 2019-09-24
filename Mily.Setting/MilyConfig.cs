@@ -34,7 +34,7 @@ namespace Mily.Setting
         {
             IList<Assembly> ass = new List<Assembly>();
             var lib = DependencyContext.Default;
-            var libs = lib.CompileLibraries.Where(t => !t.Serviceable).Where(t => t.Type != "package").ToList();
+            var libs = lib.CompileLibraries.Where(t => !t.Serviceable).Where(t => t.Type == "project").ToList();
             foreach (var item in libs)
             {
                 Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyName(new AssemblyName(item.Name));
