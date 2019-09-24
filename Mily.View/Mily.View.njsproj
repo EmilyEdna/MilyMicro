@@ -38,6 +38,9 @@
     <Content Include="ApplacationConfig.js" />
     <Content Include="package.json" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Main\" />
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>
     <VisualStudio>
