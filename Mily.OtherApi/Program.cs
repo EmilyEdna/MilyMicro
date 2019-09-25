@@ -15,7 +15,7 @@ namespace Mily.OtherApi
         public static void Main(string[] args)
         {
             if (!args.Contains("--Service:"))
-                CreateHostBuilder(args).Build().Run();
+                WebHostDefaults(args).Build().Run();
             else
             {
                 args.ToEach<String>(item =>
@@ -25,21 +25,19 @@ namespace Mily.OtherApi
                     {
                         int Port = Convert.ToInt32(item.Split(":")[1]);
                         Startup.Port = Port + 1;
-                        CreateWebHostBuilder(args, Port);
+                        WindowsServiceDefaults(args, Port);
                     }
                 });
             }
         }
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
+        public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args);
+        public static IHostBuilder WebHostDefaults(string[] args) => CreateHostBuilder(args).ConfigureWebHostDefaults(WebBuilder => { WebBuilder.UseStartup<Startup>(); });
+        public static IHostBuilder WindowsServiceDefaults(string[] args, int port) => CreateHostBuilder(args)
+            .UseWindowsService()
+            .UseContentRoot(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName))
+            .ConfigureWebHostDefaults(WebBuilder =>
             {
-                webBuilder.UseStartup<Startup>();
+                WebBuilder.UseKestrel().UseUrls($"http://0.0.0.0:{port}").UseStartup<Startup>();
             });
-        public static void CreateWebHostBuilder(string[] args, int Port) =>
-            WebHost.CreateDefaultBuilder(args).UseKestrel()
-                .UseContentRoot(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName))//加载当前目录
-                .UseUrls($"http://0.0.0.0:{Port}")//监听的IP和端口
-                .UseStartup<Startup>().Build().RunAsService();
     }
 }

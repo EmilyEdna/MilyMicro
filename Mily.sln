@@ -19,25 +19,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroApp", "MicroApp", "{A4
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Mily.View", "Mily.View\Mily.View.njsproj", "{07D51D8C-F5E9-4DC6-A101-7C8A9563E4F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.DbCore", "Mily.DbCore\Mily.DbCore.csproj", "{0F6EB4D3-5B19-4620-91CB-2C43B43DF680}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.DbCore", "Mily.DbCore\Mily.DbCore.csproj", "{0F6EB4D3-5B19-4620-91CB-2C43B43DF680}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.RabbitMQ", "Mily.RabbitMQ\Mily.RabbitMQ.csproj", "{F1C14AA3-566A-49CA-989A-CFB769A48760}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.RabbitMQ", "Mily.RabbitMQ\Mily.RabbitMQ.csproj", "{F1C14AA3-566A-49CA-989A-CFB769A48760}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.Quartz", "Mily.Quartz\Mily.Quartz.csproj", "{40303B3A-3CDE-48EF-B0FC-654F5F6418CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.Quartz", "Mily.Quartz\Mily.Quartz.csproj", "{40303B3A-3CDE-48EF-B0FC-654F5F6418CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.Setting", "Mily.Setting\Mily.Setting.csproj", "{28DE85C9-0A5B-4CEB-B9CB-1013AF19DFB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.Setting", "Mily.Setting\Mily.Setting.csproj", "{28DE85C9-0A5B-4CEB-B9CB-1013AF19DFB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.MainLogic", "Mily.MainLogic\Mily.MainLogic.csproj", "{513A749B-1E03-48DE-A25D-897FD2F8DE5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.MainLogic", "Mily.MainLogic\Mily.MainLogic.csproj", "{513A749B-1E03-48DE-A25D-897FD2F8DE5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.OhterLogic", "Mily.OhterLogic\Mily.OhterLogic.csproj", "{891C5146-CBC8-414B-B1D7-7AD0CF0CA74A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.OhterLogic", "Mily.OhterLogic\Mily.OhterLogic.csproj", "{891C5146-CBC8-414B-B1D7-7AD0CF0CA74A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.Service", "Mily.Service\Mily.Service.csproj", "{FA6ACFCE-21A4-4A81-BE15-3BC4A144DBD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.Service", "Mily.Service\Mily.Service.csproj", "{FA6ACFCE-21A4-4A81-BE15-3BC4A144DBD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.Extension", "Mily.Extension\Mily.Extension.csproj", "{972CB853-90C6-4733-A95A-4361765C6499}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.Extension", "Mily.Extension\Mily.Extension.csproj", "{972CB853-90C6-4733-A95A-4361765C6499}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miliy.MainApi", "Miliy.MainApi\Miliy.MainApi.csproj", "{466AE2DD-D00C-483D-9DA6-30C0A66C57DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Miliy.MainApi", "Miliy.MainApi\Miliy.MainApi.csproj", "{466AE2DD-D00C-483D-9DA6-30C0A66C57DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.OtherApi", "Mily.OtherApi\Mily.OtherApi.csproj", "{831D810C-0F33-40BE-928D-5D67F0F7DD1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.OtherApi", "Mily.OtherApi\Mily.OtherApi.csproj", "{831D810C-0F33-40BE-928D-5D67F0F7DD1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
