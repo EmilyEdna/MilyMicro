@@ -29,7 +29,36 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include=".babelrc" />
+    <Content Include=".editorconfig" />
+    <Content Include=".eslintignore" />
+    <Content Include=".eslintrc.js" />
+    <Content Include=".postcssrc.js" />
+    <Content Include="build\build.js" />
+    <Content Include="build\check-versions.js" />
+    <Content Include="build\utils.js" />
+    <Content Include="build\vue-loader.conf.js" />
+    <Content Include="build\webpack.base.conf.js" />
+    <Content Include="build\webpack.dev.conf.js" />
+    <Content Include="build\webpack.prod.conf.js" />
+    <Content Include="index.html" />
+    <Content Include="package-lock.json" />
     <Content Include="package.json" />
+    <Content Include="README.md" />
+    <Content Include="src\App.vue" />
+    <Content Include="src\assets\logo.png" />
+    <Content Include="src\components\HelloWorld.vue" />
+    <Content Include="src\main.js" />
+    <Content Include="src\router\index.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="build\" />
+    <Folder Include="config\" />
+    <Folder Include="src\" />
+    <Folder Include="src\assets\" />
+    <Folder Include="src\components\" />
+    <Folder Include="src\router\" />
+    <Folder Include="static\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>
