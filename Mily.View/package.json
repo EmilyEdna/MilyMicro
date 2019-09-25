@@ -2,13 +2,16 @@
   "name": "mily.view",
   "version": "1.0.0",
   "description": "",
-  "main": "ApplacationConfig.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Emily",
   "license": "ISC",
   "dependencies": {
-    "vue": "^2.6.10"
+    "css-loader": "^3.2.0",
+    "vue": "^2.6.10",
+    "vue-loader": "^15.7.1",
+    "webpack": "^4.41.0"
   }
 }
