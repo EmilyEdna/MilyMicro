@@ -44,6 +44,7 @@ namespace Mily.Extension.InitSystem
             MilyConfig.ConnectionString2 = Builder.GetConnectionString("ConnectionString2");
             MilyConfig.ConnectionStringSlave = Builder.GetConnectionString("ConnectionStringSlave");
             MilyConfig.RabbitMQConnectionString = Builder.GetConnectionString("RabbitMQConnectionString");
+            MilyConfig.Discovery = Builder["Discovery"].ToString();
             RedisCaches.RedisConnectionString = Builder.GetConnectionString("RedisConnectionString");
         }
     }

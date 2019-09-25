@@ -13,4 +13,9 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" Version="3.0.0" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="setting.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

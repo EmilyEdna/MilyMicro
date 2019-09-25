@@ -4,6 +4,7 @@ using BeetleX;
 using BeetleX.Clients;
 using Mily.Extension.LoggerFactory;
 using Mily.Extension.SocketClient.SocketCommon;
+using Mily.Setting;
 
 namespace Mily.Extension.SocketClient
 {
@@ -15,6 +16,7 @@ namespace Mily.Extension.SocketClient
         /// 异步注册Socket服务
         /// </summary>
         /// <param name="Port"></param>
+        /// <param name="type"></param>
         public static void Socket(int Port, Type type)
         {
             BaseType = type;
@@ -33,7 +35,7 @@ namespace Mily.Extension.SocketClient
                 SocketAop.RecordHandler(Command,BaseType, Client);
             };
             if (Boots)
-                SocketAop.InitClientAsync(Client, NetType.Connect);
+                SocketAop.InitClientAsync(Client, NetType.Connect, MilyConfig.Discovery);
         }
     }
 }

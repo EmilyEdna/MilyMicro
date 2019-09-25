@@ -11,7 +11,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
             switch (Types)
             {
                 case NetType.Connect:
-                    return "【注册服务】₩注册服务";
+                    return $"【注册服务】₩注册服务|{Content}";
                 case NetType.Listen:
                     return $"【监听服务】₩{Content}";
                 case NetType.DisConnect:

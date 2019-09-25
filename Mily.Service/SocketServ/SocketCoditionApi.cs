@@ -53,7 +53,7 @@ namespace Mily.Service.SocketServ
         /// <summary>
         /// Byte流或者表单方式
         /// </summary>
-        /// <param name="Context">上下文</param>
+        /// <Param name="Context">上下文</Param>
         /// <returns></returns>
         [Post]
         [NoDataConvert]
@@ -66,9 +66,11 @@ namespace Mily.Service.SocketServ
             {
                 String Key = item.Split("=")[0];
                 String Data = item.Split("=")[1];
+                //表单数据
                 if (!Key.Equals("RequestPath"))
                     MapDate.Add(Key, HttpUtility.UrlEncode(Data));
                 else
+                    //请求地址
                     RequestPath = Data;
             });
             return await JsonAsync(RequestPath, MapDate);
@@ -76,7 +78,7 @@ namespace Mily.Service.SocketServ
         /// <summary>
         /// Byte流或者表单方式
         /// </summary>
-        /// <param name="Context">上下文</param>
+        /// <Param name="Context">上下文</Param>
         /// <returns></returns>
         [Post]
         [NoDataConvert]
@@ -89,9 +91,11 @@ namespace Mily.Service.SocketServ
             {
                 String Key = item.Split("=")[0];
                 String Data = item.Split("=")[1];
+                //表单数据
                 if (!Key.Equals("RequestPath"))
                     MapDate.Add(Key, HttpUtility.UrlEncode(Data));
                 else
+                    //请求地址
                     RequestPath = Data;
             });
             return Json(RequestPath, MapDate);
@@ -101,25 +105,23 @@ namespace Mily.Service.SocketServ
         /// <summary>
         /// JSON请求方式
         /// </summary>
-        /// <param name="RequestPath">请求地址格式如下Controller_FunctionName</param>
-        /// <param name="MapData">请求参数格式如下Data:{Key:key,Name:name}</param>
+        /// <Param name="RequestPath">请求地址格式如下Controller_FunctionName</Param>
+        /// <Param name="MapData">请求参数格式如下Data:{Key:key,Name:name}</Param>
         /// <returns></returns>
         [Post]
         [JsonDataConvert]
         public async Task<Object> JsonAsync(String RequestPath, Dictionary<String, Object> MapData)
         {
-            ParamCmd param = new ParamCmd
+            ParamCmd Param = new ParamCmd
             {
                 Path = RequestPath,
                 HashData = MapData
             };
-            ParseCmd.HashData = JsonConvert.SerializeObject(param);
+            ParseCmd.HashData = JsonConvert.SerializeObject(Param);
             SocketCodition.Boots = NetType.Listen;
-            foreach (var item in SocketCodition.Session)
-            {
-                SocketCodition.ResetEvent.Set();
-                item.Value.Session.Server.Handler.SessionReceive(item.Value.Server, item.Value);
-            }
+            SessionReceiveEventArgs SessionEvent = SocketCodition.Session[Param.Service.ToUpper()].Values.FirstOrDefault();
+            SocketCodition.KeyId= SocketCodition.Session[Param.Service.ToUpper()].Keys.FirstOrDefault();
+            SessionEvent.Session.Server.Handler.SessionReceive(SessionEvent.Server, SessionEvent);
             return await Task.Run<Object>(() =>
             {
                 Thread.Sleep(1500);
@@ -132,25 +134,23 @@ namespace Mily.Service.SocketServ
         /// <summary>
         /// JSON请求方式
         /// </summary>
-        /// <param name="RequestPath">请求地址格式如下Controller_FunctionName</param>
-        /// <param name="MapData">请求参数格式如下Data:{Key:key,Name:name}</param>
+        /// <Param name="RequestPath">请求地址格式如下Controller_FunctionName</Param>
+        /// <Param name="MapData">请求参数格式如下Data:{Key:key,Name:name}</Param>
         /// <returns></returns>
         [Post]
         [JsonDataConvert]
         public Object Json(String RequestPath, Dictionary<String, Object> MapData)
         {
-            ParamCmd param = new ParamCmd
+            ParamCmd Param = new ParamCmd
             {
                 Path = RequestPath,
                 HashData = MapData
             };
-            ParseCmd.HashData = JsonConvert.SerializeObject(param);
+            ParseCmd.HashData = JsonConvert.SerializeObject(Param);
             SocketCodition.Boots = NetType.Listen;
-            foreach (var item in SocketCodition.Session)
-            {
-                SocketCodition.ResetEvent.Set();
-                item.Value.Session.Server.Handler.SessionReceive(item.Value.Server, item.Value);
-            }
+            SessionReceiveEventArgs SessionEvent = SocketCodition.Session[Param.Controller.ToUpper()].Values.FirstOrDefault();
+            SocketCodition.KeyId = SocketCodition.Session[Param.Controller.ToUpper()].Keys.FirstOrDefault();
+            SessionEvent.Session.Server.Handler.SessionReceive(SessionEvent.Server, SessionEvent);
             try
             {
                 return JsonConvert.DeserializeObject<Object>(SocketCodition.Result.FirstOrDefault());
@@ -165,8 +165,8 @@ namespace Mily.Service.SocketServ
         /// <summary>
         /// 文件上传
         /// </summary>
-        /// <param name="DirName">目录名称</param>
-        /// <param name="Context">上下文</param>
+        /// <Param name="DirName">目录名称</Param>
+        /// <Param name="Context">上下文</Param>
         /// <returns></returns>
         [Post]
         [MultiDataConvert]

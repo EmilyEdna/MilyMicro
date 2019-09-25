@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using BeetleX;
 using BeetleX.Clients;
 using Mily.Extension.SocketClient.SocketCommon;
+using Mily.Setting;
 
 namespace Mily.Extension.SocketClient
 {
@@ -11,7 +12,7 @@ namespace Mily.Extension.SocketClient
         public static Type BaseType { get; set; }
         private static object Locker = new object();
         /// <summary>
-        /// 同步注册Socket服务
+        ///  同步注册Socket服务
         /// </summary>
         /// <param name="Port"></param>
         /// <param name="type"></param>
@@ -23,7 +24,7 @@ namespace Mily.Extension.SocketClient
             Client.Socket.ReceiveTimeout = int.MaxValue;
             Client.Socket.SendBufferSize = int.MaxValue;
             Client.Socket.ReceiveBufferSize = int.MaxValue;
-            SocketAop.InitClient(Client, NetType.Connect);
+            SocketAop.InitClient(Client, NetType.Connect, MilyConfig.Discovery);
             Task.Run(() =>
             {
                 while (true)

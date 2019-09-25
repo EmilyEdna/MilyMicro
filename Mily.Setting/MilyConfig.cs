@@ -27,6 +27,10 @@ namespace Mily.Setting
         /// </summary>
         public static String RabbitMQConnectionString { get; set; }
         /// <summary>
+        /// 记录名称
+        /// </summary>
+        public static String Discovery { get; set; }
+        /// <summary>
         /// 所有程序集
         /// </summary>
         public static IList<Assembly> Assembly { get; set; } = GetAssembly();
