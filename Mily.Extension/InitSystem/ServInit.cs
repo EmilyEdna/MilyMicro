@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Mily.Extension.Attributes.PermissionHandler;
 using Mily.Extension.AutofacIoc;
 using Mily.Extension.Filters;
@@ -38,18 +39,12 @@ namespace Mily.Extension.InitSystem
             //启用跨域
             services.AddCors(option =>
             {
-                option.AddPolicy("EdnaCore", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
-            });
-            //启用Session
-            services.AddSession(opt =>
-            {
-                //Session 5分钟后过期
-                opt.IdleTimeout = TimeSpan.FromMinutes(5);
+                option.AddPolicy("EdnaCore", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             });
             //启用Swagger
             services.AddSwaggerGen(opt =>
             {
-                opt.SwaggerDoc("v1", new Info { Title = "Api", Version = "v1" });
+                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
                 //opt.IncludeXmlComments(Path.Combine(Directory.GetCurrentDirectory(), "Edna.ApiCore.xml"));
             });
             return services;
