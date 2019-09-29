@@ -1,0 +1,27 @@
+{
+  "name": "mily.view",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "dev": "npm run serve"
+  },
+  "description": "Mily.View",
+  "author": {
+    "name": "Emily"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "css-loader": "^3.2.0",
+    "element-ui": "^2.12.0",
+    "vue": "^2.6.10",
+    "vue-router": "^3.1.3",
+    "vue-style-loader": "^4.1.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.11.0",
+    "@vue/cli-service": "^3.11.0",
+    "vue-template-compiler": "^2.6.10"
+  }
+}
