@@ -131,15 +131,12 @@ namespace Mily.Service.SocketServ
                 HitBalance(Param);
             else //默认双机负载
             {
-                List<Dictionary<Int32, SessionReceiveEventArgs>> HitHand = SocketCodition.Session.Where(t => t.Key.Contains(Param.Service.ToUpper())).Select(t => t.Value).ToList();
+                Dictionary<Int32, SessionReceiveEventArgs> HitHand = SocketCodition.Session.Where(t => t.Key.Contains(Param.Service.ToUpper())).Select(t => t.Value).FirstOrDefault();
                 if (Hit >= 50 && Hit < 99)
                 {
-                    Random Rdom = new Random();
-                    var HitWeight = HitHand.Select(Item => new HitWeight
-                    {
-                        Hits = Item.Keys.Any(x => x >= 5) ? Rdom.Next(0, Item.Keys.Where(x => x >= 5).Count()) : 0,
-                        SessionEventMap = Item
-                    }).FirstOrDefault();
+                    Random Rdom = new Random(Guid.NewGuid().GetHashCode());
+                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 5) ? HitHand.Keys.Select(t => Rdom.Next(5, HitHand.Keys.Max())).FirstOrDefault() : HitHand.Keys.Min();
+                    HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
                     var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
                     var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
                     High.Priority = ThreadPriority.Highest;
@@ -149,12 +146,9 @@ namespace Mily.Service.SocketServ
                 }
                 else
                 {
-                    Random Rdom = new Random();
-                    var HitWeight = HitHand.Select(Item => new HitWeight
-                    {
-                        Hits = Item.Keys.Any(x => x >= 1 && x < 5) ? Rdom.Next(0, Item.Keys.Where(x => x >= 1 && x < 5).Count()) : 0,
-                        SessionEventMap = Item
-                    }).FirstOrDefault();
+                    Random Rdom = new Random(Guid.NewGuid().GetHashCode());
+                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 2 && t < 5) ? HitHand.Keys.Select(t => Rdom.Next(2, 5)).FirstOrDefault() : HitHand.Keys.Min();
+                    HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
                     var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
                     var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
                     High.Priority = ThreadPriority.Highest;
@@ -194,15 +188,12 @@ namespace Mily.Service.SocketServ
                 HitBalance(Param);
             else //默认双机负载
             {
-                List<Dictionary<Int32, SessionReceiveEventArgs>> HitHand = SocketCodition.Session.Where(t => t.Key.Contains(Param.Service.ToUpper())).Select(t => t.Value).ToList();
+                Dictionary<Int32, SessionReceiveEventArgs> HitHand = SocketCodition.Session.Where(t => t.Key.Contains(Param.Service.ToUpper())).Select(t => t.Value).FirstOrDefault();
                 if (Hit >= 50 && Hit < 99)
                 {
                     Random Rdom = new Random(Guid.NewGuid().GetHashCode());
-                    var HitWeight = HitHand.Select(Item => new HitWeight
-                    {
-                        Hits = Item.Keys.Any(x => x >= 5) ? Rdom.Next(0, Item.Keys.Where(x => x >= 5).Count()) : 0,
-                        SessionEventMap = Item
-                    }).FirstOrDefault();
+                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 5) ? HitHand.Keys.Select(t => Rdom.Next(5, HitHand.Keys.Max())).FirstOrDefault() : HitHand.Keys.Min();
+                    HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
                     var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
                     var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
                     High.Priority = ThreadPriority.Highest;
@@ -213,11 +204,8 @@ namespace Mily.Service.SocketServ
                 else
                 {
                     Random Rdom = new Random(Guid.NewGuid().GetHashCode());
-                    var HitWeight = HitHand.Select(Item => new HitWeight
-                    {
-                        Hits = Item.Keys.Any(x => x >= 1 && x < 5) ? Rdom.Next(0, Item.Keys.Where(x => x >= 1 && x < 5).Count()) : 0,
-                        SessionEventMap = Item
-                    }).FirstOrDefault();
+                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 2 && t < 5) ? HitHand.Keys.Select(t => Rdom.Next(2, 5)).FirstOrDefault() : HitHand.Keys.Min();
+                    HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
                     var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
                     var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
                     High.Priority = ThreadPriority.Highest;
