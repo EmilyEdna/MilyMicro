@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using XExten.XCore;
 
 namespace Mily.Service.SocketServ
 {
@@ -62,18 +63,21 @@ namespace Mily.Service.SocketServ
             String Body = Context.Request.Stream.ReadString(Context.Request.Length);
             Dictionary<String, Object> MapDate = new Dictionary<String, Object>();
             String RequestPath = String.Empty;
+            Int32 Hit = 0;
             Body.Split("&").ToList().ForEach(item =>
             {
                 String Key = item.Split("=")[0];
                 String Data = item.Split("=")[1];
                 //表单数据
-                if (!Key.Equals("RequestPath"))
+                if (!Key.ToUpper().Equals("REQUESTPATH") && !Key.ToUpper().Equals("HIT"))
                     MapDate.Add(Key, HttpUtility.UrlEncode(Data));
-                else
+                else if (Key.ToUpper().Equals("REQUESTPATH"))
                     //请求地址
                     RequestPath = Data;
+                else
+                    Hit = Data.IsNullOrEmpty() ? 100 : Convert.ToInt32(Data);
             });
-            return await JsonAsync(RequestPath, MapDate);
+            return await JsonAsync(RequestPath, MapDate, Hit);
         }
         /// <summary>
         /// Byte流或者表单方式
@@ -87,18 +91,21 @@ namespace Mily.Service.SocketServ
             String Body = Context.Request.Stream.ReadString(Context.Request.Length);
             Dictionary<String, Object> MapDate = new Dictionary<String, Object>();
             String RequestPath = String.Empty;
+            Int32 Hit = 0;
             Body.Split("&").ToList().ForEach(item =>
             {
                 String Key = item.Split("=")[0];
                 String Data = item.Split("=")[1];
                 //表单数据
-                if (!Key.Equals("RequestPath"))
+                if (!Key.ToUpper().Equals("REQUESTPATH") && !Key.ToUpper().Equals("HIT"))
                     MapDate.Add(Key, HttpUtility.UrlEncode(Data));
-                else
+                else if (Key.ToUpper().Equals("REQUESTPATH"))
                     //请求地址
                     RequestPath = Data;
+                else
+                    Hit = Data.IsNullOrEmpty() ? 100 : Convert.ToInt32(Data);
             });
-            return Json(RequestPath, MapDate);
+            return Json(RequestPath, MapDate, Hit);
         }
         #endregion
         #region AJAX提交方式
@@ -107,10 +114,11 @@ namespace Mily.Service.SocketServ
         /// </summary>
         /// <Param name="RequestPath">请求地址格式如下Controller_FunctionName</Param>
         /// <Param name="MapData">请求参数格式如下Data:{Key:key,Name:name}</Param>
+        /// <param name="Hit">负载权重</param>
         /// <returns></returns>
         [Post]
         [JsonDataConvert]
-        public async Task<Object> JsonAsync(String RequestPath, Dictionary<String, Object> MapData)
+        public async Task<Object> JsonAsync(String RequestPath, Dictionary<String, Object> MapData, Int32 Hit = 100)
         {
             ParamCmd Param = new ParamCmd
             {
@@ -119,9 +127,42 @@ namespace Mily.Service.SocketServ
             };
             ParseCmd.HashData = JsonConvert.SerializeObject(Param);
             SocketCodition.Boots = NetType.Listen;
-            SessionReceiveEventArgs SessionEvent = SocketCodition.Session[Param.Service.ToUpper()].Values.FirstOrDefault();
-            SocketCodition.KeyId= SocketCodition.Session[Param.Service.ToUpper()].Keys.FirstOrDefault();
-            SessionEvent.Session.Server.Handler.SessionReceive(SessionEvent.Server, SessionEvent);
+            if (Hit >= 100) //权重100以上默认单机发送不负载
+                HitBalance(Param);
+            else //默认双机负载
+            {
+                List<Dictionary<Int32, SessionReceiveEventArgs>> HitHand = SocketCodition.Session.Where(t => t.Key.Contains(Param.Service.ToUpper())).Select(t => t.Value).ToList();
+                if (Hit >= 50 && Hit < 99)
+                {
+                    Random Rdom = new Random();
+                    var HitWeight = HitHand.Select(Item => new HitWeight
+                    {
+                        Hits = Item.Keys.Any(x => x >= 5) ? Rdom.Next(0, Item.Keys.Where(x => x >= 5).Count()) : 0,
+                        SessionEventMap = Item
+                    }).FirstOrDefault();
+                    var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
+                    var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
+                    High.Priority = ThreadPriority.Highest;
+                    Normol.Priority = ThreadPriority.Normal;
+                    High.Start();
+                    Normol.Start();
+                }
+                else
+                {
+                    Random Rdom = new Random();
+                    var HitWeight = HitHand.Select(Item => new HitWeight
+                    {
+                        Hits = Item.Keys.Any(x => x >= 1 && x < 5) ? Rdom.Next(0, Item.Keys.Where(x => x >= 1 && x < 5).Count()) : 0,
+                        SessionEventMap = Item
+                    }).FirstOrDefault();
+                    var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
+                    var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
+                    High.Priority = ThreadPriority.Highest;
+                    Normol.Priority = ThreadPriority.Normal;
+                    High.Start();
+                    Normol.Start();
+                }
+            }
             return await Task.Run<Object>(() =>
             {
                 Thread.Sleep(1500);
@@ -136,10 +177,11 @@ namespace Mily.Service.SocketServ
         /// </summary>
         /// <Param name="RequestPath">请求地址格式如下Controller_FunctionName</Param>
         /// <Param name="MapData">请求参数格式如下Data:{Key:key,Name:name}</Param>
+        /// <param name="Hit">负载权重</param>
         /// <returns></returns>
         [Post]
         [JsonDataConvert]
-        public Object Json(String RequestPath, Dictionary<String, Object> MapData)
+        public Object Json(String RequestPath, Dictionary<String, Object> MapData, Int32 Hit = 100)
         {
             ParamCmd Param = new ParamCmd
             {
@@ -148,9 +190,42 @@ namespace Mily.Service.SocketServ
             };
             ParseCmd.HashData = JsonConvert.SerializeObject(Param);
             SocketCodition.Boots = NetType.Listen;
-            SessionReceiveEventArgs SessionEvent = SocketCodition.Session[Param.Controller.ToUpper()].Values.FirstOrDefault();
-            SocketCodition.KeyId = SocketCodition.Session[Param.Controller.ToUpper()].Keys.FirstOrDefault();
-            SessionEvent.Session.Server.Handler.SessionReceive(SessionEvent.Server, SessionEvent);
+            if (Hit >= 100) //权重100以上默认单机发送不负载
+                HitBalance(Param);
+            else //默认双机负载
+            {
+                List<Dictionary<Int32, SessionReceiveEventArgs>> HitHand = SocketCodition.Session.Where(t => t.Key.Contains(Param.Service.ToUpper())).Select(t => t.Value).ToList();
+                if (Hit >= 50 && Hit < 99)
+                {
+                    Random Rdom = new Random(Guid.NewGuid().GetHashCode());
+                    var HitWeight = HitHand.Select(Item => new HitWeight
+                    {
+                        Hits = Item.Keys.Any(x => x >= 5) ? Rdom.Next(0, Item.Keys.Where(x => x >= 5).Count()) : 0,
+                        SessionEventMap = Item
+                    }).FirstOrDefault();
+                    var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
+                    var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
+                    High.Priority = ThreadPriority.Highest;
+                    Normol.Priority = ThreadPriority.Normal;
+                    High.Start();
+                    Normol.Start();
+                }
+                else
+                {
+                    Random Rdom = new Random(Guid.NewGuid().GetHashCode());
+                    var HitWeight = HitHand.Select(Item => new HitWeight
+                    {
+                        Hits = Item.Keys.Any(x => x >= 1 && x < 5) ? Rdom.Next(0, Item.Keys.Where(x => x >= 1 && x < 5).Count()) : 0,
+                        SessionEventMap = Item
+                    }).FirstOrDefault();
+                    var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
+                    var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
+                    High.Priority = ThreadPriority.Highest;
+                    Normol.Priority = ThreadPriority.Normal;
+                    High.Start();
+                    Normol.Start();
+                }
+            }
             try
             {
                 return JsonConvert.DeserializeObject<Object>(SocketCodition.Result.FirstOrDefault());
@@ -186,6 +261,21 @@ namespace Mily.Service.SocketServ
                 Paths.Add($"{Separator}UpLoadFile{Separator + DirName + DateTime.Now.ToString("yyyyMMdd") + Separator + Files.FileName}");
             }
             return Paths;
+        }
+        #endregion
+        #region 权重分配
+        /// <summary>
+        /// 单机负载
+        /// </summary>
+        /// <param name="Param"></param>
+        [NotAction]
+        private static void HitBalance(ParamCmd Param)
+        {
+            //获取TCPSession
+            SessionReceiveEventArgs SessionEvent = SocketCodition.Session[Param.Service.ToUpper()].Values.FirstOrDefault();
+            //获取TCPSessionId
+            SocketCodition.KeyId = SocketCodition.Session[Param.Service.ToUpper()].Keys.FirstOrDefault();
+            SessionEvent.Session.Server.Handler.SessionReceive(SessionEvent.Server, SessionEvent);
         }
         #endregion
     }

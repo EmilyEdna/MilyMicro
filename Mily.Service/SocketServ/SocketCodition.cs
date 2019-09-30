@@ -117,6 +117,11 @@ namespace Mily.Service.SocketServ
                 }
             }
         }
+        /// <summary>
+        /// 将服务添加在Dictionary中缓存
+        /// </summary>
+        /// <param name="Content"></param>
+        /// <param name="Event"></param>
         private void AddClient(String Content, SessionReceiveEventArgs Event)
         {
             if (Content.IsContainsIn("|"))
@@ -127,6 +132,8 @@ namespace Mily.Service.SocketServ
                     SessionId.Add((int)Event.Session.ID, Event);
                     if (!Session.ContainsKey(ServName.ToUpper()))
                         Session.Add(ServName.ToUpper(), SessionId);
+                    else if (Session.ContainsKey(ServName.ToUpper()))
+                        Session.Add($"{ServName.ToUpper()}_{Event.Session.ID}", SessionId);
                 }
             }
         }
