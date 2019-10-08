@@ -33,6 +33,14 @@
     <Content Include="public\index.html" />
     <Content Include="src\App.vue" />
     <Content Include="package.json" />
+    <Content Include="src\components\Basic\Login.vue" />
+    <Content Include="src\router\index.js" />
+    <Content Include="src\utils\ApiFactory.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\utils\http.service.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="vue.config.js" />
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +48,9 @@
     <Folder Include="src\" />
     <Folder Include="src\assets\" />
     <Folder Include="src\components\" />
+    <Folder Include="src\components\Basic\" />
+    <Folder Include="src\utils\" />
+    <Folder Include="src\router\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="babel.config.js" />
