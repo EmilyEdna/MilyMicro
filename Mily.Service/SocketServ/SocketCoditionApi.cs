@@ -135,7 +135,7 @@ namespace Mily.Service.SocketServ
                 if (Hit >= 50 && Hit < 99)
                 {
                     Random Rdom = new Random(Guid.NewGuid().GetHashCode());
-                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 5) ? HitHand.Keys.Select(t => Rdom.Next(5, HitHand.Keys.Max())).FirstOrDefault() : HitHand.Keys.Min();
+                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 5) ? HitHand.Keys.Select(t => Rdom.Next(4, HitHand.Keys.Select(t=>t>=5).Count()+1)).FirstOrDefault() : HitHand.Keys.Min();
                     HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
                     var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
                     var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
@@ -147,7 +147,7 @@ namespace Mily.Service.SocketServ
                 else
                 {
                     Random Rdom = new Random(Guid.NewGuid().GetHashCode());
-                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 2 && t < 5) ? HitHand.Keys.Select(t => Rdom.Next(2, 5)).FirstOrDefault() : HitHand.Keys.Min();
+                    HitWeight.Hits = HitHand.Keys.Any(t => t > 1 && t < 5) ? HitHand.Keys.Select(t => Rdom.Next(1, HitHand.Keys.Count + 1)).FirstOrDefault() : HitHand.Keys.Min();
                     HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
                     var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
                     var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
@@ -192,7 +192,7 @@ namespace Mily.Service.SocketServ
                 if (Hit >= 50 && Hit < 99)
                 {
                     Random Rdom = new Random(Guid.NewGuid().GetHashCode());
-                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 5) ? HitHand.Keys.Select(t => Rdom.Next(5, HitHand.Keys.Max())).FirstOrDefault() : HitHand.Keys.Min();
+                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 5) ? HitHand.Keys.Select(t => Rdom.Next(4, HitHand.Keys.Select(t => t >= 5).Count() + 1)).FirstOrDefault() : HitHand.Keys.Min();
                     HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
                     var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
                     var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
@@ -204,7 +204,7 @@ namespace Mily.Service.SocketServ
                 else
                 {
                     Random Rdom = new Random(Guid.NewGuid().GetHashCode());
-                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 2 && t < 5) ? HitHand.Keys.Select(t => Rdom.Next(2, 5)).FirstOrDefault() : HitHand.Keys.Min();
+                    HitWeight.Hits = HitHand.Keys.Any(t => t > 1 && t < 5) ? HitHand.Keys.Select(t => Rdom.Next(1, HitHand.Keys.Count + 1)).FirstOrDefault() : HitHand.Keys.Min();
                     HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
                     var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
                     var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
