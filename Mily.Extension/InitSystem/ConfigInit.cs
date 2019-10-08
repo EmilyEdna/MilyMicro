@@ -4,8 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Mily.Extension.Infrastructure.GeneralModel;
 using Mily.Setting;
-//using NLog.Extensions.Logging;
-//using NLog.Web;
+using NLog;
+using NLog.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,8 +18,9 @@ namespace Mily.Extension.InitSystem
         public static String WebPath { get; set; }
         public static void InitConfigCollection(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory logger, IConfiguration builder) {
             //Nlog
-            //logger.AddNLog();
-            //env.ConfigureNLog("Nlog.config");
+            logger.AddNLog();
+            LogManager.LoadConfiguration("Nlog.config");
+            //logger.ConfigureNLog("Nlog.config");
             //注册权限
             app.UseAuthentication();
             //注册异常中间件
