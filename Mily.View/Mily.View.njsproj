@@ -33,6 +33,12 @@
     <Content Include="public\index.html" />
     <Content Include="src\App.vue" />
     <Content Include="package.json" />
+    <Content Include="src\assets\css\color-dark.css" />
+    <Content Include="src\assets\css\icon.css" />
+    <Content Include="src\assets\css\main.css" />
+    <Content Include="src\assets\img\img.jpg" />
+    <Content Include="src\assets\img\login-bg.jpg" />
+    <Content Include="src\assets\logo.png" />
     <Content Include="src\components\Basic\Login.vue" />
     <Content Include="src\router\index.js" />
     <Content Include="src\utils\ApiFactory.js">
@@ -47,6 +53,8 @@
     <Folder Include="public\" />
     <Folder Include="src\" />
     <Folder Include="src\assets\" />
+    <Folder Include="src\assets\css\" />
+    <Folder Include="src\assets\img\" />
     <Folder Include="src\components\" />
     <Folder Include="src\components\Basic\" />
     <Folder Include="src\utils\" />
