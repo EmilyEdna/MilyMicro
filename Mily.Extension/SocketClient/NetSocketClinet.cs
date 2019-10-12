@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using BeetleX;
+﻿using BeetleX;
 using BeetleX.Clients;
 using Mily.Extension.SocketClient.SocketCommon;
 using Mily.Setting;
+using System;
+using System.Threading.Tasks;
 
 namespace Mily.Extension.SocketClient
 {
@@ -11,6 +11,7 @@ namespace Mily.Extension.SocketClient
     {
         public static Type BaseType { get; set; }
         private static object Locker = new object();
+
         /// <summary>
         ///  同步注册Socket服务
         /// </summary>

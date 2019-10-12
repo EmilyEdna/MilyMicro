@@ -1,13 +1,9 @@
 ﻿using Mily.DbCore.Caches;
-using Mily.DbCore.Model;
-using Mily.Extension.LoggerFactory;
 using Mily.Setting;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using XExten.XCore;
 using XExten.XExpres;
@@ -34,6 +30,7 @@ namespace Mily.DbCore
                     DbType = DbType.SqlServer,
                     IsAutoCloseConnection = true,
                     InitKeyType = InitKeyType.Attribute,
+                    IsShardSameThread=true,
                     SlaveConnectionConfigs = new List<SlaveConnectionConfig>() { new SlaveConnectionConfig()  {
                         HitRate =100, ConnectionString=MilyConfig.ConnectionStringSlave}
                     }},
@@ -44,6 +41,7 @@ namespace Mily.DbCore
                     DbType = DbType.MySql,
                     IsAutoCloseConnection = true,
                     InitKeyType = InitKeyType.Attribute,
+                    IsShardSameThread=true,
                     SlaveConnectionConfigs = new List<SlaveConnectionConfig>() { new SlaveConnectionConfig()  {
                         HitRate =100, ConnectionString=MilyConfig.ConnectionStringSlave}
                     }},
@@ -53,6 +51,7 @@ namespace Mily.DbCore
                 return Db;
             }
         }
+
         /// <summary>
         /// 切换数据为MYSQL
         /// </summary>
@@ -86,6 +85,7 @@ namespace Mily.DbCore
             //Emily.CodeFirst.InitTables(ModelTypes);
             return Emily;
         }
+
         /// <summary>
         /// 切换数据库为MSSQL
         /// </summary>
@@ -119,6 +119,7 @@ namespace Mily.DbCore
             //Emily.CodeFirst.InitTables(ModelTypes);
             return Emily;
         }
+
         /// <summary>
         /// 新增数据通用
         /// </summary>
@@ -158,20 +159,16 @@ namespace Mily.DbCore
                 XExp.SetProptertiesValue(DataValue, entity);
                 Insert = (db == DBType.MSSQL ? DB_MSSQL().Insertable(entity) : DB_MYSQL().Insertable(entity));
             }
-            switch (type)
+            return type switch
             {
-                case DbReturnTypes.Rowspan:
-                    return await Insert.ExecuteCommandAsync();
-                case DbReturnTypes.Integer:
-                    return await Insert.ExecuteReturnIdentityAsync();
-                case DbReturnTypes.BigInteger:
-                    return await Insert.ExecuteReturnBigIdentityAsync();
-                case DbReturnTypes.Model:
-                    return await Insert.ExecuteReturnEntityAsync();
-                default:
-                    return await Insert.ExecuteCommandIdentityIntoEntityAsync();
-            }
+                DbReturnTypes.Rowspan => await Insert.ExecuteCommandAsync(),
+                DbReturnTypes.Integer => await Insert.ExecuteReturnIdentityAsync(),
+                DbReturnTypes.BigInteger => await Insert.ExecuteReturnBigIdentityAsync(),
+                DbReturnTypes.Model => await Insert.ExecuteReturnEntityAsync(),
+                _ => await Insert.ExecuteCommandIdentityIntoEntityAsync(),
+            };
         }
+
         /// <summary>
         /// 更新数据通用
         /// </summary>
@@ -239,18 +236,15 @@ namespace Mily.DbCore
                 }
                 Update = (db == DBType.MSSQL ? DB_MSSQL().Updateable(entity) : DB_MYSQL().Updateable(entity));
             }
-            switch (type)
+            return type switch
             {
-                case DbReturnTypes.AlterEntity:
-                    return await Update.Where(BoolExp).ExecuteCommandAsync();
-                case DbReturnTypes.AlterCols:
-                    return await Update.UpdateColumns(ObjExp).Where(BoolExp).ExecuteCommandAsync();
-                case DbReturnTypes.AlterSoft:
-                    return await Update.UpdateColumns(ObjExp).Where(BoolExp).ExecuteCommandAsync();
-                default:
-                    return await Update.Where(BoolExp).ExecuteCommandAsync();
-            }
+                DbReturnTypes.AlterEntity => await Update.Where(BoolExp).ExecuteCommandAsync(),
+                DbReturnTypes.AlterCols => await Update.UpdateColumns(ObjExp).Where(BoolExp).ExecuteCommandAsync(),
+                DbReturnTypes.AlterSoft => await Update.UpdateColumns(ObjExp).Where(BoolExp).ExecuteCommandAsync(),
+                _ => await Update.Where(BoolExp).ExecuteCommandAsync(),
+            };
         }
+
         /// <summary>
         /// 删除数据通用
         /// </summary>
@@ -279,18 +273,13 @@ namespace Mily.DbCore
                 Delete = (db == DBType.MSSQL ? DB_MSSQL().Deleteable(entity) : DB_MYSQL().Deleteable(entity));
                 Ids.Add(Guid.Parse(entity.ToDic()["KeyId"].ToString()));
             }
-            switch (type)
+            return type switch
             {
-                case DbReturnTypes.RemoveEntity:
-                    return await Delete.Where(entity).ExecuteCommandAsync();
-                case DbReturnTypes.WithNoId:
-                    return await Delete.In(ObjExp, Ids).ExecuteCommandAsync();
-                case DbReturnTypes.WithWhere:
-                    return await Delete.Where(BoolExp).ExecuteCommandAsync();
-                default:
-                    return await Delete.In(Ids).ExecuteCommandAsync();
-            }
-
+                DbReturnTypes.RemoveEntity => await Delete.Where(entity).ExecuteCommandAsync(),
+                DbReturnTypes.WithNoId => await Delete.In(ObjExp, Ids).ExecuteCommandAsync(),
+                DbReturnTypes.WithWhere => await Delete.Where(BoolExp).ExecuteCommandAsync(),
+                _ => await Delete.In(Ids).ExecuteCommandAsync(),
+            };
         }
     }
 }

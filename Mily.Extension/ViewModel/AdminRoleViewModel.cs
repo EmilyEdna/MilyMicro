@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BeetleX.Buffers;
 
 namespace Mily.Extension.ViewModel
 {
@@ -11,22 +8,27 @@ namespace Mily.Extension.ViewModel
         /// 管理员
         /// </summary>
         public string AdminName { get; set; }
+
         /// <summary>
         /// 账号
         /// </summary>
         public string Account { get; set; }
+
         /// <summary>
         /// 密码
         /// </summary>
         public string PassWord { get; set; }
+
         /// <summary>
         /// 权限许可ID
         /// </summary>
         public Guid? RolePermissionId { get; set; }
+
         /// <summary>
         /// 角色名称
         /// </summary>
         public string RoleName { get; set; }
+
         /// <summary>
         /// 操作角色
         /// </summary>

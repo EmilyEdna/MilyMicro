@@ -12,6 +12,7 @@ namespace Miliy.MainApi
     public class Startup
     {
         public static int Port { get; set; }
+
         public Startup(IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -37,7 +38,7 @@ namespace Miliy.MainApi
                 app.UseDeveloperExceptionPage();
             }
             ConfigInit.InitConfigCollection(app, env, logger, Configuration);
-            NetSocketAsyncClinet.Socket(9090,typeof(BaseApiController));
+            NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
             //NetSocketClinet.Socket(9090, typeof(BaseApiController));
         }
     }

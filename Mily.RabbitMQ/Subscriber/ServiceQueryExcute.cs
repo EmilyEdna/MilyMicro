@@ -1,7 +1,5 @@
 ﻿using Mily.RabbitMQ.AcceptFunc;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Mily.RabbitMQ.Subscriber
@@ -9,6 +7,7 @@ namespace Mily.RabbitMQ.Subscriber
     public class ServiceQueryExcute
     {
         public static ServiceQueryExcute QueryExcute => new Lazy<ServiceQueryExcute>().Value;
+
         public void ExtuteMQ<T>(MQEnum Type) where T : new()
         {
             Task.Run(() =>

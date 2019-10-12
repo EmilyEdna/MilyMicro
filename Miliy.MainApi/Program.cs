@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
 using XExten.XCore;
-using Microsoft.Extensions.Hosting;
 
 namespace Miliy.MainApi
 {
@@ -29,14 +28,17 @@ namespace Miliy.MainApi
                 });
             }
         }
+
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args);
+
         public static IHostBuilder WebHostDefaults(string[] args) => CreateHostBuilder(args).ConfigureWebHostDefaults(WebBuilder => { WebBuilder.UseStartup<Startup>(); });
-        public static IHostBuilder WindowsServiceDefaults(string[] args,int port)=> CreateHostBuilder(args)
+
+        public static IHostBuilder WindowsServiceDefaults(string[] args, int port) => CreateHostBuilder(args)
             .UseWindowsService()
             .UseContentRoot(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName))
-            .ConfigureWebHostDefaults(WebBuilder => 
-            { 
-                WebBuilder.UseKestrel().UseUrls($"http://0.0.0.0:{port}").UseStartup<Startup>(); 
+            .ConfigureWebHostDefaults(WebBuilder =>
+            {
+                WebBuilder.UseKestrel().UseUrls($"http://0.0.0.0:{port}").UseStartup<Startup>();
             });
     }
 }

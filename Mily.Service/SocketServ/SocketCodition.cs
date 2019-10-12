@@ -4,7 +4,6 @@ using Mily.Service.ViewSetting;
 using Mily.Service.ViewSetting.SocketSetting;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using XExten.XCore;
@@ -21,6 +20,7 @@ namespace Mily.Service.SocketServ
         public static ManualResetEvent ResetEvent = new ManualResetEvent(true);
         public static SocketCodition NetCodition => new SocketCodition();
         private static object Locker = new object();
+
         /// <summary>
         /// 服务器端
         /// </summary>
@@ -34,6 +34,7 @@ namespace Mily.Service.SocketServ
             });
             Server.Open();
         }
+
         /// <summary>
         /// 接受的数据
         /// </summary>
@@ -55,6 +56,7 @@ namespace Mily.Service.SocketServ
                 }
             });
         }
+
         /// <summary>
         /// 断开链接
         /// </summary>
@@ -69,6 +71,7 @@ namespace Mily.Service.SocketServ
                 SendToOnlines(Server, result);
             }
         }
+
         private void SendToOnlines(IServer Server, string Content, bool Poll = true)
         {
             if (Poll)
@@ -86,6 +89,7 @@ namespace Mily.Service.SocketServ
                 Session.Stream.Close();
             }
         }
+
         private void SocketInit(IServer Server, SessionReceiveEventArgs Event)
         {
             string ClientResult = Event.Stream.ToPipeStream().ReadLine();
@@ -99,6 +103,7 @@ namespace Mily.Service.SocketServ
                         AddClient(NetTypes.Content, Event);
                         SendToOnlines(Server, ParseCmd.Create(NetType.Listen, "链接成功，开始监听>>>"));
                         break;
+
                     case NetType.Listen:
                         Result.Clear();
                         Result.Add(NetTypes.Content);
@@ -117,6 +122,7 @@ namespace Mily.Service.SocketServ
                 }
             }
         }
+
         /// <summary>
         /// 将服务添加在Dictionary中缓存
         /// </summary>

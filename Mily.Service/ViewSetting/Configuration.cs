@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Mily.Service.ViewSetting
 {
@@ -14,6 +12,7 @@ namespace Mily.Service.ViewSetting
         public static int TCP_Port { get; set; } = Convert.ToInt32(Builder["TCP:TCPPORT"].ToString());
         public static string SOCKET_Host { get; set; } = Builder["SOCKET:SOCKETHOST"].ToString();
         public static int SOCKET_Port { get; set; } = Convert.ToInt32(Builder["SOCKET:SOCKETPORT"].ToString());
+
         private static IConfiguration GetSetting()
         {
             IConfigurationBuilder Buidler = new ConfigurationBuilder();

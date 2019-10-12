@@ -3,9 +3,6 @@ using EasyNetQ.Topology;
 using Mily.DbCore;
 using Mily.DbCore.Model.SystemModel;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Mily.RabbitMQ.PushFunc
@@ -53,6 +50,7 @@ namespace Mily.RabbitMQ.PushFunc
                 }
             });
         }
+
         /// <summary>
         /// 发布消息队列同步
         /// </summary>

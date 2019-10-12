@@ -7,8 +7,6 @@ using Mily.Extension.Attributes.PermissionHandler;
 using Mily.Extension.AutofacIoc;
 using Mily.Extension.Filters;
 using Newtonsoft.Json.Serialization;
-using Swashbuckle.AspNetCore.Swagger;
-using System;
 
 namespace Mily.Extension.InitSystem
 {

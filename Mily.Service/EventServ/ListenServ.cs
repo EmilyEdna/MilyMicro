@@ -1,9 +1,6 @@
 ﻿using Mily.Service.SocketServ;
 using PeterKottas.DotNetCore.WindowsService.Base;
 using PeterKottas.DotNetCore.WindowsService.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Mily.Service.EventServ
 {
@@ -19,7 +16,6 @@ namespace Mily.Service.EventServ
 
         public void Stop()
         {
-            
         }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using Mily.RabbitMQ.PushFunc;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Mily.RabbitMQ.Publisher
@@ -38,6 +35,7 @@ namespace Mily.RabbitMQ.Publisher
             }
             return await RabbitMQFactory.SendMQAsync(entity).ContinueWith(t => { return t.IsCompleted ? true : false; });
         }
+
         public static bool PushMQ<T>(T Entity, MQEnum MQType = MQEnum.Push) where T : class, new()
         {
             //推送模式

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Mily.RabbitMQ.AcceptFunc
+﻿namespace Mily.RabbitMQ.AcceptFunc
 {
     public interface IAccept
     {

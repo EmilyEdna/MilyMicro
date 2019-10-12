@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using Autofac;
+﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Mily.Setting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Mily.Extension.AutofacIoc
 {
@@ -20,17 +18,21 @@ namespace Mily.Extension.AutofacIoc
         protected static readonly IDictionary<Object, Object> AutofacInstance = new Dictionary<Object, Object>();
         protected IContainer Container { get; set; }
         private IEnumerable<Type> Service => MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IService))));
+
         public AutofocManage() => builder = new ContainerBuilder();
+
         /// <summary>
         /// 完成构建
         /// </summary>
         protected void CompleteBuiler() => Container = builder.Build();
+
         /// <summary>
         /// 取出实例
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public T Resolve<T>() => Container == null ? default(T) : Container.Resolve<T>();
+
         /// <summary>
         /// 返回AutoFac服务
         /// </summary>
@@ -44,6 +46,7 @@ namespace Mily.Extension.AutofacIoc
             CompleteBuiler();
             return Container.Resolve<IServiceProvider>();
         }
+
         /// <summary>
         /// 程序注入
         /// </summary>
@@ -59,6 +62,7 @@ namespace Mily.Extension.AutofacIoc
                     builder.RegisterType(Activator.CreateInstance(t).GetType()).As(t.GetInterfaces().Where(x => x.GetInterfaces().Contains(typeof(IService))).FirstOrDefault()).SingleInstance();
             });
         }
+
         public static AutofocManage CreateInstance(bool CreateNewInstance = false)
         {
             if (CreateNewInstance)

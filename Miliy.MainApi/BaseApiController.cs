@@ -4,7 +4,7 @@ using Mily.MainLogic.LogicInterface;
 
 namespace Miliy.MainApi
 {
-    public class BaseApiController: ControllerBase
+    public class BaseApiController : ControllerBase
     {
         public IMainLogic SysService = AutofocManage.CreateInstance().Resolve<IMainLogic>();
     }

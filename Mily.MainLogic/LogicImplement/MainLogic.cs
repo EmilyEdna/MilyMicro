@@ -6,7 +6,6 @@ using Mily.MainLogic.LogicInterface;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using XExten.CacheFactory;
 using XExten.Common;
@@ -14,9 +13,10 @@ using XExten.XCore;
 
 namespace Mily.MainLogic.LogicImplement
 {
-    public class MainLogic: SugerDbContext ,IMainLogic
+    public class MainLogic : SugerDbContext, IMainLogic
     {
         #region 管理员
+
         /// <summary>
         /// 管理员分页
         /// </summary>
@@ -29,6 +29,7 @@ namespace Mily.MainLogic.LogicImplement
                 .WhereIF(Page.KeyWord.ContainsKey("AdminName"), t => t.AdminName == Page.KeyWord["AdminName"].ToString())
                 .Where(t => t.IsDelete == false).ToPageListAsync(Page.PageIndex, Page.PageSize);
         }
+
         /// <summary>
         /// 软删除管理员
         /// </summary>
@@ -41,6 +42,7 @@ namespace Mily.MainLogic.LogicImplement
            .Where(t => t.IsDelete == false).ToList();
             return await base.AlterData<Administrator>(null, administrator, DBType.MSSQL, DbReturnTypes.AlterSoft);
         }
+
         /// <summary>
         /// 真删除管理员
         /// </summary>
@@ -52,6 +54,7 @@ namespace Mily.MainLogic.LogicImplement
                 .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString())).ToList();
             return await base.RemoveData<Administrator>(null, administrator);
         }
+
         /// <summary>
         /// 编辑管理员
         /// </summary>
@@ -62,6 +65,7 @@ namespace Mily.MainLogic.LogicImplement
             Administrator administrator = ViewModel.AutoMapper<Administrator>();
             return await base.AlterData(administrator, null, DBType.MSSQL, DbReturnTypes.AlterDefault, null, t => t.KeyId == ViewModel.KeyId);
         }
+
         /// <summary>
         /// 恢复管理员数据
         /// </summary>
@@ -72,10 +76,10 @@ namespace Mily.MainLogic.LogicImplement
                 .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
                 .Where(t => t.IsDelete == true).ToList();
             return await base.AlterData<Administrator>(null, administrator, DBType.MSSQL, DbReturnTypes.AlterSoft, false);
-
         }
 
         #region 注册登录后台管理员
+
         /// <summary>
         /// 注册后台管理员
         /// </summary>
@@ -86,6 +90,7 @@ namespace Mily.MainLogic.LogicImplement
             Administrator Admin = ViewModel.ToMapper<AdminRoleViewModel, Administrator>();
             return await base.InsertData<Administrator>(Admin);
         }
+
         /// <summary>
         /// 登录后台管理员
         /// </summary>
@@ -98,10 +103,12 @@ namespace Mily.MainLogic.LogicImplement
                 .Where(t => t.PassWord.Equals(ViewModel.PassWord))
                 .Select<AdminRoleViewModel>().First();
             if (AdminRole != null)
-                await Caches.RedisCacheSetAsync(AdminRole.GetType().FullName, AdminRole,120);
+                await Caches.RedisCacheSetAsync(AdminRole.GetType().FullName, AdminRole, 120);
             return AdminRole;
         }
-        #endregion
-        #endregion
+
+        #endregion 注册登录后台管理员
+
+        #endregion 管理员
     }
 }

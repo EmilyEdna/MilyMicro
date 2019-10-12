@@ -8,7 +8,6 @@ using Mily.Extension.Infrastructure.GeneralMiddleWare;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Mily.Extension.Attributes
@@ -17,10 +16,12 @@ namespace Mily.Extension.Attributes
     public class AuthorAttribute : Attribute, IAsyncAuthorizationFilter
     {
         public List<String> Names { get; set; }
+
         public AuthorAttribute(params String[] Param)
         {
             Names = Param.ToList();
         }
+
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var authorizationService = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();

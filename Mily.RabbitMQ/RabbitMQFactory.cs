@@ -4,7 +4,6 @@ using Mily.RabbitMQ.AcceptFunc;
 using Mily.RabbitMQ.PushFunc;
 using Mily.Setting;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +13,7 @@ namespace Mily.RabbitMQ
     public class RabbitMQFactory
     {
         private volatile static IBus Bus = null;
+
         /// <summary>
         /// 创建链接
         /// </summary>
@@ -24,6 +24,7 @@ namespace Mily.RabbitMQ
                 Bus = RabbitHutch.CreateBus(MilyConfig.RabbitMQConnectionString);
             return Bus;
         }
+
         /// <summary>
         /// 同步执行
         /// </summary>
@@ -44,6 +45,7 @@ namespace Mily.RabbitMQ
                 return false;
             }
         }
+
         /// <summary>
         /// 推荐异步执行
         /// </summary>
@@ -52,11 +54,11 @@ namespace Mily.RabbitMQ
         /// <returns></returns>
         public static async Task SendMQAsync<T>(PushEntity<T> Param) where T : class
         {
-
             if (Bus == null)
                 CreateMQ();
             await new PushCenter().SendMQAsync(Param, Bus);
         }
+
         /// <summary>
         /// 订阅消息
         /// </summary>

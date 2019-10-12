@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using XExten.XCore;
 
 namespace Mily.Service.ViewSetting.SocketSetting
@@ -11,6 +10,6 @@ namespace Mily.Service.ViewSetting.SocketSetting
         public Dictionary<string, Object> HashData { get; set; }
         public string Controller => !Path.IsNullOrEmpty() ? Path.Split('_')[0].Trim() : "";
         public string Method => !Path.IsNullOrEmpty() ? Path.Split('_')[1].Trim() : "";
-        public string Service=> !Path.IsNullOrEmpty() ? Path.Split('_')[2].Trim() : "";
+        public string Service => !Path.IsNullOrEmpty() ? Path.Split('_')[2].Trim() : "";
     }
 }

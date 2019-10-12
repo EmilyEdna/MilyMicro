@@ -15,6 +15,7 @@ namespace Mily.Extension.Infrastructure.GeneralModel
     {
         private readonly RequestDelegate RequestDelegate;
         private readonly IDictionary<int, String> ExceptionMap;
+
         public ExceptionMiddleWare(RequestDelegate RequestDelegates)
         {
             RequestDelegate = RequestDelegates;
@@ -31,6 +32,7 @@ namespace Mily.Extension.Infrastructure.GeneralModel
                 { 504, "网关超时" },
             };
         }
+
         public async Task Invoke(HttpContext context)
         {
             Exception Ex = null;

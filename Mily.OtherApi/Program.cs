@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.WindowsServices;
-using Microsoft.Extensions.Hosting;
 using XExten.XCore;
 
 namespace Mily.OtherApi
@@ -30,8 +28,11 @@ namespace Mily.OtherApi
                 });
             }
         }
+
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args);
+
         public static IHostBuilder WebHostDefaults(string[] args) => CreateHostBuilder(args).ConfigureWebHostDefaults(WebBuilder => { WebBuilder.UseStartup<Startup>(); });
+
         public static IHostBuilder WindowsServiceDefaults(string[] args, int port) => CreateHostBuilder(args)
             .UseWindowsService()
             .UseContentRoot(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName))

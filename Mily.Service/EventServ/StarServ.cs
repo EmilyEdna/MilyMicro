@@ -1,8 +1,6 @@
 ﻿using PeterKottas.DotNetCore.WindowsService;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Mily.Service.EventServ
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Mily.RabbitMQ
 {
@@ -10,11 +9,13 @@ namespace Mily.RabbitMQ
         /// </summary>
         [Description("订阅模式")]
         Sub = 10,
+
         /// <summary>
         /// 推送模式
         /// </summary>
         [Description("推送模式")]
         Push = 20,
+
         /// <summary>
         /// 主路由模式
         /// </summary>

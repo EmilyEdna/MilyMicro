@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Mily.Extension.SessionExtension
 {
@@ -16,6 +14,7 @@ namespace Mily.Extension.SessionExtension
         {
             session.SetString(key, JsonConvert.SerializeObject(value));
         }
+
         /// <summary>
         /// 取出Session
         /// </summary>
@@ -24,6 +23,7 @@ namespace Mily.Extension.SessionExtension
         {
             return session.GetString(key) == null ? default(T) : JsonConvert.DeserializeObject<T>(session.GetString(key));
         }
+
         /// <summary>
         /// 删除Session
         /// </summary>
@@ -33,6 +33,7 @@ namespace Mily.Extension.SessionExtension
         {
             session.Remove(Key);
         }
+
         /// <summary>
         /// 清空Session
         /// </summary>

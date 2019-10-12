@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using BeetleX;
+﻿using BeetleX;
 using BeetleX.Clients;
 using Mily.Extension.LoggerFactory;
 using Mily.Extension.SocketClient.SocketCommon;
 using Mily.Setting;
+using System;
+using System.Linq;
 
 namespace Mily.Extension.SocketClient
 {
@@ -12,6 +12,7 @@ namespace Mily.Extension.SocketClient
     {
         public static bool Boots { get; set; } = true;
         public static Type BaseType { get; set; }
+
         /// <summary>
         /// 异步注册Socket服务
         /// </summary>
@@ -32,7 +33,7 @@ namespace Mily.Extension.SocketClient
             {
                 string result = reader.Stream.ToPipeStream().ReadLine();
                 Commanding Command = ParseCmd.Parse(result);
-                SocketAop.RecordHandler(Command,BaseType, Client);
+                SocketAop.RecordHandler(Command, BaseType, Client);
             };
             if (Boots)
                 SocketAop.InitClientAsync(Client, NetType.Connect, MilyConfig.Discovery);

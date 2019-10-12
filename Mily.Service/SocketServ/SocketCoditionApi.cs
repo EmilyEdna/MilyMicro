@@ -22,6 +22,7 @@ namespace Mily.Service.SocketServ
     public class SocketCoditionApi
     {
         #region InitApi
+
         [NotAction]
         public static void NetApiServProvider()
         {
@@ -49,8 +50,11 @@ namespace Mily.Service.SocketServ
                 e.Response.Result("404 Not Found");
             };
         }
-        #endregion
+
+        #endregion InitApi
+
         #region Form提交方式或者Byte流方式
+
         /// <summary>
         /// Byte流或者表单方式
         /// </summary>
@@ -79,6 +83,7 @@ namespace Mily.Service.SocketServ
             });
             return await JsonAsync(RequestPath, MapDate, Hit);
         }
+
         /// <summary>
         /// Byte流或者表单方式
         /// </summary>
@@ -107,8 +112,11 @@ namespace Mily.Service.SocketServ
             });
             return Json(RequestPath, MapDate, Hit);
         }
-        #endregion
+
+        #endregion Form提交方式或者Byte流方式
+
         #region AJAX提交方式
+
         /// <summary>
         /// JSON请求方式
         /// </summary>
@@ -135,7 +143,7 @@ namespace Mily.Service.SocketServ
                 if (Hit >= 50 && Hit < 99)
                 {
                     Random Rdom = new Random(Guid.NewGuid().GetHashCode());
-                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 5) ? HitHand.Keys.Select(t => Rdom.Next(4, HitHand.Keys.Select(t=>t>=5).Count()+1)).FirstOrDefault() : HitHand.Keys.Min();
+                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 5) ? HitHand.Keys.Select(t => Rdom.Next(4, HitHand.Keys.Select(t => t >= 5).Count() + 1)).FirstOrDefault() : HitHand.Keys.Min();
                     HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
                     var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
                     var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
@@ -166,6 +174,7 @@ namespace Mily.Service.SocketServ
                     return SocketCodition.Result.FirstOrDefault();
             });
         }
+
         /// <summary>
         /// JSON请求方式
         /// </summary>
@@ -223,8 +232,11 @@ namespace Mily.Service.SocketServ
                 return SocketCodition.Result.FirstOrDefault();
             }
         }
-        #endregion
+
+        #endregion AJAX提交方式
+
         #region 文件上传
+
         /// <summary>
         /// 文件上传
         /// </summary>
@@ -250,8 +262,11 @@ namespace Mily.Service.SocketServ
             }
             return Paths;
         }
-        #endregion
+
+        #endregion 文件上传
+
         #region 权重分配
+
         /// <summary>
         /// 单机负载
         /// </summary>
@@ -265,6 +280,7 @@ namespace Mily.Service.SocketServ
             SocketCodition.KeyId = SocketCodition.Session[Param.Service.ToUpper()].Keys.FirstOrDefault();
             SessionEvent.Session.Server.Handler.SessionReceive(SessionEvent.Server, SessionEvent);
         }
-        #endregion
+
+        #endregion 权重分配
     }
 }

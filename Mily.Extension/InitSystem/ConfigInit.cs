@@ -7,8 +7,6 @@ using Mily.Setting;
 using NLog;
 using NLog.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using XExten.CacheFactory.RedisCache;
 
 namespace Mily.Extension.InitSystem
@@ -16,7 +14,9 @@ namespace Mily.Extension.InitSystem
     public class ConfigInit
     {
         public static String WebPath { get; set; }
-        public static void InitConfigCollection(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory logger, IConfiguration builder) {
+
+        public static void InitConfigCollection(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory logger, IConfiguration builder)
+        {
             //Nlog
             logger.AddNLog();
             LogManager.LoadConfiguration("Nlog.config");
@@ -40,8 +40,10 @@ namespace Mily.Extension.InitSystem
             SetConfig(builder);
             WebPath = env.WebRootPath;
         }
-        private static void SetConfig(IConfiguration Builder) {
-            MilyConfig.ConnectionString1= Builder.GetConnectionString("ConnectionString1");
+
+        private static void SetConfig(IConfiguration Builder)
+        {
+            MilyConfig.ConnectionString1 = Builder.GetConnectionString("ConnectionString1");
             MilyConfig.ConnectionString2 = Builder.GetConnectionString("ConnectionString2");
             MilyConfig.ConnectionStringSlave = Builder.GetConnectionString("ConnectionStringSlave");
             MilyConfig.RabbitMQConnectionString = Builder.GetConnectionString("RabbitMQConnectionString");

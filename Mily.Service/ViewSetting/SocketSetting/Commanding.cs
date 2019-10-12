@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Mily.Service.ViewSetting.SocketSetting
+﻿namespace Mily.Service.ViewSetting.SocketSetting
 {
     public struct Commanding
     {
@@ -11,6 +7,7 @@ namespace Mily.Service.ViewSetting.SocketSetting
             Type = Types;
             Content = Contents;
         }
+
         public NetType Type { get; set; }
         public string Content { get; set; }
     }

@@ -2,19 +2,18 @@
 using BeetleX.Clients;
 using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.Attributes;
+using Mily.Extension.Infrastructure.GeneralMiddleWare;
 using Mily.Extension.LoggerFactory;
+using Mily.Extension.ViewModel;
 using Mily.Setting;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using XExten.XCore;
 using XExten.CacheFactory;
-using Mily.Extension.ViewModel;
-using Mily.Extension.Infrastructure.GeneralMiddleWare;
+using XExten.XCore;
 
 namespace Mily.Extension.SocketClient.SocketCommon
 {
@@ -46,6 +45,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
                 LogFactoryExtension.WriteInfo(typeof(SocketAop).FullName, "RecordHandler", null, "Socket注册", null);
             }
         }
+
         /// <summary>
         /// 同步发送
         /// </summary>
@@ -58,6 +58,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
             Client.Stream.ToPipeStream().WriteLine(Connecting);
             Client.Stream.Flush();
         }
+
         /// <summary>
         /// 异步发送
         /// </summary>
@@ -70,6 +71,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
             Client.Stream.ToPipeStream().WriteLine(Connecting);
             Client.Stream.Flush();
         }
+
         /// <summary>
         /// 多服务路由纠错服务
         /// </summary>
@@ -77,7 +79,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
         /// <param name="Cmd"></param>
         /// <param name="AsyncClient"></param>
         /// <param name="Client"></param>
-        private static void HitHand(Type BaseType,ParamCmd Cmd, AsyncTcpClient AsyncClient = null, TcpClient Client = null)
+        private static void HitHand(Type BaseType, ParamCmd Cmd, AsyncTcpClient AsyncClient = null, TcpClient Client = null)
         {
             //查询请求的控制器
             Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.BaseType == BaseType)).Where(t => t.Name.Contains(Cmd.Controller)).FirstOrDefault();
@@ -157,6 +159,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
             else
                 SendByClient(ResultApiMiddleWare.Instance(false, 400, null, "错误的请求"), AsyncClient, Client);
         }
+
         /// <summary>
         /// 统一发送
         /// </summary>
@@ -170,6 +173,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
             else
                 InitClient(Client, NetType.Listen, JsonConvert.SerializeObject(ResultApi));
         }
+
         /// <summary>
         /// 异常记录
         /// </summary>
@@ -183,6 +187,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
             });
             LogFactoryExtension.WriteError(ex.Source, ex.TargetSite.Name, Parameter, ex.Message, Path);
         }
+
         /// <summary>
         /// 调用方法前检查有特性
         /// </summary>
@@ -190,8 +195,9 @@ namespace Mily.Extension.SocketClient.SocketCommon
         private static bool JudgeAttribute(MethodInfo Method)
         {
             AuthorAttribute Author = (Method.GetCustomAttribute(typeof(AuthorAttribute)) as AuthorAttribute);
-            return Author==null?true: JudgeRoles(Author.Names);
+            return Author == null ? true : JudgeRoles(Author.Names);
         }
+
         /// <summary>
         /// 检查权限
         /// </summary>
