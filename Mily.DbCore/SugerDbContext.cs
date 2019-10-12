@@ -131,34 +131,9 @@ namespace Mily.DbCore
         {
             IInsertable<Entity> Insert = null;
             if (entities != null)
-            {
-                entities.ForEach(t =>
-                {
-                    Dictionary<String, Object> DataValue = new Dictionary<String, Object>
-                    {
-                         { "KeyId", Guid.NewGuid() },
-                         { "CreateUser", null },
-                         { "CreateUserId", null },
-                         { "CreateTime", DateTime.Now },
-                         { "IsDelete", false }
-                    };
-                    XExp.SetProptertiesValue(DataValue, t);
-                });
                 Insert = (db == DBType.MSSQL ? DB_MSSQL().Insertable(entities) : DB_MYSQL().Insertable(entities));
-            }
             else
-            {
-                Dictionary<String, Object> DataValue = new Dictionary<String, Object>
-                {
-                       { "KeyId", Guid.NewGuid() },
-                       { "CreateUser", null },
-                       { "CreateUserId", null },
-                       { "CreateTime", DateTime.Now },
-                       { "IsDelete", false }
-                };
-                XExp.SetProptertiesValue(DataValue, entity);
                 Insert = (db == DBType.MSSQL ? DB_MSSQL().Insertable(entity) : DB_MYSQL().Insertable(entity));
-            }
             return type switch
             {
                 DbReturnTypes.Rowspan => await Insert.ExecuteCommandAsync(),
@@ -187,23 +162,10 @@ namespace Mily.DbCore
             {
                 entities.ForEach(t =>
                 {
-                    if (type != DbReturnTypes.AlterSoft)
+                    if (type == DbReturnTypes.AlterSoft)
                     {
                         Dictionary<String, Object> DataValue = new Dictionary<String, Object>
                         {
-                         { "UpdateUser", null },
-                         { "UpdateUserId", null },
-                         { "UpdateTime", DateTime.Now }
-                        };
-                        XExp.SetProptertiesValue(DataValue, t);
-                    }
-                    else
-                    {
-                        Dictionary<String, Object> DataValue = new Dictionary<String, Object>
-                        {
-                         { "UpdateUser", null },
-                         { "UpdateUserId", null },
-                         { "UpdateTime", DateTime.Now },
                          { "IsDelete", Del }
                         };
                         XExp.SetProptertiesValue(DataValue, t);
@@ -213,23 +175,10 @@ namespace Mily.DbCore
             }
             else
             {
-                if (type != DbReturnTypes.AlterSoft)
+                if (type == DbReturnTypes.AlterSoft)
                 {
                     Dictionary<String, Object> DataValue = new Dictionary<String, Object>
                     {
-                         { "UpdateUser", null },
-                         { "UpdateUserId", null },
-                         { "UpdateTime", DateTime.Now }
-                    };
-                    XExp.SetProptertiesValue(DataValue, entity);
-                }
-                else
-                {
-                    Dictionary<String, Object> DataValue = new Dictionary<String, Object>
-                    {
-                         { "UpdateUser", null },
-                         { "UpdateUserId", null },
-                         { "UpdateTime", DateTime.Now },
                          { "IsDelete", Del }
                     };
                     XExp.SetProptertiesValue(DataValue, entity);

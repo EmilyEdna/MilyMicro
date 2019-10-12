@@ -5,27 +5,27 @@
         #region EnumOfInsert
 
         /// <summary>
-        /// Return Boolean
+        /// 返回bool
         /// </summary>
         InsertDefault = 0,
 
         /// <summary>
-        ///  Return Rows
+        ///  返回当前行
         /// </summary>
         Rowspan = 1,
 
         /// <summary>
-        ///  Return Int
+        ///  返回Int
         /// </summary>
         Integer = 2,
 
         /// <summary>
-        /// Return Long
+        /// 返回Long
         /// </summary>
         BigInteger = 3,
 
         /// <summary>
-        /// Return Entity
+        /// 返回新增实体
         /// </summary>
         Model = 4,
 
@@ -34,22 +34,22 @@
         #region EnumOfAlter
 
         /// <summary>
-        ///  Return Int
+        ///  条件更新
         /// </summary>
         AlterDefault = 5,
 
         /// <summary>
-        ///  Return Int
+        ///  更新实体
         /// </summary>
         AlterEntity = 6,
 
         /// <summary>
-        ///  Return Int
+        ///  更新指定列
         /// </summary>
         AlterCols = 7,
 
         /// <summary>
-        ///  Return Int
+        ///  软删除
         /// </summary>
         AlterSoft = 8,
 
@@ -58,22 +58,22 @@
         #region EnumOfRemove
 
         /// <summary>
-        ///  Return Int
+        ///  通过Id删除
         /// </summary>
         RemoveDefault = 9,
 
         /// <summary>
-        ///  Return Int
+        ///  删除实体
         /// </summary>
         RemoveEntity = 10,
 
         /// <summary>
-        ///  Return Int
+        ///  不通过Id删除
         /// </summary>
         WithNoId = 11,
 
         /// <summary>
-        ///  Return Int
+        ///  条件删除
         /// </summary>
         WithWhere = 12,
 
