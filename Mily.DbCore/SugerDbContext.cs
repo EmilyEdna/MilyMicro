@@ -1,8 +1,12 @@
 ﻿using Mily.DbCore.Caches;
+using Mily.DbCore.Model.SystemModel;
+using Mily.Extension.LoggerFactory;
 using Mily.Setting;
+using Mily.Setting.ModelEnum;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using XExten.XCore;
@@ -129,11 +133,32 @@ namespace Mily.DbCore
         /// <returns></returns>
         public virtual async Task<Object> InsertData<Entity>(Entity entity, List<Entity> entities = null, DBType db = DBType.MSSQL, DbReturnTypes type = DbReturnTypes.InsertDefault) where Entity : class, new()
         {
-            IInsertable<Entity> Insert = null;
+            IInsertable<Entity> Insert;
             if (entities != null)
+            {
+                entities.ForEach(t =>
+                {
+                    Dictionary<String, Object> DataValue = new Dictionary<String, Object>
+                    {
+                         { "KeyId", Guid.NewGuid() },
+                         { "IsDelete", false }
+                    };
+                    XExp.SetProptertiesValue(DataValue, t);
+                });
                 Insert = (db == DBType.MSSQL ? DB_MSSQL().Insertable(entities) : DB_MYSQL().Insertable(entities));
+                await AddSystemLog(entities.FirstOrDefault().GetType().Name, db, HandleEnum.Add); ;
+            }
             else
+            {
+                Dictionary<String, Object> DataValue = new Dictionary<String, Object>
+                 {
+                       { "KeyId", Guid.NewGuid() },
+                       { "IsDelete", false }
+                 };
+                XExp.SetProptertiesValue(DataValue, entity);
                 Insert = (db == DBType.MSSQL ? DB_MSSQL().Insertable(entity) : DB_MYSQL().Insertable(entity));
+                await AddSystemLog(typeof(Entity).Name, db, HandleEnum.Add);
+            }
             return type switch
             {
                 DbReturnTypes.Rowspan => await Insert.ExecuteCommandAsync(),
@@ -171,6 +196,7 @@ namespace Mily.DbCore
                         XExp.SetProptertiesValue(DataValue, t);
                     }
                 });
+                await AddSystemLog(entities.FirstOrDefault().GetType().Name, db, HandleEnum.Edit);
                 Update = (db == DBType.MSSQL ? DB_MSSQL().Updateable(entities) : DB_MYSQL().Updateable(entities));
             }
             else
@@ -184,6 +210,7 @@ namespace Mily.DbCore
                     XExp.SetProptertiesValue(DataValue, entity);
                 }
                 Update = (db == DBType.MSSQL ? DB_MSSQL().Updateable(entity) : DB_MYSQL().Updateable(entity));
+                await AddSystemLog(typeof(Entity).Name, db, HandleEnum.Edit);
             }
             return type switch
             {
@@ -216,11 +243,13 @@ namespace Mily.DbCore
                     Ids.Add(Guid.Parse(Map["KeyId"].ToString()));
                 });
                 Delete = (db == DBType.MSSQL ? DB_MSSQL().Deleteable(entities) : DB_MYSQL().Deleteable(entities));
+                await AddSystemLog(entities.FirstOrDefault().GetType().Name, db, HandleEnum.Remove);
             }
             else
             {
                 Delete = (db == DBType.MSSQL ? DB_MSSQL().Deleteable(entity) : DB_MYSQL().Deleteable(entity));
                 Ids.Add(Guid.Parse(entity.ToDic()["KeyId"].ToString()));
+                await AddSystemLog(typeof(Entity).Name, db, HandleEnum.Remove);
             }
             return type switch
             {
@@ -228,6 +257,34 @@ namespace Mily.DbCore
                 DbReturnTypes.WithNoId => await Delete.In(ObjExp, Ids).ExecuteCommandAsync(),
                 DbReturnTypes.WithWhere => await Delete.Where(BoolExp).ExecuteCommandAsync(),
                 _ => await Delete.In(Ids).ExecuteCommandAsync(),
+            };
+        }
+
+        /// <summary>
+        /// 统一数据操作日志
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="db"></param>
+        /// <param name="handle"></param>
+        /// <returns></returns>
+        private async Task<Object> AddSystemLog(string entity, DBType db, HandleEnum handle)
+        {
+            SystemhandleLog Log = new SystemhandleLog
+            {
+                KeyId = Guid.NewGuid(),
+                IsDelete = false,
+                HandleTime = DateTime.Now,
+                Hnadler = "",
+                HandleObject = entity,
+                HandleType = handle,
+                HandleName = handle.ToSelectDes()
+            };
+            Log.HandleObvious = $"【{Log.Hnadler}】对【{entity}】表进行了【{Log.HandleName}】，操作时间为：【{Log.HandleTime}】";
+            return db switch
+            {
+                DBType.MYSQL => await DB_MYSQL().Insertable(Log).ExecuteCommandAsync(),
+                DBType.MSSQL => await DB_MSSQL().Insertable(Log).ExecuteCommandAsync(),
+                _ => await DB_MSSQL().Insertable(Log).ExecuteCommandAsync(),
             };
         }
     }
