@@ -33,26 +33,5 @@ namespace Mily.Extension.ViewModel
         /// 操作角色
         /// </summary>
         public string HandlerRole { get; set; }
-
-        /*public override void Load(IBinaryReader reader)
-        {
-            base.Load(reader);
-            AdminName = reader.ReadUTF();
-            Account = reader.ReadUTF();
-            PassWord = reader.ReadUTF();
-            RolePermissionId = Guid.Parse(reader.ReadUTF());
-            RoleName = reader.ReadUTF();
-            HandlerRole = reader.ReadUTF();
-        }
-        public override void Save(IBinaryWriter writer)
-        {
-            base.Save(writer);
-            writer.Write(AdminName);
-            writer.Write(Account);
-            writer.Write(PassWord);
-            writer.Write(RolePermissionId.ToString());
-            writer.Write(RoleName);
-            writer.Write(HandlerRole);
-        }*/
     }
 }

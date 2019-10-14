@@ -134,6 +134,7 @@ namespace Mily.DbCore
         public virtual async Task<Object> InsertData<Entity>(Entity entity, List<Entity> entities = null, DBType db = DBType.MSSQL, DbReturnTypes type = DbReturnTypes.InsertDefault) where Entity : class, new()
         {
             IInsertable<Entity> Insert;
+            SqlSugarClient Client = (db == DBType.MSSQL ? DB_MSSQL() : DB_MYSQL());
             if (entities != null)
             {
                 entities.ForEach(t =>
@@ -145,7 +146,7 @@ namespace Mily.DbCore
                     };
                     XExp.SetProptertiesValue(DataValue, t);
                 });
-                Insert = (db == DBType.MSSQL ? DB_MSSQL().Insertable(entities) : DB_MYSQL().Insertable(entities));
+                Insert = Client.Insertable(entities);
                 await AddSystemLog(entities.FirstOrDefault().GetType().Name, db, HandleEnum.Add); ;
             }
             else
@@ -156,7 +157,7 @@ namespace Mily.DbCore
                        { "IsDelete", false }
                  };
                 XExp.SetProptertiesValue(DataValue, entity);
-                Insert = (db == DBType.MSSQL ? DB_MSSQL().Insertable(entity) : DB_MYSQL().Insertable(entity));
+                Insert = Client.Insertable(entity);
                 await AddSystemLog(typeof(Entity).Name, db, HandleEnum.Add);
             }
             return type switch
@@ -183,6 +184,7 @@ namespace Mily.DbCore
             Boolean? Del = true, Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
         {
             IUpdateable<Entity> Update = null;
+            SqlSugarClient Client = (db == DBType.MSSQL ? DB_MSSQL() : DB_MYSQL());
             if (entities != null)
             {
                 entities.ForEach(t =>
@@ -197,7 +199,7 @@ namespace Mily.DbCore
                     }
                 });
                 await AddSystemLog(entities.FirstOrDefault().GetType().Name, db, HandleEnum.Edit);
-                Update = (db == DBType.MSSQL ? DB_MSSQL().Updateable(entities) : DB_MYSQL().Updateable(entities));
+                Update = Client.Updateable(entities);
             }
             else
             {
@@ -209,7 +211,7 @@ namespace Mily.DbCore
                     };
                     XExp.SetProptertiesValue(DataValue, entity);
                 }
-                Update = (db == DBType.MSSQL ? DB_MSSQL().Updateable(entity) : DB_MYSQL().Updateable(entity));
+                Update = Client.Updateable(entity);
                 await AddSystemLog(typeof(Entity).Name, db, HandleEnum.Edit);
             }
             return type switch
@@ -235,6 +237,7 @@ namespace Mily.DbCore
         {
             IDeleteable<Entity> Delete = null;
             List<Guid> Ids = new List<Guid>();
+            SqlSugarClient Client = (db == DBType.MSSQL ? DB_MSSQL() : DB_MYSQL());
             if (entities != null)
             {
                 entities.ForEach(t =>
@@ -242,18 +245,20 @@ namespace Mily.DbCore
                     var Map = t.ToDic();
                     Ids.Add(Guid.Parse(Map["KeyId"].ToString()));
                 });
-                Delete = (db == DBType.MSSQL ? DB_MSSQL().Deleteable(entities) : DB_MYSQL().Deleteable(entities));
+                Delete = Client.Deleteable(entities);
                 await AddSystemLog(entities.FirstOrDefault().GetType().Name, db, HandleEnum.Remove);
             }
             else
             {
-                Delete = (db == DBType.MSSQL ? DB_MSSQL().Deleteable(entity) : DB_MYSQL().Deleteable(entity));
+                Delete = Client.Deleteable(entity);
                 Ids.Add(Guid.Parse(entity.ToDic()["KeyId"].ToString()));
                 await AddSystemLog(typeof(Entity).Name, db, HandleEnum.Remove);
             }
+
             return type switch
             {
                 DbReturnTypes.RemoveEntity => await Delete.Where(entity).ExecuteCommandAsync(),
+                DbReturnTypes.RemoveEntities => await Delete.Where(entities).ExecuteCommandAsync(),
                 DbReturnTypes.WithNoId => await Delete.In(ObjExp, Ids).ExecuteCommandAsync(),
                 DbReturnTypes.WithWhere => await Delete.Where(BoolExp).ExecuteCommandAsync(),
                 _ => await Delete.In(Ids).ExecuteCommandAsync(),

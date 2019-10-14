@@ -17,7 +17,7 @@ using XExten.XCore;
 namespace Mily.Service.SocketServ
 {
     [ActionFilter]
-    [Options(AllowOrigin = "*")]
+    [Options(AllowOrigin = "http://localhost:52978", AllowHeaders ="Cross")]
     [Controller(BaseUrl = "/Condition")]
     public class SocketCoditionApi
     {
@@ -81,7 +81,7 @@ namespace Mily.Service.SocketServ
                 else
                     Hit = Data.IsNullOrEmpty() ? 100 : Convert.ToInt32(Data);
             });
-            return await JsonAsync(RequestPath, MapDate, Hit);
+            return await JsonAsync(Context,RequestPath, MapDate, Hit);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Mily.Service.SocketServ
                 else
                     Hit = Data.IsNullOrEmpty() ? 100 : Convert.ToInt32(Data);
             });
-            return Json(RequestPath, MapDate, Hit);
+            return Json(Context,RequestPath, MapDate, Hit);
         }
 
         #endregion Form提交方式或者Byte流方式
@@ -120,13 +120,14 @@ namespace Mily.Service.SocketServ
         /// <summary>
         /// JSON请求方式
         /// </summary>
+        /// <param name="Context"></param>
         /// <Param name="RequestPath">请求地址格式如下Controller_FunctionName</Param>
         /// <Param name="MapData">请求参数格式如下Data:{Key:key,Name:name}</Param>
         /// <param name="Hit">负载权重</param>
         /// <returns></returns>
         [Post]
         [JsonDataConvert]
-        public async Task<Object> JsonAsync(String RequestPath, Dictionary<String, Object> MapData, Int32 Hit = 100)
+        public async Task<Object> JsonAsync(IHttpContext Context,String RequestPath, Dictionary<String, Object> MapData, Int32 Hit = 100)
         {
             ParamCmd Param = new ParamCmd
             {
@@ -178,13 +179,14 @@ namespace Mily.Service.SocketServ
         /// <summary>
         /// JSON请求方式
         /// </summary>
+        /// <param name="Context"></param>
         /// <Param name="RequestPath">请求地址格式如下Controller_FunctionName</Param>
         /// <Param name="MapData">请求参数格式如下Data:{Key:key,Name:name}</Param>
         /// <param name="Hit">负载权重</param>
         /// <returns></returns>
         [Post]
         [JsonDataConvert]
-        public Object Json(String RequestPath, Dictionary<String, Object> MapData, Int32 Hit = 100)
+        public Object Json(IHttpContext Context,String RequestPath, Dictionary<String, Object> MapData, Int32 Hit = 100)
         {
             ParamCmd Param = new ParamCmd
             {
@@ -223,12 +225,15 @@ namespace Mily.Service.SocketServ
                     Normol.Start();
                 }
             }
+            
             try
             {
+                Thread.Sleep(1500);
                 return JsonConvert.DeserializeObject<Object>(SocketCodition.Result.FirstOrDefault());
             }
             catch (Exception)
             {
+                Thread.Sleep(2000);
                 return SocketCodition.Result.FirstOrDefault();
             }
         }
@@ -245,7 +250,7 @@ namespace Mily.Service.SocketServ
         /// <returns></returns>
         [Post]
         [MultiDataConvert]
-        public async Task<Object> UploadFile(String DirName, IHttpContext Context)
+        public async Task<Object> UploadFile(IHttpContext Context, String DirName)
         {
             Char Separator = Path.DirectorySeparatorChar;
             String Bin = $"{Directory.GetCurrentDirectory() + Separator}UpLoadFile{Separator + DirName + DateTime.Now.ToString("yyyyMMdd") + Separator}";

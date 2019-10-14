@@ -68,14 +68,19 @@
         RemoveEntity = 10,
 
         /// <summary>
+        /// 批量删除实体
+        /// </summary>
+        RemoveEntities=11,
+
+        /// <summary>
         ///  不通过Id删除
         /// </summary>
-        WithNoId = 11,
+        WithNoId = 12,
 
         /// <summary>
         ///  条件删除
         /// </summary>
-        WithWhere = 12,
+        WithWhere = 13,
 
         #endregion EnumOfRemove
     }

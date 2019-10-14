@@ -98,12 +98,19 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<AdminRoleViewModel> Login(AdminRoleViewModel ViewModel)
         {
-            AdminRoleViewModel AdminRole = Emily.Queryable<Administrator, RolePermission>((t, x) => new Object[] { JoinType.Left, t.RolePermissionId == x.KeyId })
-                .Where(t => t.Account.Equals(ViewModel.Account))
-                .Where(t => t.PassWord.Equals(ViewModel.PassWord))
-                .Select<AdminRoleViewModel>().First();
+            AdminRoleViewModel AdminRole = Emily.Queryable<Administrator, RolePermission>((Admin, Role) => new Object[] { JoinType.Left, Admin.RolePermissionId == Role.KeyId })
+                .Where(Admin => Admin.Account.Equals(ViewModel.Account))
+                .Where(Admin => Admin.PassWord.Equals(ViewModel.PassWord))
+                .Select((Admin,Role) => new AdminRoleViewModel {
+                    KeyId= Admin.KeyId,
+                    Account= Admin.Account,
+                    AdminName= Admin.AdminName,
+                    RolePermissionId=Admin.RolePermissionId,
+                    HandlerRole=Role.HandlerRole,
+                    RoleName=Role.RoleName
+                }).First();
             if (AdminRole != null)
-                await Caches.RedisCacheSetAsync(AdminRole.GetType().FullName, AdminRole, 120);
+                await Caches.RedisCacheSetAsync(AdminRole.KeyId.ToString(), AdminRole, 120);
             return AdminRole;
         }
 
