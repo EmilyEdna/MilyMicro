@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Mily.Extension.Infrastructure.GeneralMiddleWare;
 using Mily.Extension.LoggerFactory;
 using System.Linq;
+using XExten.XCore;
+using Mily.Setting;
 
 namespace Mily.Extension.Filters
 {
@@ -28,6 +30,8 @@ namespace Mily.Extension.Filters
                 LogFactoryExtension.WriteError(Path, MethodName, Parameter, Message, WebPath);
                 return;
             }
+            if (!context.HttpContext.Request.Path.Value.Contains("Login"))
+                MilyConfig.CacheKey = context.HttpContext.Request.Headers["Global"].ToString().ToLzStringDec();
             ResultApiMiddleWare Result = ResultApiMiddleWare.Instance(true, context.HttpContext.Response.StatusCode, (context.Result as ObjectResult).Value, "执行成功!");
             context.Result = new ObjectResult(Result);
         }
@@ -38,6 +42,7 @@ namespace Mily.Extension.Filters
         /// <param name="context"></param>
         public void OnActionExecuting(ActionExecutingContext context)
         {
+
         }
     }
 }
