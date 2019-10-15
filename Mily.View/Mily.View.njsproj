@@ -39,6 +39,9 @@
     <Content Include="src\assets\img\img.jpg" />
     <Content Include="src\assets\img\login-bg.jpg" />
     <Content Include="src\assets\logo.png" />
+    <Content Include="src\components\Basic\Home.vue">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\components\Basic\Login.vue" />
     <Content Include="src\router\index.js" />
     <Content Include="src\utils\ApiFactory.js">

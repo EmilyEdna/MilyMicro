@@ -1,5 +1,6 @@
 import axios from 'axios';
 import cookie from 'js-cookie';
+import lzstring from 'lz-string'
 
 const service = axios.create({
     baseURL: 'http://127.0.0.1:9091/Condition/',
@@ -8,16 +9,16 @@ const service = axios.create({
 
 service.interceptors.request.use(config => {
     let Param = undefined;
-    if (!config.headers.Cross) 
+    if (!config.headers.Cross)
         Param = config.data.MapData.Global = cookie.get("Global");
-    config.data = JSON.stringify(Param ? config.data : Param);
+    config.data = JSON.stringify((Param == undefined ? config.data : Param));
     return config;
 }, err => {
     return Promise.reject(err);
 })
 service.interceptors.response.use(response => {
     if (response.config.headers.Cross)
-        cookie.set("Global", response.data.Data.ResultData.KeyId);
+        cookie.set("Global", lzstring.compressToBase64(response.data.Data.ResultData.KeyId));
     return response.data.Data;
 }, err => {
     if (err && err.response) {

@@ -83,7 +83,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
         {
             if (Cmd.HashData.ContainsKey("Global"))
             {
-                MilyConfig.CacheKey = Cmd.HashData["Global"].ToString();
+                MilyConfig.CacheKey = Cmd.HashData["Global"].ToString().ToLzStringDec();
                 Cmd.HashData.Remove("Global");
             }
             //查询请求的控制器

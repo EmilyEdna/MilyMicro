@@ -5,6 +5,7 @@ export const Login = (param) => {
     return servcie({
         url: 'JsonAsync',
         method: 'post',
-        data: target
+        data: target,
+        headers: { "Cross":"LISwNgnkA==="}
     })
 }
