@@ -1,4 +1,5 @@
 import axios from 'axios';
+import cookie from 'js-cookie';
 
 const service = axios.create({
     baseURL: 'http://127.0.0.1:9091/Condition/',
@@ -6,57 +7,62 @@ const service = axios.create({
 });
 
 service.interceptors.request.use(config => {
-    config.data = JSON.stringify(config.data);
+    let Param = undefined;
+    if (!config.headers.Cross) 
+        Param = config.data.MapData.Global = cookie.get("Global");
+    config.data = JSON.stringify(Param ? config.data : Param);
     return config;
-}, error => {
-    return Promise.reject(error);
+}, err => {
+    return Promise.reject(err);
 })
 service.interceptors.response.use(response => {
+    if (response.config.headers.Cross)
+        cookie.set("Global", response.data.Data.ResultData.KeyId);
     return response.data.Data;
 }, err => {
     if (err && err.response) {
         switch (err.response.status) {
             case 400:
-                console.log('´íÎóÇëÇó')
+                console.log('é”™è¯¯è¯·æ±‚')
                 break;
             case 401:
-                console.log('Î´ÊÚÈ¨£¬ÇëÖØĞÂµÇÂ¼')
+                console.log('æœªæˆæƒï¼Œè¯·é‡æ–°ç™»å½•')
                 break;
             case 403:
-                console.log('¾Ü¾ø·ÃÎÊ')
+                console.log('æ‹’ç»è®¿é—®')
                 break;
             case 404:
-                console.log('ÇëÇó´íÎó,Î´ÕÒµ½¸Ã×ÊÔ´')
+                console.log('è¯·æ±‚é”™è¯¯,æœªæ‰¾åˆ°è¯¥èµ„æº')
                 break;
             case 405:
-                console.log('ÇëÇó·½·¨Î´ÔÊĞí')
+                console.log('è¯·æ±‚æ–¹æ³•æœªå…è®¸')
                 break;
             case 408:
-                console.log('ÇëÇó³¬Ê±')
+                console.log('è¯·æ±‚è¶…æ—¶')
                 break;
             case 500:
-                console.log('·şÎñÆ÷¶Ë³ö´í')
+                console.log('æœåŠ¡å™¨ç«¯å‡ºé”™')
                 break;
             case 501:
-                console.log('ÍøÂçÎ´ÊµÏÖ')
+                console.log('ç½‘ç»œæœªå®ç°')
                 break;
             case 502:
-                console.log('ÍøÂç´íÎó')
+                console.log('ç½‘ç»œé”™è¯¯')
                 break;
             case 503:
-                console.log('·şÎñ²»¿ÉÓÃ')
+                console.log('æœåŠ¡ä¸å¯ç”¨')
                 break;
             case 504:
-                console.log('ÍøÂç³¬Ê±')
+                console.log('ç½‘ç»œè¶…æ—¶')
                 break;
             case 505:
-                console.log('http°æ±¾²»Ö§³Ö¸ÃÇëÇó')
+                console.log('httpç‰ˆæœ¬ä¸æ”¯æŒè¯¥è¯·æ±‚')
                 break;
             default:
-                console.log(`Á¬½Ó´íÎó${err.response.status}`)
+                console.log(`è¿æ¥é”™è¯¯${err.response.status}`)
         }
     } else {
-        console.log('Á¬½Óµ½·şÎñÆ÷Ê§°Ü')
+        console.log('è¿æ¥åˆ°æœåŠ¡å™¨å¤±è´¥')
     }
     return Promise.resolve(err.response)
 });

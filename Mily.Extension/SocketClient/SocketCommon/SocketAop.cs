@@ -81,6 +81,8 @@ namespace Mily.Extension.SocketClient.SocketCommon
         /// <param name="Client"></param>
         private static void HitHand(Type BaseType, ParamCmd Cmd, AsyncTcpClient AsyncClient = null, TcpClient Client = null)
         {
+            MilyConfig.CacheKey = Cmd.HashData["Global"].ToString();
+            Cmd.HashData.Remove("Global");
             //查询请求的控制器
             Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.BaseType == BaseType)).Where(t => t.Name.Contains(Cmd.Controller)).FirstOrDefault();
             if (Control != null)

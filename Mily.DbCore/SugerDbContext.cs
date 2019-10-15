@@ -3,6 +3,7 @@ using Mily.DbCore.Model.SystemModel;
 using Mily.Extension.LoggerFactory;
 using Mily.Setting;
 using Mily.Setting.ModelEnum;
+using Newtonsoft.Json.Linq;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using XExten.XCore;
 using XExten.XExpres;
+using XCache = XExten.CacheFactory;
 
 namespace Mily.DbCore
 {
@@ -274,12 +276,13 @@ namespace Mily.DbCore
         /// <returns></returns>
         private async Task<Object> AddSystemLog(string entity, DBType db, HandleEnum handle)
         {
+            
             SystemhandleLog Log = new SystemhandleLog
             {
                 KeyId = Guid.NewGuid(),
                 IsDelete = false,
                 HandleTime = DateTime.Now,
-                Hnadler = "",
+                Hnadler = JToken.FromObject(XCache.Caches.RedisCacheGet<Object>(MilyConfig.CacheKey)).SelectToken("AdminName").ToString(),
                 HandleObject = entity,
                 HandleType = handle,
                 HandleName = handle.ToSelectDes()

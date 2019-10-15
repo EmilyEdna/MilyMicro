@@ -45,6 +45,7 @@
             submit() {
                 this.$refs.login.validate(v => {
                     Login(this.param).then(res => {
+                        debugger;
                     });
                 });
             },

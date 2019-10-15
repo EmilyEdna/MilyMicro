@@ -17,7 +17,7 @@ using XExten.XCore;
 namespace Mily.Service.SocketServ
 {
     [ActionFilter]
-    [Options(AllowOrigin = "http://localhost:52978", AllowHeaders ="Cross")]
+    [Options(AllowOrigin = "*", AllowHeaders ="*")]
     [Controller(BaseUrl = "/Condition")]
     public class SocketCoditionApi
     {

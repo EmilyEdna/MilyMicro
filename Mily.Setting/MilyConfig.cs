@@ -35,6 +35,11 @@ namespace Mily.Setting
         public static String Discovery { get; set; }
 
         /// <summary>
+        /// 缓存Key
+        /// </summary>
+        public static String CacheKey { get; set; }
+
+        /// <summary>
         /// 所有程序集
         /// </summary>
         public static IList<Assembly> Assembly { get; set; } = GetAssembly();
