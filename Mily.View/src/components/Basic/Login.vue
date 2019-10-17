@@ -2,7 +2,7 @@
     <div class="login-wrap">
         <div class="ms-login">
             <div class="ms-title">后台管理系统</div>
-            <el-form :model="param.MapData" :rules="rules" ref="login">
+            <el-form :model="param.MapData" :rules="rules" ref="login" label-width="0px" class="ms-content">
                 <el-form-item prop="Account">
                     <el-input v-model="param.MapData.Account" placeholder="请输入用户名">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
@@ -17,7 +17,6 @@
                     <el-button type="primary" @click="submit()">登录</el-button>
                 </div>
             </el-form>
-            <img ref="img" />
         </div>
     </div>
 </template>

@@ -43,6 +43,12 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\components\Basic\Login.vue" />
+    <Content Include="src\components\Common\CloseTag.vue" />
+    <Content Include="src\components\Common\Header.vue" />
+    <Content Include="src\components\Common\Js\bus.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\components\Common\Navbar.vue" />
     <Content Include="src\router\index.js" />
     <Content Include="src\utils\ApiFactory.js">
       <SubType>Code</SubType>
@@ -60,6 +66,8 @@
     <Folder Include="src\assets\img\" />
     <Folder Include="src\components\" />
     <Folder Include="src\components\Basic\" />
+    <Folder Include="src\components\Common\" />
+    <Folder Include="src\components\Common\Js\" />
     <Folder Include="src\utils\" />
     <Folder Include="src\router\" />
   </ItemGroup>
