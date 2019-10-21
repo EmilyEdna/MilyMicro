@@ -1,4 +1,8 @@
-﻿namespace Mily.DbCore
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Mily.DbCore
 {
     public enum DbReturnTypes
     {
@@ -70,7 +74,7 @@
         /// <summary>
         /// 批量删除实体
         /// </summary>
-        RemoveEntities=11,
+        RemoveEntities = 11,
 
         /// <summary>
         ///  不通过Id删除
@@ -83,22 +87,5 @@
         WithWhere = 13,
 
         #endregion EnumOfRemove
-    }
-
-    public enum DBType
-    {
-        #region DBType
-
-        /// <summary>
-        /// SQLSERVER
-        /// </summary>
-        MSSQL = 1,
-
-        /// <summary>
-        /// MYSQL
-        /// </summary>
-        MYSQL = 2
-
-        #endregion DBType
     }
 }

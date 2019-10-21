@@ -25,7 +25,7 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> SearchAdminPage(PageQuery Page)
         {
-            return await Emily.Queryable<Administrator>()
+            return await DbContext().Queryable<Administrator>()
                 .WhereIF(Page.KeyWord.ContainsKey("AdminName"), t => t.AdminName == Page.KeyWord["AdminName"].ToString())
                 .Where(t => t.IsDelete == false).ToPageListAsync(Page.PageIndex, Page.PageSize);
         }
@@ -37,10 +37,10 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> DeleteAdmin(string Key)
         {
-            List<Administrator> administrator = Emily.Queryable<Administrator>()
+            List<Administrator> administrator = DbContext().Queryable<Administrator>()
            .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
            .Where(t => t.IsDelete == false).ToList();
-            return await base.AlterData<Administrator>(null, administrator, DBType.MSSQL, DbReturnTypes.AlterSoft);
+            return await base.AlterData<Administrator>(null, administrator, DbReturnTypes.AlterSoft);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> RemoveAdmin(string Key)
         {
-            List<Administrator> administrator = Emily.Queryable<Administrator>()
+            List<Administrator> administrator = DbContext().Queryable<Administrator>()
                 .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString())).ToList();
             return await base.RemoveData<Administrator>(null, administrator);
         }
@@ -63,7 +63,7 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<Object> EditAdmin(AdminRoleViewModel ViewModel)
         {
             Administrator administrator = ViewModel.AutoMapper<Administrator>();
-            return await base.AlterData(administrator, null, DBType.MSSQL, DbReturnTypes.AlterDefault, null, t => t.KeyId == ViewModel.KeyId);
+            return await base.AlterData(administrator, null, DbReturnTypes.AlterDefault, null, t => t.KeyId == ViewModel.KeyId);
         }
 
         /// <summary>
@@ -72,13 +72,11 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> RecoveryAdminData(string Key)
         {
-            List<Administrator> administrator = Emily.Queryable<Administrator>()
+            List<Administrator> administrator = DbContext().Queryable<Administrator>()
                 .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
                 .Where(t => t.IsDelete == true).ToList();
-            return await base.AlterData<Administrator>(null, administrator, DBType.MSSQL, DbReturnTypes.AlterSoft, false);
+            return await base.AlterData<Administrator>(null, administrator, DbReturnTypes.AlterSoft, false);
         }
-
-        #region 注册登录后台管理员
 
         /// <summary>
         /// 注册后台管理员
@@ -98,24 +96,23 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<AdminRoleViewModel> Login(AdminRoleViewModel ViewModel)
         {
-            AdminRoleViewModel AdminRole = Emily.Queryable<Administrator, RolePermission>((Admin, Role) => new Object[] { JoinType.Left, Admin.RolePermissionId == Role.KeyId })
+            AdminRoleViewModel AdminRole = DbContext().Queryable<Administrator, RolePermission>((Admin, Role) => new Object[] { JoinType.Left, Admin.RolePermissionId == Role.KeyId })
                 .Where(Admin => Admin.Account.Equals(ViewModel.Account))
                 .Where(Admin => Admin.PassWord.Equals(ViewModel.PassWord))
-                .Select((Admin,Role) => new AdminRoleViewModel {
-                    KeyId= Admin.KeyId,
-                    Account= Admin.Account,
-                    AdminName= Admin.AdminName,
-                    RolePermissionId=Admin.RolePermissionId,
-                    HandlerRole=Role.HandlerRole,
-                    RoleName=Role.RoleName
+                .Select((Admin, Role) => new AdminRoleViewModel
+                {
+                    KeyId = Admin.KeyId,
+                    Account = Admin.Account,
+                    AdminName = Admin.AdminName,
+                    RolePermissionId = Admin.RolePermissionId,
+                    HandlerRole = Role.HandlerRole,
+                    RoleName = Role.RoleName
                 }).First();
             if (AdminRole != null)
                 await Caches.RedisCacheSetAsync(AdminRole.KeyId.ToString(), AdminRole, 120);
             return AdminRole;
         }
 
-        #endregion 注册登录后台管理员
-
-        #endregion 管理员
+        #endregion 
     }
 }

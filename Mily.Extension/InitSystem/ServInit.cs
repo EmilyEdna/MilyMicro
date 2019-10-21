@@ -7,6 +7,7 @@ using Mily.Extension.Attributes.PermissionHandler;
 using Mily.Extension.AutofacIoc;
 using Mily.Extension.Filters;
 using Newtonsoft.Json.Serialization;
+using NLog.Extensions.Logging;
 
 namespace Mily.Extension.InitSystem
 {
@@ -44,6 +45,11 @@ namespace Mily.Extension.InitSystem
             {
                 opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
                 //opt.IncludeXmlComments(Path.Combine(Directory.GetCurrentDirectory(), "Edna.ApiCore.xml"));
+            });
+            //使用NLog
+            services.AddLogging(builder =>
+            {
+                builder.AddNLog();
             });
             return services;
         }

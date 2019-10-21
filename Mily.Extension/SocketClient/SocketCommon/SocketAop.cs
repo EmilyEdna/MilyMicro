@@ -11,8 +11,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using XExten.CacheFactory;
+using XExten.Common;
 using XExten.XCore;
 
 namespace Mily.Extension.SocketClient.SocketCommon
@@ -133,11 +135,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
                     //是否为系统参数
                     if (!TargetType.Namespace.ToUpper().IsContainsIn("SYSTEM"))
                     {
-                        Object ViewModel = Activator.CreateInstance(TargetType);
-                        Cmd.HashData.Keys.ToEachs(item =>
-                        {
-                            TargetType.GetProperty(item).SetValue(ViewModel, Cmd.HashData[item]);
-                        });
+                       var ViewModel= CheckIsPageParameter(TargetType, Cmd);
                         parameters = new[] { ViewModel };
                     }
                     else
@@ -148,7 +146,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
                     //判断方法的执行权限是否足够
                     if (JudgeAttribute(Method))
                     {
-                        Object Result = ((Task<ActionResult<Object>>)Method.Invoke(Controller, parameters)).Result.Value;
+                        dynamic Result = ((ActionResult<Object>)Method.Invoke(Controller, parameters)).Value;
                         SendByClient(ResultApiMiddleWare.Instance(true, 200, Result, "执行成功"), AsyncClient, Client);
                     }
                     else
@@ -210,19 +208,63 @@ namespace Mily.Extension.SocketClient.SocketCommon
         /// <returns></returns>
         private static bool JudgeRoles(List<String> Roles)
         {
-            AdminRoleViewModel ViewModel = Caches.RedisCacheGet<AdminRoleViewModel>(typeof(AdminRoleViewModel).FullName);
-            if (ViewModel.HandlerRole.IsNullOrEmpty())
-                return false;
+            return true;
+            //AdminRoleViewModel ViewModel = Caches.RedisCacheGet<AdminRoleViewModel>(MilyConfig.CacheKey);
+            //if (ViewModel.HandlerRole.IsNullOrEmpty())
+            //    return false;
+            //else
+            //{
+            //    foreach (String item in Roles)
+            //    {
+            //        if (ViewModel.HandlerRole.Contains(item))
+            //        {
+            //            return true;
+            //        }
+            //    }
+            //    return false;
+            //}
+        }
+
+        /// <summary>
+        /// 类型转换
+        /// </summary>
+        /// <param name="ViewModel"></param>
+        /// <param name="Source"></param>
+        /// <returns></returns>
+        private static Object ChangeTypes(Object ViewModel, Object Source, Object Value)
+        {
+            Type TargetType = ViewModel.GetType().GetProperty(Source.ToString()).PropertyType;
+            if (TargetType == typeof(Int32))
+                return Convert.ToInt32(Value);
+            else if (TargetType == typeof(Int64))
+                return Convert.ToInt64(Value);
+            else if (TargetType == typeof(DateTime))
+                return Convert.ToDateTime(Value);
+            else if (TargetType == typeof(Boolean))
+                return Convert.ToBoolean(Value);
+            else
+                return Value.ToString();
+        }
+
+        /// <summary>
+        /// 检查参数
+        /// </summary>
+        /// <param name="Source"></param>
+        /// <param name="Cmd"></param>
+        /// <returns></returns>
+        private static Object CheckIsPageParameter(Type Source, ParamCmd Cmd)
+        {
+            if (Source == typeof(PageQuery))
+              return  Cmd.HashData.ToJson().ToModel<PageQuery>();
             else
             {
-                foreach (String item in Roles)
+                Object ViewModel = Activator.CreateInstance(Source);
+                Cmd.HashData.Keys.ToEachs(item =>
                 {
-                    if (ViewModel.HandlerRole.Contains(item))
-                    {
-                        return true;
-                    }
-                }
-                return false;
+                    var ChangeType = ChangeTypes(ViewModel, item, Cmd.HashData[item]);
+                    Source.GetProperty(item).SetValue(ViewModel, ChangeType);
+                });
+                return ViewModel;
             }
         }
     }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Mily.Extension.Infrastructure.GeneralModel;
 using Mily.Setting;
 using NLog;
-using NLog.Extensions.Logging;
+
 using System;
 using XExten.CacheFactory.RedisCache;
 
@@ -18,7 +18,6 @@ namespace Mily.Extension.InitSystem
         public static void InitConfigCollection(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory logger, IConfiguration builder)
         {
             //Nlog
-            logger.AddNLog();
             LogManager.LoadConfiguration("Nlog.config");
             //logger.ConfigureNLog("Nlog.config");
             //注册权限

@@ -20,13 +20,9 @@ namespace Mily.MainLogic.LogicInterface
 
         Task<Object> RecoveryAdminData(string Key);
 
-        #region 注册登录后台用户
-
         Task<AdminRoleViewModel> Login(AdminRoleViewModel ViewModel);
 
         Task<Object> RegistAdmin(AdminRoleViewModel ViewModel);
-
-        #endregion 注册登录后台用户
 
         #endregion 管理员
     }

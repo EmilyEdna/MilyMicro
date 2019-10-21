@@ -1,4 +1,5 @@
 ﻿using Mily.DbCore.Caches;
+using Mily.DbCore.Model;
 using Mily.DbCore.Model.SystemModel;
 using Mily.Extension.LoggerFactory;
 using Mily.Setting;
@@ -25,7 +26,7 @@ namespace Mily.DbCore
         /// 获取连接客服端
         /// </summary>
         /// <returns></returns>
-        public static SqlSugarClient Emily
+        private static SqlSugarClient Emily
         {
             get
             {
@@ -59,12 +60,28 @@ namespace Mily.DbCore
         }
 
         /// <summary>
+        /// 数据库类型切换
+        /// </summary>
+        public static DBType TypeAttrbuite { get; set; }
+
+        /// <summary>
+        /// 数据库类型上下文
+        /// </summary>
+        /// <param name="Type"></param>
+        /// <returns></returns>
+        public static SqlSugarClient DbContext()
+        {
+            return TypeAttrbuite == DBType.MSSQL ? DB_MSSQL() : DB_MYSQL();
+        }
+
+        /// <summary>
         /// 切换数据为MYSQL
         /// </summary>
         /// <returns></returns>
         public static SqlSugarClient DB_MYSQL()
         {
             Emily.ChangeDatabase("MYSQL");
+            Emily.DbMaintenance.CreateDatabase();
             Emily.CurrentConnectionConfig.ConfigureExternalServices = new ConfigureExternalServices
             {
                 DataInfoCacheService = new DbCache()
@@ -99,6 +116,7 @@ namespace Mily.DbCore
         public static SqlSugarClient DB_MSSQL()
         {
             Emily.ChangeDatabase("MSSQL");
+            Emily.DbMaintenance.CreateDatabase();
             Emily.CurrentConnectionConfig.ConfigureExternalServices = new ConfigureExternalServices
             {
                 DataInfoCacheService = new DbCache()
@@ -133,10 +151,10 @@ namespace Mily.DbCore
         /// <param name="entity"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public virtual async Task<Object> InsertData<Entity>(Entity entity, List<Entity> entities = null, DBType db = DBType.MSSQL, DbReturnTypes type = DbReturnTypes.InsertDefault) where Entity : class, new()
+        public virtual async Task<Object> InsertData<Entity>(Entity entity, List<Entity> entities = null, DbReturnTypes type = DbReturnTypes.InsertDefault) where Entity : class, new()
         {
             IInsertable<Entity> Insert;
-            SqlSugarClient Client = (db == DBType.MSSQL ? DB_MSSQL() : DB_MYSQL());
+            SqlSugarClient Client = DbContext();
             if (entities != null)
             {
                 entities.ForEach(t =>
@@ -149,7 +167,7 @@ namespace Mily.DbCore
                     XExp.SetProptertiesValue(DataValue, t);
                 });
                 Insert = Client.Insertable(entities);
-                await AddSystemLog(entities.FirstOrDefault().GetType().Name, db, HandleEnum.Add); ;
+                await AddSystemLog(entities.FirstOrDefault().GetType().Name, HandleEnum.Add); ;
             }
             else
             {
@@ -160,7 +178,7 @@ namespace Mily.DbCore
                  };
                 XExp.SetProptertiesValue(DataValue, entity);
                 Insert = Client.Insertable(entity);
-                await AddSystemLog(typeof(Entity).Name, db, HandleEnum.Add);
+                await AddSystemLog(typeof(Entity).Name, HandleEnum.Add);
             }
             return type switch
             {
@@ -182,11 +200,11 @@ namespace Mily.DbCore
         /// <param name="ObjExp"></param>
         /// <param name="BoolExp"></param>
         /// <returns></returns>
-        public virtual async Task<Object> AlterData<Entity>(Entity entity, List<Entity> entities = null, DBType db = DBType.MSSQL, DbReturnTypes type = DbReturnTypes.AlterDefault,
+        public virtual async Task<Object> AlterData<Entity>(Entity entity, List<Entity> entities = null, DbReturnTypes type = DbReturnTypes.AlterDefault,
             Boolean? Del = true, Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
         {
             IUpdateable<Entity> Update = null;
-            SqlSugarClient Client = (db == DBType.MSSQL ? DB_MSSQL() : DB_MYSQL());
+            SqlSugarClient Client = DbContext();
             if (entities != null)
             {
                 entities.ForEach(t =>
@@ -200,7 +218,7 @@ namespace Mily.DbCore
                         XExp.SetProptertiesValue(DataValue, t);
                     }
                 });
-                await AddSystemLog(entities.FirstOrDefault().GetType().Name, db, HandleEnum.Edit);
+                await AddSystemLog(entities.FirstOrDefault().GetType().Name, HandleEnum.Edit);
                 Update = Client.Updateable(entities);
             }
             else
@@ -214,7 +232,7 @@ namespace Mily.DbCore
                     XExp.SetProptertiesValue(DataValue, entity);
                 }
                 Update = Client.Updateable(entity);
-                await AddSystemLog(typeof(Entity).Name, db, HandleEnum.Edit);
+                await AddSystemLog(typeof(Entity).Name, HandleEnum.Edit);
             }
             return type switch
             {
@@ -234,12 +252,12 @@ namespace Mily.DbCore
         /// <param name="BoolExp"></param>
         /// <param name="ObjExp"></param>
         /// <returns></returns>
-        public virtual async Task<Object> RemoveData<Entity>(Entity entity, List<Entity> entities = null, DBType db = DBType.MSSQL, DbReturnTypes type = DbReturnTypes.RemoveDefault,
+        public virtual async Task<Object> RemoveData<Entity>(Entity entity, List<Entity> entities = null, DbReturnTypes type = DbReturnTypes.RemoveDefault,
             Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()
         {
             IDeleteable<Entity> Delete = null;
             List<Guid> Ids = new List<Guid>();
-            SqlSugarClient Client = (db == DBType.MSSQL ? DB_MSSQL() : DB_MYSQL());
+            SqlSugarClient Client = DbContext();
             if (entities != null)
             {
                 entities.ForEach(t =>
@@ -248,13 +266,13 @@ namespace Mily.DbCore
                     Ids.Add(Guid.Parse(Map["KeyId"].ToString()));
                 });
                 Delete = Client.Deleteable(entities);
-                await AddSystemLog(entities.FirstOrDefault().GetType().Name, db, HandleEnum.Remove);
+                await AddSystemLog(entities.FirstOrDefault().GetType().Name, HandleEnum.Remove);
             }
             else
             {
                 Delete = Client.Deleteable(entity);
                 Ids.Add(Guid.Parse(entity.ToDic()["KeyId"].ToString()));
-                await AddSystemLog(typeof(Entity).Name, db, HandleEnum.Remove);
+                await AddSystemLog(typeof(Entity).Name, HandleEnum.Remove);
             }
 
             return type switch
@@ -274,9 +292,9 @@ namespace Mily.DbCore
         /// <param name="db"></param>
         /// <param name="handle"></param>
         /// <returns></returns>
-        private async Task<Object> AddSystemLog(string entity, DBType db, HandleEnum handle)
+        private async Task<Object> AddSystemLog(string entity, HandleEnum handle)
         {
-            
+
             SystemhandleLog Log = new SystemhandleLog
             {
                 KeyId = Guid.NewGuid(),
@@ -288,12 +306,7 @@ namespace Mily.DbCore
                 HandleName = handle.ToSelectDes()
             };
             Log.HandleObvious = $"【{Log.Hnadler}】对【{entity}】表进行了【{Log.HandleName}】，操作时间为：【{Log.HandleTime}】";
-            return db switch
-            {
-                DBType.MYSQL => await DB_MYSQL().Insertable(Log).ExecuteCommandAsync(),
-                DBType.MSSQL => await DB_MSSQL().Insertable(Log).ExecuteCommandAsync(),
-                _ => await DB_MSSQL().Insertable(Log).ExecuteCommandAsync(),
-            };
+            return  await DbContext().Insertable(Log).ExecuteCommandAsync();
         }
     }
 }

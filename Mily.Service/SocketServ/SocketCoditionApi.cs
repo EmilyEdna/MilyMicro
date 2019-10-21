@@ -67,7 +67,7 @@ namespace Mily.Service.SocketServ
             String Body = Context.Request.Stream.ReadString(Context.Request.Length);
             Dictionary<String, Object> MapDate = new Dictionary<String, Object>();
             String RequestPath = String.Empty;
-            Int32 Hit = 0;
+            Int32 Hit = 100;
             Body.Split("&").ToList().ForEach(item =>
             {
                 String Key = item.Split("=")[0];
@@ -79,7 +79,7 @@ namespace Mily.Service.SocketServ
                     //请求地址
                     RequestPath = Data;
                 else
-                    Hit = Data.IsNullOrEmpty() ? 100 : Convert.ToInt32(Data);
+                    Hit = Data.IsNullOrEmpty() ? Hit : Convert.ToInt32(Data);
             });
             return await JsonAsync(Context,RequestPath, MapDate, Hit);
         }
@@ -96,7 +96,7 @@ namespace Mily.Service.SocketServ
             String Body = Context.Request.Stream.ReadString(Context.Request.Length);
             Dictionary<String, Object> MapDate = new Dictionary<String, Object>();
             String RequestPath = String.Empty;
-            Int32 Hit = 0;
+            Int32 Hit = 100;
             Body.Split("&").ToList().ForEach(item =>
             {
                 String Key = item.Split("=")[0];
@@ -108,7 +108,7 @@ namespace Mily.Service.SocketServ
                     //请求地址
                     RequestPath = Data;
                 else
-                    Hit = Data.IsNullOrEmpty() ? 100 : Convert.ToInt32(Data);
+                    Hit = Data.IsNullOrEmpty() ? Hit : Convert.ToInt32(Data);
             });
             return Json(Context,RequestPath, MapDate, Hit);
         }

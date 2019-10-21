@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using XExten.XCore;
+using System.Linq;
 
 namespace Mily.Service.SocketServ
 {
@@ -50,6 +51,7 @@ namespace Mily.Service.SocketServ
                     {
                         SocketInit(Server, Event);
                         base.SessionReceive(Server, Event);
+                        Console.WriteLine(Server);
                     }
                     ResetEvent.WaitOne();
                     ResetEvent.Reset();
@@ -83,11 +85,23 @@ namespace Mily.Service.SocketServ
                 });
             else
             {
-                ISession Session = Server.GetSession(KeyId);
-                Session.Stream.ToPipeStream().WriteLine(Content);
-                Session.Stream.Flush();
-                Session.Stream.Close();
+                try
+                {
+                    Write(Server, Content);
+                }
+                catch (Exception)
+                {
+                    Write(Server, Content);
+                }
             }
+        }
+
+
+        private void Write(IServer Server, string Content) {
+            ISession Session = Server.GetOnlines().Where(item => item.ID == KeyId).FirstOrDefault();
+            Session.Stream.ToPipeStream().WriteLine(Content);
+            Session.Stream.Flush();
+            Session.Stream.Close();
         }
 
         private void SocketInit(IServer Server, SessionReceiveEventArgs Event)

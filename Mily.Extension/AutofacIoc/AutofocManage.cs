@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Autofac.Extras.DynamicProxy;
+using Castle.DynamicProxy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Mily.Setting;
@@ -18,7 +20,7 @@ namespace Mily.Extension.AutofacIoc
         protected static readonly IDictionary<Object, Object> AutofacInstance = new Dictionary<Object, Object>();
         protected IContainer Container { get; set; }
         private IEnumerable<Type> Service => MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IService))));
-
+        private Type Aop => MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IInterceptor)))).FirstOrDefault();
         public AutofocManage() => builder = new ContainerBuilder();
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace Mily.Extension.AutofacIoc
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T Resolve<T>() => Container == null ? default(T) : Container.Resolve<T>();
+        public T Resolve<T>() => Container == null ? default : Container.Resolve<T>();
 
         /// <summary>
         /// 返回AutoFac服务
@@ -55,11 +57,15 @@ namespace Mily.Extension.AutofacIoc
         {
             //注入请求上下文为了使用PaySharp
             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().SingleInstance();
+            builder.RegisterType(Activator.CreateInstance(Aop).GetType());
             //注入业务逻辑
             Service.ToList().ForEach(t =>
             {
                 if (t.IsClass)
-                    builder.RegisterType(Activator.CreateInstance(t).GetType()).As(t.GetInterfaces().Where(x => x.GetInterfaces().Contains(typeof(IService))).FirstOrDefault()).SingleInstance();
+                    builder.RegisterType(Activator.CreateInstance(t).GetType())
+                    .As(t.GetInterfaces().Where(x => x.GetInterfaces().Contains(typeof(IService)))
+                    .FirstOrDefault()).InterceptedBy(Activator.CreateInstance(Aop).GetType())
+                    .EnableInterfaceInterceptors().SingleInstance();
             });
         }
 
