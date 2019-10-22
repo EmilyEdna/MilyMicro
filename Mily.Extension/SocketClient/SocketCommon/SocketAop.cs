@@ -196,6 +196,8 @@ namespace Mily.Extension.SocketClient.SocketCommon
         private static bool JudgeAttribute(MethodInfo Method)
         {
             AuthorAttribute Author = (Method.GetCustomAttribute(typeof(AuthorAttribute)) as AuthorAttribute);
+            if (Method.Name.IsContainsIn("Search"))
+                return true;
             return Author == null ? true : JudgeRoles(Author.Names);
         }
 

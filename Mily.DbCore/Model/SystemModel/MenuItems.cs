@@ -24,5 +24,7 @@ namespace Mily.DbCore.Model.SystemModel
         public bool? IsParent { get; set; }
         [SugarColumn(IsNullable = true, ColumnDescription = "父菜单")]
         public Guid? ParentId { get; set; }
+        [SugarColumn(IsIgnore = true)]
+        public List<MenuItems> ChildMenus { get; set; }
     }
 }

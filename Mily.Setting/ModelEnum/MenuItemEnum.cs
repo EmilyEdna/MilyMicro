@@ -24,6 +24,6 @@ namespace Mily.Setting.ModelEnum
         /// 三级
         /// </summary>
         [Description("三级")]
-        Lv = 3
+        Lv3 = 3
     }
 }

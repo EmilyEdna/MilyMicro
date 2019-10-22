@@ -8,6 +8,14 @@ namespace Mily.MainLogic.LogicInterface
 {
     public interface IMainLogic : IService
     {
+        #region 登录注册
+
+        Task<AdminRoleViewModel> Login(AdminRoleViewModel ViewModel);
+
+        Task<Object> RegistAdmin(AdminRoleViewModel ViewModel);
+
+        #endregion
+
         #region 管理员
 
         Task<Object> SearchAdminPage(PageQuery Page);
@@ -20,10 +28,10 @@ namespace Mily.MainLogic.LogicInterface
 
         Task<Object> RecoveryAdminData(string Key);
 
-        Task<AdminRoleViewModel> Login(AdminRoleViewModel ViewModel);
+        #endregion
 
-        Task<Object> RegistAdmin(AdminRoleViewModel ViewModel);
-
-        #endregion 管理员
+        #region 获取菜单
+        Task<Object> SearchMenuItem();
+        #endregion
     }
 }

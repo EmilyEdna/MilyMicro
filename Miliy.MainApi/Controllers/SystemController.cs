@@ -18,9 +18,42 @@ namespace Miliy.MainApi.Controllers
     [ApiController]
     public class SystemController : BaseApiController
     {
-        #region 管理员API
+        #region 注册登录
 
-        #region 获取后台管理员
+        /// <summary>
+        /// 注册后台管理员API
+        /// </summary>
+        /// <param name="ViewModel"></param>
+        /// <returns></returns>
+        [AcceptVerbs("GET", "POST")]
+        [AllowAnonymous]
+        public async Task<ActionResult<Object>> RegistAdmin(AdminRoleViewModel ViewModel) => await SysService.RegistAdmin(ViewModel);
+
+        /// <summary>
+        /// 登录后台API
+        /// </summary>
+        /// <returns></returns>
+        [AcceptVerbs("GET", "POST")]
+        [AllowAnonymous]
+        public async Task<ActionResult<Object>> Login(AdminRoleViewModel ViewModel)
+        {
+            var claimIdentity = new ClaimsIdentity("Cookie");
+            var RoleAdmin = await SysService.Login(ViewModel);
+            if (RoleAdmin == null)
+                return "登录失败，请检查用户名和密码是否正确!";
+            if (HttpContext != null)
+            {
+                claimIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, RoleAdmin.RolePermissionId.ToString()));
+                claimIdentity.AddClaim(new Claim(ClaimTypes.Name, RoleAdmin.AdminName));
+                claimIdentity.AddClaim(new Claim(ClaimTypes.Role, RoleAdmin.HandlerRole));
+                await HttpContext.SignInAsync(new ClaimsPrincipal(claimIdentity), new AuthenticationProperties { IsPersistent = true });
+            }
+            return RoleAdmin;
+        }
+
+        #endregion
+
+        #region 管理员
 
         /// <summary>
         /// 管理员分页API
@@ -66,44 +99,16 @@ namespace Miliy.MainApi.Controllers
         [Author(Roles.Admin, Roles.Update)]
         public async Task<ActionResult<Object>> RecoveryAdminData(string Key) => await SysService.RecoveryAdminData(Key);
 
-        #endregion 获取后台管理员
+        #endregion
 
-        #region 注册登录后台管理员
-
+        #region 获取菜单
         /// <summary>
-        /// 注册后台管理员API
-        /// </summary>
-        /// <param name="ViewModel"></param>
-        /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
-        [AllowAnonymous]
-        public async Task<ActionResult<Object>> RegistAdmin(AdminRoleViewModel ViewModel) => await SysService.RegistAdmin(ViewModel);
-
-        /// <summary>
-        /// 登录后台API
+        /// 获取菜单
         /// </summary>
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
-        [AllowAnonymous]
-        public async Task<ActionResult<Object>> Login(AdminRoleViewModel ViewModel)
-        {
-            var claimIdentity = new ClaimsIdentity("Cookie");
-            var RoleAdmin = await SysService.Login(ViewModel);
-            if (RoleAdmin == null)
-                return "登录失败，请检查用户名和密码是否正确!";
-            if (HttpContext != null)
-            {
-                claimIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, RoleAdmin.RolePermissionId.ToString()));
-                claimIdentity.AddClaim(new Claim(ClaimTypes.Name, RoleAdmin.AdminName));
-                claimIdentity.AddClaim(new Claim(ClaimTypes.Role, RoleAdmin.HandlerRole));
-                await HttpContext.SignInAsync(new ClaimsPrincipal(claimIdentity), new AuthenticationProperties { IsPersistent = true });
-            }
-            return RoleAdmin;
-        }
-
-        #endregion 注册登录后台管理员
-
-        #endregion 管理员API
-
+        [Author(Roles.Admin, Roles.Read)]
+        public async Task<ActionResult<Object>> SearchMenuItem() => await SysService.SearchMenuItem();
+        #endregion
     }
 }

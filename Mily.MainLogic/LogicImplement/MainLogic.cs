@@ -3,6 +3,7 @@ using Mily.DbCore.Model.SystemModel;
 using Mily.Extension.ModelMapper;
 using Mily.Extension.ViewModel;
 using Mily.MainLogic.LogicInterface;
+using Mily.Setting.ModelEnum;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,45 @@ namespace Mily.MainLogic.LogicImplement
 {
     public class MainLogic : SugerDbContext, IMainLogic
     {
+        #region 登录注册
+
+        /// <summary>
+        /// 注册后台管理员
+        /// </summary>
+        /// <param name="ViewModel"></param>
+        /// <returns></returns>
+        public async Task<Object> RegistAdmin(AdminRoleViewModel ViewModel)
+        {
+            Administrator Admin = ViewModel.ToMapper<AdminRoleViewModel, Administrator>();
+            return await base.InsertData<Administrator>(Admin);
+        }
+
+        /// <summary>
+        /// 登录后台管理员
+        /// </summary>
+        /// <param name="ViewModel"></param>
+        /// <returns></returns>
+        public async Task<AdminRoleViewModel> Login(AdminRoleViewModel ViewModel)
+        {
+            AdminRoleViewModel AdminRole = DbContext().Queryable<Administrator, RolePermission>((Admin, Role) => new Object[] { JoinType.Left, Admin.RolePermissionId == Role.KeyId })
+                .Where(Admin => Admin.Account.Equals(ViewModel.Account))
+                .Where(Admin => Admin.PassWord.Equals(ViewModel.PassWord))
+                .Select((Admin, Role) => new AdminRoleViewModel
+                {
+                    KeyId = Admin.KeyId,
+                    Account = Admin.Account,
+                    AdminName = Admin.AdminName,
+                    RolePermissionId = Admin.RolePermissionId,
+                    HandlerRole = Role.HandlerRole,
+                    RoleName = Role.RoleName
+                }).First();
+            if (AdminRole != null)
+                await Caches.RedisCacheSetAsync(AdminRole.KeyId.ToString(), AdminRole, 120);
+            return AdminRole;
+        }
+
+        #endregion
+
         #region 管理员
 
         /// <summary>
@@ -78,41 +118,26 @@ namespace Mily.MainLogic.LogicImplement
             return await base.AlterData<Administrator>(null, administrator, DbReturnTypes.AlterSoft, false);
         }
 
-        /// <summary>
-        /// 注册后台管理员
-        /// </summary>
-        /// <param name="ViewModel"></param>
-        /// <returns></returns>
-        public async Task<Object> RegistAdmin(AdminRoleViewModel ViewModel)
-        {
-            Administrator Admin = ViewModel.ToMapper<AdminRoleViewModel, Administrator>();
-            return await base.InsertData<Administrator>(Admin);
-        }
+        #endregion
+
+        #region 菜单管理
 
         /// <summary>
-        /// 登录后台管理员
+        /// 获取菜单
         /// </summary>
-        /// <param name="ViewModel"></param>
         /// <returns></returns>
-        public async Task<AdminRoleViewModel> Login(AdminRoleViewModel ViewModel)
+        public async Task<Object> SearchMenuItem()
         {
-            AdminRoleViewModel AdminRole = DbContext().Queryable<Administrator, RolePermission>((Admin, Role) => new Object[] { JoinType.Left, Admin.RolePermissionId == Role.KeyId })
-                .Where(Admin => Admin.Account.Equals(ViewModel.Account))
-                .Where(Admin => Admin.PassWord.Equals(ViewModel.PassWord))
-                .Select((Admin, Role) => new AdminRoleViewModel
-                {
-                    KeyId = Admin.KeyId,
-                    Account = Admin.Account,
-                    AdminName = Admin.AdminName,
-                    RolePermissionId = Admin.RolePermissionId,
-                    HandlerRole = Role.HandlerRole,
-                    RoleName = Role.RoleName
-                }).First();
-            if (AdminRole != null)
-                await Caches.RedisCacheSetAsync(AdminRole.KeyId.ToString(), AdminRole, 120);
-            return AdminRole;
+            return await DbContext().Queryable<MenuItems>().Where(Item => Item.Lv == MenuItemEnum.Lv1).Mapper((Item, Cache) =>
+             {
+                 Item.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Item.KeyId).Where(t => t.Lv == MenuItemEnum.Lv2).ToList();
+                 Item.ChildMenus.ForEach(Menus =>
+                 {
+                     Menus.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Menus.KeyId).Where(t => t.Lv == MenuItemEnum.Lv3).ToList();
+                 });
+             }).ToListAsync();
         }
 
-        #endregion 
+        #endregion
     }
 }
