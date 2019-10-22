@@ -20,7 +20,7 @@ namespace Mily.Extension.AutofacIoc
         protected static readonly IDictionary<Object, Object> AutofacInstance = new Dictionary<Object, Object>();
         protected IContainer Container { get; set; }
         private IEnumerable<Type> Service => MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IService))));
-        private Type Aop => MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IInterceptor)))).FirstOrDefault();
+        private Type Aop => Activator.CreateInstance(MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IInterceptor)))).FirstOrDefault()).GetType();
         public AutofocManage() => builder = new ContainerBuilder();
 
         /// <summary>
@@ -57,18 +57,23 @@ namespace Mily.Extension.AutofacIoc
         {
             //注入请求上下文为了使用PaySharp
             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().SingleInstance();
-            builder.RegisterType(Activator.CreateInstance(Aop).GetType());
+            builder.RegisterType(Aop);
             //注入业务逻辑
-            Service.ToList().ForEach(t =>
+            Service.ToList().ForEach(item =>
             {
-                if (t.IsClass)
-                    builder.RegisterType(Activator.CreateInstance(t).GetType())
-                    .As(t.GetInterfaces().Where(x => x.GetInterfaces().Contains(typeof(IService)))
-                    .FirstOrDefault()).InterceptedBy(Activator.CreateInstance(Aop).GetType())
+                if (item.IsClass)
+                    builder.RegisterType(Activator.CreateInstance(item).GetType())
+                    .As(item.GetInterfaces().Where(imp => imp.GetInterfaces().Contains(typeof(IService)))
+                    .FirstOrDefault()).InterceptedBy(Aop)
                     .EnableInterfaceInterceptors().SingleInstance();
             });
         }
 
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="CreateNewInstance"></param>
+        /// <returns></returns>
         public static AutofocManage CreateInstance(bool CreateNewInstance = false)
         {
             if (CreateNewInstance)

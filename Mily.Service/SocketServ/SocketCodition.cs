@@ -74,6 +74,12 @@ namespace Mily.Service.SocketServ
             }
         }
 
+        /// <summary>
+        /// 在线发送
+        /// </summary>
+        /// <param name="Server"></param>
+        /// <param name="Content"></param>
+        /// <param name="Poll"></param>
         private void SendToOnlines(IServer Server, string Content, bool Poll = true)
         {
             if (Poll)
@@ -84,26 +90,36 @@ namespace Mily.Service.SocketServ
                     item.Stream.Close();
                 });
             else
+                Write(Server, Content);
+        }
+
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        /// <param name="Server"></param>
+        /// <param name="Content"></param>
+        private void Write(IServer Server, string Content) {
+            try
             {
-                try
-                {
-                    Write(Server, Content);
-                }
-                catch (Exception)
-                {
-                    Write(Server, Content);
-                }
+                ISession Session = Server.GetOnlines().Where(item => item.ID == KeyId).FirstOrDefault();
+                Session.Stream.ToPipeStream().WriteLine(Content);
+                Session.Stream.Flush();
+                Session.Stream.Close();
+            }
+            catch (Exception)
+            {
+                ISession Session = Server.GetOnlines().Where(item => item.ID == KeyId).FirstOrDefault();
+                Session.Stream.ToPipeStream().WriteLine(Content);
+                Session.Stream.Flush();
+                Session.Stream.Close();
             }
         }
 
-
-        private void Write(IServer Server, string Content) {
-            ISession Session = Server.GetOnlines().Where(item => item.ID == KeyId).FirstOrDefault();
-            Session.Stream.ToPipeStream().WriteLine(Content);
-            Session.Stream.Flush();
-            Session.Stream.Close();
-        }
-
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="Server"></param>
+        /// <param name="Event"></param>
         private void SocketInit(IServer Server, SessionReceiveEventArgs Event)
         {
             string ClientResult = Event.Stream.ToPipeStream().ReadLine();
