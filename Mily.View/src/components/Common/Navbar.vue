@@ -9,33 +9,33 @@
                  unique-opened
                  router>
             <template v-for="item in items">
-                <template v-if="item.subs">
-                    <el-submenu :index="item.index" :key="item.index">
+                <template v-if="item.ChildMenus">
+                    <el-submenu :index="item.Path" :key="item.Path">
                         <template slot="title">
-                            <i :class="item.icon"></i>
-                            <span slot="title">{{ item.title }}</span>
+                            <i :class="item.Icon"></i>
+                            <span slot="title">{{ item.Title }}</span>
                         </template>
-                        <template v-for="subItem in item.subs">
-                            <el-submenu v-if="subItem.subs"
-                                        :index="subItem.index"
-                                        :key="subItem.index">
+                        <template v-for="subItem in item.ChildMenus">
+                            <el-submenu v-if="subItem.ChildMenus"
+                                        :index="subItem.Path"
+                                        :key="subItem.Path">
                                 <template slot="title">
-                                    {{ subItem.title }}
+                                    {{ subItem.Title }}
                                 </template>
-                                <el-menu-item v-for="(threeItem,i) in subItem.subs"
+                                <el-menu-item v-for="(threeItem,i) in subItem.ChildMenus"
                                               :key="i"
-                                              :index="threeItem.index">{{ threeItem.title }}</el-menu-item>
+                                              :index="threeItem.Path">{{ threeItem.Title }}</el-menu-item>
                             </el-submenu>
                             <el-menu-item v-else
-                                          :index="subItem.index"
-                                          :key="subItem.index">{{ subItem.title }}</el-menu-item>
+                                          :index="subItem.Path"
+                                          :key="subItem.Path">{{ subItem.Title }}</el-menu-item>
                         </template>
                     </el-submenu>
                 </template>
                 <template v-else>
-                    <el-menu-item :index="item.index" :key="item.index">
-                        <i :class="item.icon"></i>
-                        <span slot="title">{{ item.title }}</span>
+                    <el-menu-item :index="item.Path" :key="item.Path">
+                        <i :class="item.Icon"></i>
+                        <span slot="title">{{ item.Title }}</span>
                     </el-menu-item>
                 </template>
             </template>
@@ -44,7 +44,8 @@
 </template>
 
 <script>
-  import bus from './Js/bus';
+    import bus from './Js/bus';
+    import { Menu } from '../../utils/ApiFactory'
     export default {
         data() {
             return {
@@ -153,6 +154,11 @@
             }
         },
         created() {
+            //初始化菜单
+            Menu({ MapData: {} }).then(res => {
+                this.items = res.ResultData;
+            });
+
             // 通过 Event Bus 进行组件间通信，来折叠侧边栏
             bus.$on('collapse', msg => {
                 this.collapse = msg;

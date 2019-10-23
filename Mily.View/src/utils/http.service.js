@@ -8,10 +8,12 @@ const service = axios.create({
 });
 
 service.interceptors.request.use(config => {
-    let Param = undefined;
+    //Default Use SqlServer DataBase
+    config.headers.Type = 1;
     if (!config.headers.Cross)
-        Param = config.data.MapData.Global = cookie.get("Global");
-    config.data = JSON.stringify((Param == undefined ? config.data : Param));
+        //if not login push the cookie in this data
+        config.data.MapData.Global = cookie.get("Global");
+    config.data = JSON.stringify(config.data);
     return config;
 }, err => {
     return Promise.reject(err);

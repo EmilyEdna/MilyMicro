@@ -7,6 +7,7 @@ namespace Mily.Service.ViewSetting.ApiSettting
     {
         public override bool Executing(ActionContext context)
         {
+            Configuration.DbType = context.HttpContext.Request.Header["Type"];
             return base.Executing(context);
         }
 

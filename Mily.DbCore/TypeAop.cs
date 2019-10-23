@@ -16,7 +16,7 @@ namespace Mily.DbCore
             if (ParamCount > 0 && ParamCount <= 1)
             {
                 if (TargetValue.GetType() == typeof(PageQuery))
-                    SugerDbContext.TypeAttrbuite = (TargetValue as PageQuery).KeyWord.ContainsKey("DbType") ? (DBType)Convert.ToInt32((TargetValue as PageQuery).KeyWord["DbType"]) : DBType.Default;
+                    SugerDbContext.TypeAttrbuite = (TargetValue as PageQuery).KeyWord.ContainsKey("DbTypeAttribute") ? (DBType)Convert.ToInt32((TargetValue as PageQuery).KeyWord["DbTypeAttribute"]) : DBType.Default;
                 else if (TargetValue.GetType() == typeof(DBType))
                     SugerDbContext.TypeAttrbuite = (DBType)TargetValue;
                 else

@@ -10,6 +10,7 @@ namespace Mily.Service.EventServ
         {
             ServiceRunner<ListenServ>.Run(config =>
             {
+                //please see the help link in this here https://github.com/PeterKottas/DotNetCore.WindowsService
                 config.SetName("MicroServ");
                 config.SetDisplayName("MicroServ");
                 config.SetDescription("微服务中间系统,处理TCP、UDP、Socket通信");

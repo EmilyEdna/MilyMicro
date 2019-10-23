@@ -12,13 +12,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using XExten.Common;
 using XExten.XCore;
 
 namespace Mily.Service.SocketServ
 {
-    [ActionFilter]
-    [Options(AllowOrigin = "*", AllowHeaders ="*")]
+    [Options(AllowOrigin = "*", AllowHeaders = "*")]
     [Controller(BaseUrl = "/Condition")]
+    [ActionFilter]
     public class SocketCoditionApi
     {
         #region InitApi
@@ -81,7 +82,7 @@ namespace Mily.Service.SocketServ
                 else
                     Hit = Data.IsNullOrEmpty() ? Hit : Convert.ToInt32(Data);
             });
-            return await JsonAsync(Context,RequestPath, MapDate, Hit);
+            return await JsonAsync(Context, RequestPath, MapDate, Hit);
         }
 
         /// <summary>
@@ -110,7 +111,7 @@ namespace Mily.Service.SocketServ
                 else
                     Hit = Data.IsNullOrEmpty() ? Hit : Convert.ToInt32(Data);
             });
-            return Json(Context,RequestPath, MapDate, Hit);
+            return Json(Context, RequestPath, MapDate, Hit);
         }
 
         #endregion Form提交方式或者Byte流方式
@@ -127,12 +128,12 @@ namespace Mily.Service.SocketServ
         /// <returns></returns>
         [Post]
         [JsonDataConvert]
-        public async Task<Object> JsonAsync(IHttpContext Context,String RequestPath, Dictionary<String, Object> MapData, Int32 Hit = 100)
+        public async Task<Object> JsonAsync(IHttpContext Context, String RequestPath, Dictionary<String, Object> MapData, Int32 Hit = 100)
         {
             ParamCmd Param = new ParamCmd
             {
                 Path = RequestPath,
-                HashData = MapData
+                HashData = TypeJudge(RequestPath, MapData)
             };
             ParseCmd.HashData = JsonConvert.SerializeObject(Param);
             SocketCodition.Boots = NetType.Listen;
@@ -186,12 +187,12 @@ namespace Mily.Service.SocketServ
         /// <returns></returns>
         [Post]
         [JsonDataConvert]
-        public Object Json(IHttpContext Context,String RequestPath, Dictionary<String, Object> MapData, Int32 Hit = 100)
+        public Object Json(IHttpContext Context, String RequestPath, Dictionary<String, Object> MapData, Int32 Hit = 100)
         {
             ParamCmd Param = new ParamCmd
             {
                 Path = RequestPath,
-                HashData = MapData
+                HashData = TypeJudge(RequestPath, MapData)
             };
             ParseCmd.HashData = JsonConvert.SerializeObject(Param);
             SocketCodition.Boots = NetType.Listen;
@@ -225,7 +226,7 @@ namespace Mily.Service.SocketServ
                     Normol.Start();
                 }
             }
-            
+
             try
             {
                 Thread.Sleep(1500);
@@ -286,6 +287,25 @@ namespace Mily.Service.SocketServ
             SessionEvent.Session.Server.Handler.SessionReceive(SessionEvent.Server, SessionEvent);
         }
 
+        /// <summary>
+        /// 校验请求设置数据库类型
+        /// </summary>
+        /// <param name="Cmd"></param>
+        [NotAction]
+        private static Dictionary<String, Object> TypeJudge(String RequestPath, Dictionary<String, Object> MapData)
+        {
+            if (RequestPath.ToUpper().IsContainsIn("PAGE"))
+            {
+                PageQuery View = MapData.ToJson().ToModel<PageQuery>();
+                View.KeyWord.Add("DbTypeAttribute", Configuration.DbType);
+                return View.ToJson().ToModel<Dictionary<string, Object>>();
+            }
+            else
+            {
+                MapData.Add("DbTypeAttribute", Configuration.DbType);
+                return MapData;
+            }
+        }
         #endregion 权重分配
     }
 }
