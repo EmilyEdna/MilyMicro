@@ -1,4 +1,4 @@
-﻿using Mily.Extension.ViewModel;
+﻿using Mily.ViewModels;
 using Mily.Setting;
 using System;
 using System.Threading.Tasks;

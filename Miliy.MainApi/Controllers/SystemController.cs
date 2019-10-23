@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.Attributes;
 using Mily.Extension.Attributes.RoleHandler;
-using Mily.Extension.ViewModel;
+using Mily.ViewModels;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;

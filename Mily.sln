@@ -47,6 +47,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Mily.Templater", "Mily.Temp
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Mily.View", "Mily.View\Mily.View.njsproj", "{10A6A989-5D41-4308-ADC1-9B48718A0180}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.ViewModels", "Mily.ViewModels\Mily.ViewModels.csproj", "{E31C744E-0DCD-4419-B2C4-3A958766393C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,10 @@ Global
 		{10A6A989-5D41-4308-ADC1-9B48718A0180}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10A6A989-5D41-4308-ADC1-9B48718A0180}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10A6A989-5D41-4308-ADC1-9B48718A0180}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E31C744E-0DCD-4419-B2C4-3A958766393C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E31C744E-0DCD-4419-B2C4-3A958766393C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E31C744E-0DCD-4419-B2C4-3A958766393C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E31C744E-0DCD-4419-B2C4-3A958766393C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +129,7 @@ Global
 		{91113AB6-C54D-4E81-AB01-39F9B083EA83} = {41695496-97EE-489B-AB64-324FBD4B4A1E}
 		{E049DB61-B9C0-467E-B458-DF88419CB26C} = {A4035BAB-C7DC-4D4D-A768-3D4F7CA7F887}
 		{10A6A989-5D41-4308-ADC1-9B48718A0180} = {A4035BAB-C7DC-4D4D-A768-3D4F7CA7F887}
+		{E31C744E-0DCD-4419-B2C4-3A958766393C} = {1617F6CF-C2F4-433C-946E-6EE6936D7ADA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A20B8E09-4285-41C8-95A6-F6C4BEBED20C}

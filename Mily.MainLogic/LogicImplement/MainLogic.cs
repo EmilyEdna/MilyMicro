@@ -1,7 +1,7 @@
 ﻿using Mily.DbCore;
 using Mily.DbCore.Model.SystemModel;
 using Mily.Extension.ModelMapper;
-using Mily.Extension.ViewModel;
+using Mily.ViewModels;
 using Mily.MainLogic.LogicInterface;
 using Mily.Setting.ModelEnum;
 using SqlSugar;

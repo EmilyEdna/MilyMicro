@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Mily.Extension.ViewModel;
+using Mily.ViewModels;
 using System;
 using System.Linq;
 using System.Security.Claims;

@@ -78,7 +78,7 @@ namespace Mily.DbCore
         /// 切换数据为MYSQL
         /// </summary>
         /// <returns></returns>
-        public static SqlSugarClient DB_MYSQL()
+        private static SqlSugarClient DB_MYSQL()
         {
             Emily.ChangeDatabase("MYSQL");
             Emily.DbMaintenance.CreateDatabase();
@@ -86,7 +86,7 @@ namespace Mily.DbCore
             {
                 DataInfoCacheService = new DbCache()
             };
-            #if RELEASE
+#if RELEASE
             Emily.Aop.OnError = (Ex) =>
             {
                 var Logs = $"SQL语句：{Ex.Sql}[SQL参数：{Ex.Parametres}]";
@@ -103,7 +103,7 @@ namespace Mily.DbCore
                         LogFactoryExtension.WriteSqlWarn(Logs);
                 });
             };
-            #endif
+#endif
             //Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
             //Emily.CodeFirst.InitTables(ModelTypes);
             return Emily;
@@ -113,7 +113,7 @@ namespace Mily.DbCore
         /// 切换数据库为MSSQL
         /// </summary>
         /// <returns></returns>
-        public static SqlSugarClient DB_MSSQL()
+        private static SqlSugarClient DB_MSSQL()
         {
             Emily.ChangeDatabase("MSSQL");
             Emily.DbMaintenance.CreateDatabase();
@@ -121,7 +121,7 @@ namespace Mily.DbCore
             {
                 DataInfoCacheService = new DbCache()
             };
-            #if RELEASE
+#if RELEASE
             Emily.Aop.OnError = (Ex) =>
             {
                 var Logs = $"SQL语句：{Ex.Sql}[SQL参数：{Ex.Parametres}]";
@@ -138,7 +138,7 @@ namespace Mily.DbCore
                         LogFactoryExtension.WriteSqlWarn(Logs);
                 });
             };
-            #endif
+#endif
             //Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
             //Emily.CodeFirst.InitTables(ModelTypes);
             return Emily;
@@ -294,19 +294,28 @@ namespace Mily.DbCore
         /// <returns></returns>
         private async Task<Object> AddSystemLog(string entity, HandleEnum handle)
         {
-
             SystemhandleLog Log = new SystemhandleLog
             {
                 KeyId = Guid.NewGuid(),
                 IsDelete = false,
                 HandleTime = DateTime.Now,
-                Hnadler = JToken.FromObject(XCache.Caches.RedisCacheGet<Object>(MilyConfig.CacheKey)).SelectToken("AdminName").ToString(),
+                Hnadler = SearchCache(),
                 HandleObject = entity,
                 HandleType = handle,
                 HandleName = handle.ToSelectDes()
             };
             Log.HandleObvious = $"【{Log.Hnadler}】对【{entity}】表进行了【{Log.HandleName}】，操作时间为：【{Log.HandleTime}】";
-            return  await DbContext().Insertable(Log).ExecuteCommandAsync();
+            return await DbContext().Insertable(Log).ExecuteCommandAsync();
+        }
+
+        /// <summary>
+        /// 查询缓存
+        /// </summary>
+        /// <returns></returns>
+        private String SearchCache()
+        {
+            Object View = XCache.Caches.RedisCacheGet<Object>(MilyConfig.CacheKey);
+            return View == null ? "*" : JToken.FromObject(XCache.Caches.RedisCacheGet<Object>(MilyConfig.CacheKey)).SelectToken("AdminName").ToString();
         }
     }
 }

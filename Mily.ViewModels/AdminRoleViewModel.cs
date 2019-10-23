@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Mily.Extension.ViewModel
+namespace Mily.ViewModels
 {
     public class AdminRoleViewModel : BaseViewModel
     {

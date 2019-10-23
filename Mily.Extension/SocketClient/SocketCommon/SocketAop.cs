@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.Attributes;
 using Mily.Extension.Infrastructure.GeneralMiddleWare;
 using Mily.Extension.LoggerFactory;
-using Mily.Extension.ViewModel;
+using Mily.ViewModels;
 using Mily.Setting;
 using Newtonsoft.Json;
 using System;

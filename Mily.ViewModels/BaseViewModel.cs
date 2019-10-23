@@ -1,7 +1,6 @@
-﻿using Mily.Setting.ModelEnum;
-using System;
+﻿using System;
 
-namespace Mily.Extension.ViewModel
+namespace Mily.ViewModels
 {
     public class BaseViewModel
     {

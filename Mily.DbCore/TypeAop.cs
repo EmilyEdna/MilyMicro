@@ -7,10 +7,10 @@ namespace Mily.DbCore
 {
     public class TypeAop : IInterceptor
     {
-        public void Intercept(IInvocation invocation)
+        public void Intercept(IInvocation Invocation)
         {
             SugerDbContext.TypeAttrbuite = DBType.MSSQL;
-            invocation.ReturnValue = invocation.Method.Invoke(invocation.InvocationTarget, invocation.Arguments);
+            Invocation.ReturnValue = Invocation.Method.Invoke(Invocation.InvocationTarget, Invocation.Arguments);
         }
     }
 }
