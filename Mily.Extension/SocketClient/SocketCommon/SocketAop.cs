@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.Attributes;
 using Mily.Extension.Infrastructure.GeneralMiddleWare;
 using Mily.Extension.LoggerFactory;
-using Mily.ViewModels;
 using Mily.Setting;
+using Mily.Setting.DbTypes;
+using Mily.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -127,7 +128,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
                     parameters = Cmd.HashData.Values.ToArray();
                 }
                 //实体类型参数只能用实体
-                if (ParameterCollentcion.Count == 1)
+                else if (ParameterCollentcion.Count == 1)
                 {
                     Type TargetType = ParameterCollentcion.FirstOrDefault().ParameterType;
                     //是否为系统参数
@@ -138,6 +139,12 @@ namespace Mily.Extension.SocketClient.SocketCommon
                     }
                     else
                         parameters = new[] { Cmd.HashData.Values.FirstOrDefault() };
+                }
+                //无参数
+                else {
+                    //校验是否包含数据库类型
+                    MilyConfig.DbTypeAttribute = Cmd.HashData.ContainsKey("DbTypeAttribute") ? (DBType)Convert.ToInt32(Cmd.HashData["DbTypeAttribute"]) : DBType.Default;
+                    parameters = null;
                 }
                 try
                 {

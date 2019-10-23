@@ -20,7 +20,6 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mily.Setting\Mily.Setting.csproj" />
     <ProjectReference Include="..\Mily.ViewModels\Mily.ViewModels.csproj" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyModel;
+using Mily.Setting.DbTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,12 @@ namespace Mily.Setting
 {
     public class MilyConfig
     {
+
+        /// <summary>
+        /// 数据库类型(动态切换)
+        /// </summary>
+        public static DBType DbTypeAttribute { get; set; }
+
         /// <summary>
         /// 连接字符串-DataBase1
         /// </summary>

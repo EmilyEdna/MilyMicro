@@ -1,9 +1,10 @@
 ﻿using Mily.DbCore;
 using Mily.DbCore.Model.SystemModel;
 using Mily.Extension.ModelMapper;
-using Mily.ViewModels;
 using Mily.MainLogic.LogicInterface;
+using Mily.Setting.DbTypes;
 using Mily.Setting.ModelEnum;
+using Mily.ViewModels;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -125,6 +126,7 @@ namespace Mily.MainLogic.LogicImplement
         /// <summary>
         /// 获取菜单
         /// </summary>
+        /// <param name="db"></param>
         /// <returns></returns>
         public async Task<Object> SearchMenuItem()
         {

@@ -3,6 +3,7 @@ using Mily.DbCore.Model;
 using Mily.DbCore.Model.SystemModel;
 using Mily.Extension.LoggerFactory;
 using Mily.Setting;
+using Mily.Setting.DbTypes;
 using Mily.Setting.ModelEnum;
 using Newtonsoft.Json.Linq;
 using SqlSugar;
@@ -71,7 +72,12 @@ namespace Mily.DbCore
         /// <returns></returns>
         public static SqlSugarClient DbContext()
         {
-            return TypeAttrbuite == DBType.MSSQL ? DB_MSSQL() : DB_MYSQL();
+            return TypeAttrbuite switch
+            {
+                DBType.MSSQL => DB_MSSQL(),
+                DBType.MYSQL => DB_MYSQL(),
+                _ => DB_MSSQL()
+            };
         }
 
         /// <summary>
@@ -86,7 +92,7 @@ namespace Mily.DbCore
             {
                 DataInfoCacheService = new DbCache()
             };
-#if RELEASE
+            #if RELEASE
             Emily.Aop.OnError = (Ex) =>
             {
                 var Logs = $"SQL语句：{Ex.Sql}[SQL参数：{Ex.Parametres}]";
@@ -103,7 +109,7 @@ namespace Mily.DbCore
                         LogFactoryExtension.WriteSqlWarn(Logs);
                 });
             };
-#endif
+            #endif
             //Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
             //Emily.CodeFirst.InitTables(ModelTypes);
             return Emily;
@@ -121,7 +127,7 @@ namespace Mily.DbCore
             {
                 DataInfoCacheService = new DbCache()
             };
-#if RELEASE
+            #if RELEASE
             Emily.Aop.OnError = (Ex) =>
             {
                 var Logs = $"SQL语句：{Ex.Sql}[SQL参数：{Ex.Parametres}]";
@@ -138,7 +144,7 @@ namespace Mily.DbCore
                         LogFactoryExtension.WriteSqlWarn(Logs);
                 });
             };
-#endif
+            #endif
             //Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
             //Emily.CodeFirst.InitTables(ModelTypes);
             return Emily;
