@@ -130,7 +130,7 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> SearchMenuItem()
         {
-            return await DbContext().Queryable<MenuItems>().Where(Item => Item.Lv == MenuItemEnum.Lv1).Mapper((Item, Cache) =>
+            return await DbContext().Queryable<MenuItems>().Where(Item => Item.Lv == MenuItemEnum.Lv1).Mapper(Item =>
              {
                  Item.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Item.KeyId).Where(t => t.Lv == MenuItemEnum.Lv2).ToList();
                  Item.ChildMenus.ForEach(Menus =>
