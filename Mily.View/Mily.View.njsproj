@@ -42,6 +42,9 @@
     <Content Include="src\components\Basic\Home.vue">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="src\components\Basic\Index.vue">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\components\Basic\Login.vue" />
     <Content Include="src\components\Common\CloseTag.vue" />
     <Content Include="src\components\Common\Header.vue" />
@@ -56,6 +59,9 @@
     <Content Include="src\utils\http.service.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="src\views\SysMenu.vue">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="vue.config.js" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +74,7 @@
     <Folder Include="src\components\Basic\" />
     <Folder Include="src\components\Common\" />
     <Folder Include="src\components\Common\Js\" />
+    <Folder Include="src\views\" />
     <Folder Include="src\utils\" />
     <Folder Include="src\router\" />
   </ItemGroup>

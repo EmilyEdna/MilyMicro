@@ -38,7 +38,7 @@ namespace Mily.Extension.InitSystem
             //启用跨域
             services.AddCors(option =>
             {
-                option.AddPolicy("EdnaCore", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+                option.AddPolicy("Mily", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             });
             //启用Swagger
             services.AddSwaggerGen(opt =>

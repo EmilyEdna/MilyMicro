@@ -19,7 +19,6 @@ namespace Mily.Extension.InitSystem
         {
             //Nlog
             LogManager.LoadConfiguration("Nlog.config");
-            //logger.ConfigureNLog("Nlog.config");
             //注册权限
             app.UseAuthentication();
             //注册异常中间件

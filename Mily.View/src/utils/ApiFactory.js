@@ -1,7 +1,7 @@
 import servcie from './http.service.js'
 
 /**
- * ��¼
+ * 登录
  * @param {any} param
  */
 export const Login = (param) => {
@@ -15,7 +15,7 @@ export const Login = (param) => {
 }
 
 /**
- * ȫ�ֲ˵�
+ * 全局菜单
  * @param {any} param
  */
 export const Menu = (param) => {

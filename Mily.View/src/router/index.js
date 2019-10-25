@@ -10,7 +10,22 @@ export default new Router({
     routes: [
         {
             path: '/',
-            component: home
+            redirect: '/Index'
+        },
+        {
+            path: '/',
+            component: home,
+            meta: { tilte: "gRPC分布式系统" },
+            children: [{
+                path: '/Index',
+                component: () => import('../components/Basic/Index.vue'),
+                meta: { title: '系统首页' }
+            },
+            {
+                path: '/SysMenu',
+                component: () => import('../views/SysMenu.vue'),
+                meta: { title: '后台菜单' }
+            }]
         },
         {
             path: '/login',

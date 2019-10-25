@@ -1,42 +1,39 @@
 <template>
     <div class="sidebar">
-        <el-menu class="sidebar-el-menu"
-                 :default-active="onRoutes"
-                 :collapse="collapse"
-                 background-color="#324157"
-                 text-color="#bfcbd9"
-                 active-text-color="#20a0ff"
-                 unique-opened
-                 router>
-            <template v-for="item in items">
-                <template v-if="item.ChildMenus">
-                    <el-submenu :index="item.Path" :key="item.Path">
-                        <template slot="title">
-                            <i :class="item.Icon"></i>
-                            <span slot="title">{{ item.Title }}</span>
-                        </template>
-                        <template v-for="subItem in item.ChildMenus">
-                            <el-submenu v-if="subItem.ChildMenus"
-                                        :index="subItem.Path"
-                                        :key="subItem.Path">
-                                <template slot="title">
-                                    {{ subItem.Title }}
-                                </template>
-                                <el-menu-item v-for="(threeItem,i) in subItem.ChildMenus"
-                                              :key="i"
-                                              :index="threeItem.Path">{{ threeItem.Title }}</el-menu-item>
-                            </el-submenu>
-                            <el-menu-item v-else
-                                          :index="subItem.Path"
-                                          :key="subItem.Path">{{ subItem.Title }}</el-menu-item>
-                        </template>
-                    </el-submenu>
+        <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157" text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
+            <template v-for="(lv1,index) in Menus">
+                <!--一级菜单-->
+                <template v-if="!lv1.IsParent">
+                    <el-menu-item :index="lv1.KeyId" :key="lv1.Path">
+                        <i :class="lv1.Icon"></i>
+                        <span slot="title">{{ lv1.Title }}</span>
+                    </el-menu-item>
                 </template>
                 <template v-else>
-                    <el-menu-item :index="item.Path" :key="item.Path">
-                        <i :class="item.Icon"></i>
-                        <span slot="title">{{ item.Title }}</span>
-                    </el-menu-item>
+                    <!--二级菜单-->
+                    <el-submenu :key="lv1.KeyId" :index="lv1.KeyId">
+                        <template slot="title">
+                            <i :class="lv1.Icon"></i>
+                            <span slot="title">{{ lv1.Title }}</span>
+                        </template>
+                        <!--子菜单-->
+                        <template v-for="(lv2,index) in lv1.ChildMenus">
+                            <el-submenu :key="lv2.KeyId" :index="lv2.KeyId" v-if="lv2.IsParent">
+                                <template slot="title">
+                                    <i :class="lv2.Icon"></i>
+                                    <span slot="title">{{ lv2.Title }}</span>
+                                </template>
+                                <!--三级菜单-->
+                                <el-menu-item v-for="(lv3,index) in lv2.ChildMenus" :index="lv3.Path" :key="lv3.KeyId">
+                                    {{lv3.Title}}
+                                </el-menu-item>
+                            </el-submenu>
+                            <!--只有二级菜单无三级菜单-->
+                            <el-menu-item :key="lv2.KeyId" :index="lv2.Path" v-else>
+                                <span slot="title">{{ lv2.Title }}</span>
+                            </el-menu-item>
+                        </template>
+                    </el-submenu>
                 </template>
             </template>
         </el-menu>
@@ -50,102 +47,10 @@
         data() {
             return {
                 collapse: false,
-                items: [
-                    {
-                        icon: 'el-icon-lx-home',
-                        index: 'dashboard',
-                        title: '系统首页'
-                    },
-                    {
-                        icon: 'el-icon-lx-cascades',
-                        index: 'table',
-                        title: '基础表格'
-                    },
-                    {
-                        icon: 'el-icon-lx-copy',
-                        index: 'tabs',
-                        title: 'tab选项卡'
-                    },
-                    {
-                        icon: 'el-icon-lx-calendar',
-                        index: '3',
-                        title: '表单相关',
-                        subs: [
-                            {
-                                index: 'form',
-                                title: '基本表单'
-                            },
-                            {
-                                index: '3-2',
-                                title: '三级菜单',
-                                subs: [
-                                    {
-                                        index: 'editor',
-                                        title: '富文本编辑器'
-                                    },
-                                    {
-                                        index: 'markdown',
-                                        title: 'markdown编辑器'
-                                    }
-                                ]
-                            },
-                            {
-                                index: 'upload',
-                                title: '文件上传'
-                            }
-                        ]
-                    },
-                    {
-                        icon: 'el-icon-lx-emoji',
-                        index: 'icon',
-                        title: '自定义图标'
-                    },
-                    {
-                        icon: 'el-icon-pie-chart',
-                        index: 'charts',
-                        title: 'schart图表'
-                    },
-                    {
-                        icon: 'el-icon-rank',
-                        index: '6',
-                        title: '拖拽组件',
-                        subs: [
-                            {
-                                index: 'drag',
-                                title: '拖拽列表'
-                            },
-                            {
-                                index: 'dialog',
-                                title: '拖拽弹框'
-                            }
-                        ]
-                    },
-                    {
-                        icon: 'el-icon-lx-global',
-                        index: 'i18n',
-                        title: '国际化功能'
-                    },
-                    {
-                        icon: 'el-icon-lx-warn',
-                        index: '7',
-                        title: '错误处理',
-                        subs: [
-                            {
-                                index: 'permission',
-                                title: '权限测试'
-                            },
-                            {
-                                index: '404',
-                                title: '404页面'
-                            }
-                        ]
-                    },
-                    {
-                        icon: 'el-icon-lx-redpacket_fill',
-                        index: '/donate',
-                        title: '支持作者'
-                    }
-                ]
+                Menus: [],
+                Params: {
+                    MapData: {}
+                }
             };
         },
         computed: {
@@ -155,11 +60,11 @@
         },
         created() {
             //初始化菜单
-            Menu({ MapData: {} }).then(res => {
-                this.items = res.ResultData;
+            Menu(this.Params).then(res => {
+                this.Menus = res.ResultData;
             });
 
-            // 通过 Event Bus 进行组件间通信，来折叠侧边栏
+             //通过 Event Bus 进行组件间通信，来折叠侧边栏
             bus.$on('collapse', msg => {
                 this.collapse = msg;
                 bus.$emit('collapse-content', msg);
