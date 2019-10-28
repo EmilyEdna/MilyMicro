@@ -52,7 +52,10 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\components\Common\Navbar.vue" />
-    <Content Include="src\router\index.js" />
+    <Content Include="src\router\dynamic.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\router\router.js" />
     <Content Include="src\utils\ApiFactory.js">
       <SubType>Code</SubType>
     </Content>

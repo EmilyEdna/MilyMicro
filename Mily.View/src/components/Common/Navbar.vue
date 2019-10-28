@@ -42,6 +42,7 @@
 
 <script>
     import bus from './Js/bus';
+    import dynamic from '../../router/dynamic'
     import { Menu } from '../../utils/ApiFactory'
     export default {
         data() {
@@ -50,7 +51,8 @@
                 Menus: [],
                 Params: {
                     MapData: {}
-                }
+                },
+                Router: []
             };
         },
         computed: {
@@ -61,14 +63,42 @@
         created() {
             //初始化菜单
             Menu(this.Params).then(res => {
+                this.$options.methods.InitRouter(this.$router, res.ResultData, this.Router, this);
                 this.Menus = res.ResultData;
             });
 
-             //通过 Event Bus 进行组件间通信，来折叠侧边栏
+            //通过 Event Bus 进行组件间通信，来折叠侧边栏
             bus.$on('collapse', msg => {
                 this.collapse = msg;
                 bus.$emit('collapse-content', msg);
             });
+        },
+        methods: {
+            InitRouter(router, key, path,vm) {
+                this.InitComponent(key, path);
+                path.forEach(item => {
+                    let value = item.component;
+                    item.component = function component(resolve) {
+                        require([".." + value], resolve);
+                    }
+                    dynamic.routes[0].children.push(item)
+                });
+                vm.$router.addRoutes(dynamic.routes);
+            },
+            /**
+             * 递归路由表
+             * @param key
+             * @param path
+             */
+            InitComponent(key, path) {
+                key.forEach(item => {
+                    if (item.Parent)
+                        this.InitComponent(item.ChildMenus, path);
+                    else
+                        if (item.RouterPath != null)
+                            path.push({ "path": "/" + item.Path, "component": item.RouterPath, "meta": { "title": item.Title } });
+                });
+            }
         }
     };
 </script>
