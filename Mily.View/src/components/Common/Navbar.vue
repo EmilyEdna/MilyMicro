@@ -3,7 +3,7 @@
         <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157" text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
             <template v-for="(lv1,index) in Menus">
                 <!--一级菜单-->
-                <template v-if="!lv1.IsParent">
+                <template v-if="!lv1.Parent">
                     <el-menu-item :index="lv1.KeyId" :key="lv1.Path">
                         <i :class="lv1.Icon"></i>
                         <span slot="title">{{ lv1.Title }}</span>
@@ -18,7 +18,7 @@
                         </template>
                         <!--子菜单-->
                         <template v-for="(lv2,index) in lv1.ChildMenus">
-                            <el-submenu :key="lv2.KeyId" :index="lv2.KeyId" v-if="lv2.IsParent">
+                            <el-submenu :key="lv2.KeyId" :index="lv2.KeyId" v-if="lv2.Parent">
                                 <template slot="title">
                                     <i :class="lv2.Icon"></i>
                                     <span slot="title">{{ lv2.Title }}</span>

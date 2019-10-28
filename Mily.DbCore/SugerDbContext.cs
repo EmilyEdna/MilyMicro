@@ -1,7 +1,10 @@
 ﻿using Mily.DbCore.Caches;
-using Mily.DbCore.Model;
 using Mily.DbCore.Model.SystemModel;
+#if RELEASE
 using Mily.Extension.LoggerFactory;
+#elif DEBUG
+using Mily.DbCore.Model;
+#endif
 using Mily.Setting;
 using Mily.Setting.DbTypes;
 using Mily.Setting.ModelEnum;
@@ -109,9 +112,10 @@ namespace Mily.DbCore
                         LogFactoryExtension.WriteSqlWarn(Logs);
                 });
             };
-            #endif
+            #elif DEBUG
             //Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
             //Emily.CodeFirst.InitTables(ModelTypes);
+           #endif
             return Emily;
         }
 
@@ -144,9 +148,10 @@ namespace Mily.DbCore
                         LogFactoryExtension.WriteSqlWarn(Logs);
                 });
             };
-            #endif
+            #elif DEBUG
             //Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
             //Emily.CodeFirst.InitTables(ModelTypes);
+            #endif
             return Emily;
         }
 
@@ -168,7 +173,7 @@ namespace Mily.DbCore
                     Dictionary<String, Object> DataValue = new Dictionary<String, Object>
                     {
                          { "KeyId", Guid.NewGuid() },
-                         { "IsDelete", false }
+                         { "Deleted", false }
                     };
                     XExp.SetProptertiesValue(DataValue, t);
                 });
@@ -180,7 +185,7 @@ namespace Mily.DbCore
                 Dictionary<String, Object> DataValue = new Dictionary<String, Object>
                  {
                        { "KeyId", Guid.NewGuid() },
-                       { "IsDelete", false }
+                       { "Deleted", false }
                  };
                 XExp.SetProptertiesValue(DataValue, entity);
                 Insert = Client.Insertable(entity);
@@ -219,7 +224,7 @@ namespace Mily.DbCore
                     {
                         Dictionary<String, Object> DataValue = new Dictionary<String, Object>
                         {
-                         { "IsDelete", Del }
+                         { "Deleted", Del }
                         };
                         XExp.SetProptertiesValue(DataValue, t);
                     }
@@ -233,7 +238,7 @@ namespace Mily.DbCore
                 {
                     Dictionary<String, Object> DataValue = new Dictionary<String, Object>
                     {
-                         { "IsDelete", Del }
+                         { "Deleted", Del }
                     };
                     XExp.SetProptertiesValue(DataValue, entity);
                 }
@@ -303,7 +308,7 @@ namespace Mily.DbCore
             SystemhandleLog Log = new SystemhandleLog
             {
                 KeyId = Guid.NewGuid(),
-                IsDelete = false,
+                Deleted = false,
                 HandleTime = DateTime.Now,
                 Hnadler = SearchCache(),
                 HandleObject = entity,

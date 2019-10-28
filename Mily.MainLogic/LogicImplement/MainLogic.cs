@@ -68,7 +68,7 @@ namespace Mily.MainLogic.LogicImplement
         {
             return await DbContext().Queryable<Administrator>()
                 .WhereIF(Page.KeyWord.ContainsKey("AdminName"), t => t.AdminName == Page.KeyWord["AdminName"].ToString())
-                .Where(t => t.IsDelete == false).ToPageListAsync(Page.PageIndex, Page.PageSize);
+                .Where(t => t.Deleted == false).ToPageListAsync(Page.PageIndex, Page.PageSize);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Mily.MainLogic.LogicImplement
         {
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
            .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
-           .Where(t => t.IsDelete == false).ToList();
+           .Where(t => t.Deleted == false).ToList();
             return await base.AlterData<Administrator>(null, administrator, DbReturnTypes.AlterSoft);
         }
 
@@ -115,7 +115,7 @@ namespace Mily.MainLogic.LogicImplement
         {
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
                 .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
-                .Where(t => t.IsDelete == true).ToList();
+                .Where(t => t.Deleted == true).ToList();
             return await base.AlterData<Administrator>(null, administrator, DbReturnTypes.AlterSoft, false);
         }
 

@@ -23,7 +23,7 @@ export default new Router({
             },
             {
                 path: '/SysMenu',
-                component: () => import('../views/SysMenu.vue'),
+                component: () => import('../views/System/SysMenu.vue'),
                 meta: { title: '后台菜单' }
             }]
         },

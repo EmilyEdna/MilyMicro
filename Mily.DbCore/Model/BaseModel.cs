@@ -16,9 +16,9 @@ namespace Mily.DbCore.Model
         public Guid KeyId { get; set; }
 
         /// <summary>
-        /// 是否删除
+        /// 逻辑删除
         /// </summary>
-        [SugarColumn(IsNullable = true, ColumnDescription = "是否删除")]
-        public bool? IsDelete { get; set; }
+        [SugarColumn(IsNullable = true, ColumnDescription = "逻辑删除")]
+        public bool? Deleted { get; set; }
     }
 }

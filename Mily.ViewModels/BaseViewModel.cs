@@ -11,9 +11,9 @@ namespace Mily.ViewModels
         public Guid KeyId { get; set; }
 
         /// <summary>
-        /// 是否删除
+        /// 逻辑删除
         /// </summary>
-        public bool? IsDelete { get; set; }
+        public bool? Deleted { get; set; }
 
         /// <summary>
         /// 数据库类型
