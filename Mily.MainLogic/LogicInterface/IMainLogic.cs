@@ -32,7 +32,7 @@ namespace Mily.MainLogic.LogicInterface
         #endregion
 
         #region 获取菜单
-        Task<Object> SearchMenuItem();
+        Task<Object> SearchMenuItem(Guid Key);
         #endregion
     }
 }

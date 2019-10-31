@@ -4,6 +4,10 @@
 let DynamicRouter = {
     routes: [
         {
+            path: '/',
+            redirect: '/Index'
+        },
+        {
             path: "/",
             name: "Home",
             meta: { tilte: "gRPC分布式系统" },
@@ -13,6 +17,10 @@ let DynamicRouter = {
                 component: () => import('../components/Basic/Index.vue'),
                 meta: { title: '系统首页' }
             }]
+        },
+        {
+            path: '/login',
+            component: import('../components/Basic/Login.vue')
         }
     ]
 }

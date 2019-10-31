@@ -128,18 +128,30 @@ namespace Mily.MainLogic.LogicImplement
         /// </summary>
         /// <param name="db"></param>
         /// <returns></returns>
-        public async Task<Object> SearchMenuItem()
+        public async Task<Object> SearchMenuItem(Guid Key)
         {
-            return await DbContext().Queryable<MenuItems>().Where(Item => Item.Lv == MenuItemEnum.Lv1).Mapper(Item =>
-             {
-                 Item.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Item.KeyId).Where(t => t.Lv == MenuItemEnum.Lv2).ToList();
-                 Item.ChildMenus.ForEach(Menus =>
-                 {
-                     Menus.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Menus.KeyId).Where(t => t.Lv == MenuItemEnum.Lv3).ToList();
-                 });
-             }).ToListAsync();
+            return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
+                      .Where(Role => Role.RolePermissionId == Key).Select((Role, Menu) => new MenuItems
+                      {
+                          KeyId = Menu.KeyId,
+                          RouterPath = Menu.RouterPath,
+                          Path = Menu.Path,
+                          Lv = Menu.Lv,
+                          Icon = Menu.Icon,
+                          Title = Menu.Title,
+                          ParentId = Menu.ParentId,
+                          Parent = Menu.Parent,
+                          Created = Menu.Created,
+                          Deleted = Menu.Deleted
+                      }).MergeTable().Where(Item => Item.Lv == MenuItemEnum.Lv1).Mapper(Item =>
+                      {
+                          Item.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Item.KeyId).Where(t => t.Lv == MenuItemEnum.Lv2).ToList();
+                          Item.ChildMenus.ForEach(Menus =>
+                          {
+                              Menus.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Menus.KeyId).Where(t => t.Lv == MenuItemEnum.Lv3).ToList();
+                          });
+                      }).ToListAsync();
         }
-
         #endregion
     }
 }

@@ -109,7 +109,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Read)]
-        public async Task<ActionResult<Object>> SearchMenuItem() => await SysService.SearchMenuItem();
+        public async Task<ActionResult<Object>> SearchMenuItem(string Key) => await SysService.SearchMenuItem(Guid.Parse(Key));
         #endregion
     }
 }

@@ -138,7 +138,12 @@ namespace Mily.Extension.SocketClient.SocketCommon
                         parameters = new[] { ViewModel };
                     }
                     else
+                    {
+                        //校验是否包含数据库类型
+                        MilyConfig.DbTypeAttribute = Cmd.HashData.ContainsKey("DbTypeAttribute") ? (DBType)Convert.ToInt32(Cmd.HashData["DbTypeAttribute"]) : DBType.Default;
+                        Cmd.HashData.Remove("DbTypeAttribute");
                         parameters = new[] { Cmd.HashData.Values.FirstOrDefault() };
+                    }
                 }
                 //无参数
                 else {

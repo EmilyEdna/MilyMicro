@@ -56,6 +56,18 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\router\router.js" />
+    <Content Include="src\store\getters.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\store\index.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\store\mutations.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\store\state.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\utils\ApiFactory.js">
       <SubType>Code</SubType>
     </Content>
@@ -77,6 +89,7 @@
     <Folder Include="src\components\Basic\" />
     <Folder Include="src\components\Common\" />
     <Folder Include="src\components\Common\Js\" />
+    <Folder Include="src\store\" />
     <Folder Include="src\views\" />
     <Folder Include="src\utils\" />
     <Folder Include="src\router\" />

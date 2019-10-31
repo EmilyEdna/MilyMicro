@@ -15,7 +15,7 @@ namespace Mily.Extension.InitSystem
     {
         public static String WebPath { get; set; }
 
-        public static void InitConfigCollection(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory logger, IConfiguration builder)
+        public static void InitConfigCollection(IApplicationBuilder app, IWebHostEnvironment env, IConfiguration builder)
         {
             //Nlog
             LogManager.LoadConfiguration("Nlog.config");

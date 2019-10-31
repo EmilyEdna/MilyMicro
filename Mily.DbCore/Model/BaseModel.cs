@@ -20,5 +20,11 @@ namespace Mily.DbCore.Model
         /// </summary>
         [SugarColumn(IsNullable = true, ColumnDescription = "逻辑删除")]
         public bool? Deleted { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        [SugarColumn(IsNullable = true, ColumnDataType="DATETIME",ColumnDescription = "逻辑删除")]
+        public DateTime? Created { get; set; }
     }
 }

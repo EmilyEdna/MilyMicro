@@ -30,7 +30,7 @@ namespace Mily.DbCore.Model.SystemModel
         /// <summary>
         /// 权限许可ID
         /// </summary>
-        [SugarColumn(IsNullable = false, ColumnDescription = "权限许可ID")]
-        public Guid RolePermissionId { get; set; }
+        [SugarColumn(IsNullable = true, ColumnDescription = "权限许可ID")]
+        public Guid? RolePermissionId { get; set; }
     }
 }

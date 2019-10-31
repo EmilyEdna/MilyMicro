@@ -173,6 +173,7 @@ namespace Mily.DbCore
                     Dictionary<String, Object> DataValue = new Dictionary<String, Object>
                     {
                          { "KeyId", Guid.NewGuid() },
+                         { "Created",DateTime.Now },
                          { "Deleted", false }
                     };
                     XExp.SetProptertiesValue(DataValue, t);
@@ -185,6 +186,7 @@ namespace Mily.DbCore
                 Dictionary<String, Object> DataValue = new Dictionary<String, Object>
                  {
                        { "KeyId", Guid.NewGuid() },
+                       { "Created",DateTime.Now },
                        { "Deleted", false }
                  };
                 XExp.SetProptertiesValue(DataValue, entity);

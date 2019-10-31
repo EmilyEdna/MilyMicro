@@ -50,7 +50,7 @@
                 collapse: false,
                 Menus: [],
                 Params: {
-                    MapData: {}
+                    MapData: { "Key": JSON.parse(this.$store.state.token).RolePermissionId }
                 },
                 Router: []
             };
@@ -63,7 +63,7 @@
         created() {
             //初始化菜单
             Menu(this.Params).then(res => {
-                this.$options.methods.InitRouter(this.$router, res.ResultData, this.Router, this);
+                this.$options.methods.InitRouter(this, res.ResultData);
                 this.Menus = res.ResultData;
             });
 
@@ -74,16 +74,21 @@
             });
         },
         methods: {
-            InitRouter(router, key, path,vm) {
-                this.InitComponent(key, path);
-                path.forEach(item => {
+            /**
+             * 初始化路由规则
+             * @param options
+             * @param data
+             */
+            InitRouter(options, data) {
+                this.InitComponent(data, options.Router);
+                options.Router.forEach(item => {
                     let value = item.component;
                     item.component = function component(resolve) {
                         require([".." + value], resolve);
                     }
                     dynamic.routes[0].children.push(item)
                 });
-                vm.$router.addRoutes(dynamic.routes);
+                options.$router.addRoutes(dynamic.routes);
             },
             /**
              * 递归路由表
