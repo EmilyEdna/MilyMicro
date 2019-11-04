@@ -83,11 +83,12 @@
                 this.InitComponent(data, options.Router);
                 options.Router.forEach(item => {
                     let value = item.component;
-                    item.component = function component(resolve) {
-                        require([".." + value], resolve);
+                    item.component = function component() {
+                        import(".." + value);
                     }
-                    dynamic.routes[0].children.push(item)
+                    dynamic.routes[1].children.push(item)
                 });
+                options.$router.options.routes = dynamic.routes;
                 options.$router.addRoutes(dynamic.routes);
             },
             /**
