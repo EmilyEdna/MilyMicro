@@ -71,6 +71,9 @@
     <Content Include="src\utils\ApiFactory.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="src\utils\DynamicMenu.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\utils\http.service.js">
       <SubType>Code</SubType>
     </Content>

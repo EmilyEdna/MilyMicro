@@ -20,11 +20,6 @@ export default new Router({
                 path: '/Index',
                 component: () => import('../components/Basic/Index.vue'),
                 meta: { title: '系统首页' }
-            },
-            {
-                path: '/SysMenu',
-                component: () => import('../views/System/SysMenu.vue'),
-                meta: { title: '后台菜单' }
             }]
         },
         {

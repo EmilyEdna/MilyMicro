@@ -21,8 +21,8 @@ export const Login = (param) => {
 export const Menu = (param) => {
     const target = Object.assign({ RequestPath: "System_SearchMenuItem_Main", Hit: 100 }, param);
     return servcie({
-        url:"JsonAsync",
-        url: 'JsonAsync',
+        url: "JsonAsync",
+        async: false,
         method: 'post',
         data: target
     });

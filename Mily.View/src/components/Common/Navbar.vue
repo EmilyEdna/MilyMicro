@@ -42,17 +42,11 @@
 
 <script>
     import bus from './Js/bus';
-    import dynamic from '../../router/dynamic'
-    import { Menu } from '../../utils/ApiFactory'
     export default {
         data() {
             return {
                 collapse: false,
-                Menus: [],
-                Params: {
-                    MapData: { "Key": JSON.parse(this.$store.state.token).RolePermissionId }
-                },
-                Router: []
+                Menus: []
             };
         },
         computed: {
@@ -61,51 +55,14 @@
             }
         },
         created() {
-            //初始化菜单
-            Menu(this.Params).then(res => {
-                this.$options.methods.InitRouter(this, res.ResultData);
-                this.Menus = res.ResultData;
-            });
-
+            if (this.$store.state.MenuData)
+                this.Menus = this.$store.state.MenuData;
             //通过 Event Bus 进行组件间通信，来折叠侧边栏
             bus.$on('collapse', msg => {
                 this.collapse = msg;
                 bus.$emit('collapse-content', msg);
             });
         },
-        methods: {
-            /**
-             * 初始化路由规则
-             * @param options
-             * @param data
-             */
-            InitRouter(options, data) {
-                this.InitComponent(data, options.Router);
-                options.Router.forEach(item => {
-                    let value = item.component;
-                    item.component = function component() {
-                        import(".." + value);
-                    }
-                    dynamic.routes[1].children.push(item)
-                });
-                options.$router.options.routes = dynamic.routes;
-                options.$router.addRoutes(dynamic.routes);
-            },
-            /**
-             * 递归路由表
-             * @param key
-             * @param path
-             */
-            InitComponent(key, path) {
-                key.forEach(item => {
-                    if (item.Parent)
-                        this.InitComponent(item.ChildMenus, path);
-                    else
-                        if (item.RouterPath != null)
-                            path.push({ "path": "/" + item.Path, "component": item.RouterPath, "meta": { "title": item.Title } });
-                });
-            }
-        }
     };
 </script>
 
