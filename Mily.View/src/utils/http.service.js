@@ -4,7 +4,7 @@ import lzstring from 'lz-string'
 
 const service = axios.create({
     baseURL: 'http://127.0.0.1:9091/Condition/',
-    timeout: 5000
+    timeout:15000
 });
 
 service.interceptors.request.use(config => {

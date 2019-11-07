@@ -6,5 +6,8 @@
   "SOCKET": {
     "SOCKETHOST": "0.0.0.0",
     "SOCKETPORT": "9091"
+  },
+  "Redis": {
+    "RedisConnectionString": "127.0.0.1:6379" //Redis
   }
 }

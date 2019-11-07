@@ -12,6 +12,7 @@ namespace Mily.Service.ViewSetting
         public static int TCP_Port { get; set; } = Convert.ToInt32(Builder["TCP:TCPPORT"].ToString());
         public static string SOCKET_Host { get; set; } = Builder["SOCKET:SOCKETHOST"].ToString();
         public static int SOCKET_Port { get; set; } = Convert.ToInt32(Builder["SOCKET:SOCKETPORT"].ToString());
+        public static string Redis { get; set; } = Builder["Redis:RedisConnectionString"].ToString();
         public static string DbType { get; set; }
         private static IConfiguration GetSetting()
         {

@@ -5,6 +5,7 @@ using Mily.Service.ViewSetting;
 using Mily.Service.ViewSetting.ApiSettting;
 using Mily.Service.ViewSetting.SocketSetting;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 using System.Web;
 using XExten.Common;
 using XExten.XCore;
+using XExten.CacheFactory.RedisCache;
 
 namespace Mily.Service.SocketServ
 {
@@ -22,11 +24,14 @@ namespace Mily.Service.SocketServ
     [ActionFilter]
     public class SocketCoditionApi
     {
+        private static object Locker = new object();
+
         #region InitApi
 
         [NotAction]
         public static void NetApiServProvider()
         {
+            RedisCaches.RedisConnectionString = Configuration.Redis;
             HttpApiServer ApiServ = new HttpApiServer();
             ApiServ.Register(typeof(SocketCoditionApi).Assembly);
             ApiServ.Options.LogLevel = LogType.Warring;
@@ -130,6 +135,9 @@ namespace Mily.Service.SocketServ
         [JsonDataConvert]
         public async Task<Object> JsonAsync(IHttpContext Context, String RequestPath, Dictionary<String, Object> MapData, Int32 Hit = 100)
         {
+            Object Result = RedisCaches.StringGet<Object>(RequestPath);
+            if (Result != null)
+                return Result;
             ParamCmd Param = new ParamCmd
             {
                 Path = RequestPath,
@@ -142,38 +150,52 @@ namespace Mily.Service.SocketServ
             else //默认双机负载
             {
                 Dictionary<Int32, SessionReceiveEventArgs> HitHand = SocketCodition.Session.Where(t => t.Key.Contains(Param.Service.ToUpper())).Select(t => t.Value).FirstOrDefault();
-                if (Hit >= 50 && Hit < 99)
-                {
-                    Random Rdom = new Random(Guid.NewGuid().GetHashCode());
-                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 5) ? HitHand.Keys.Select(t => Rdom.Next(4, HitHand.Keys.Select(t => t >= 5).Count() + 1)).FirstOrDefault() : HitHand.Keys.Min();
-                    HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
-                    var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
-                    var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
-                    High.Priority = ThreadPriority.Highest;
-                    Normol.Priority = ThreadPriority.Normal;
-                    High.Start();
-                    Normol.Start();
-                }
-                else
-                {
-                    Random Rdom = new Random(Guid.NewGuid().GetHashCode());
-                    HitWeight.Hits = HitHand.Keys.Any(t => t > 1 && t < 5) ? HitHand.Keys.Select(t => Rdom.Next(1, HitHand.Keys.Count + 1)).FirstOrDefault() : HitHand.Keys.Min();
-                    HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
-                    var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
-                    var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
-                    High.Priority = ThreadPriority.Highest;
-                    Normol.Priority = ThreadPriority.Normal;
-                    High.Start();
-                    Normol.Start();
-                }
+                Fusing(HitHand, Hit);
+                HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
+                var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
+                var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
+                High.Priority = ThreadPriority.Highest;
+                Normol.Priority = ThreadPriority.Normal;
+                High.Start();
+                Normol.Start();
             }
             return await Task.Run<Object>(() =>
             {
-                Thread.Sleep(1500);
-                if (SocketCodition.Result.FirstOrDefault() != null)
-                    return JsonConvert.DeserializeObject<Object>(SocketCodition.Result.FirstOrDefault());
-                else
-                    return SocketCodition.Result.FirstOrDefault();
+                while (true)
+                {
+                    lock (Locker)
+                    {
+                        if (SocketCodition.Result.FirstOrDefault() != null)
+                        {
+                            Object ResultObject = JsonConvert.DeserializeObject<Object>(SocketCodition.Result.FirstOrDefault());
+                            String Code = JToken.FromObject(ResultObject).SelectToken("StatusCode").ToString();
+                            //返回数据中的状态码不是200则服务器有问题
+                            if (Convert.ToInt32(Code) != 200)
+                            {
+                                if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
+                                {
+                                    if (HitWeight.HitsRecord[HitWeight.Hits] >= 2)
+                                        return ResultObject;
+                                    HitWeight.HitsRecord[HitWeight.Hits] += 1;
+
+                                }
+                                else
+                                    HitWeight.HitsRecord.Add(HitWeight.Hits, 1);
+                                var Temp = JsonAsync(Context, RequestPath, MapData, Hit).Result;
+                            }
+                            else
+                            {
+                                //错误的服务器如果修复了则移除
+                                if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
+                                {
+                                    HitWeight.HitsRecord.Remove(HitWeight.Hits);
+                                }
+                                RedisCaches.StringSet(RequestPath, ResultObject, new TimeSpan(0, 0, 10));
+                                return ResultObject;
+                            }
+                        }
+                    }
+                }
             });
         }
 
@@ -189,6 +211,9 @@ namespace Mily.Service.SocketServ
         [JsonDataConvert]
         public Object Json(IHttpContext Context, String RequestPath, Dictionary<String, Object> MapData, Int32 Hit = 100)
         {
+            Object Result = RedisCaches.StringGet<Object>(RequestPath);
+            if (Result != null)
+                return Result;
             ParamCmd Param = new ParamCmd
             {
                 Path = RequestPath,
@@ -201,41 +226,46 @@ namespace Mily.Service.SocketServ
             else //默认双机负载
             {
                 Dictionary<Int32, SessionReceiveEventArgs> HitHand = SocketCodition.Session.Where(t => t.Key.Contains(Param.Service.ToUpper())).Select(t => t.Value).FirstOrDefault();
-                if (Hit >= 50 && Hit < 99)
-                {
-                    Random Rdom = new Random(Guid.NewGuid().GetHashCode());
-                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 5) ? HitHand.Keys.Select(t => Rdom.Next(4, HitHand.Keys.Select(t => t >= 5).Count() + 1)).FirstOrDefault() : HitHand.Keys.Min();
-                    HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
-                    var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
-                    var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
-                    High.Priority = ThreadPriority.Highest;
-                    Normol.Priority = ThreadPriority.Normal;
-                    High.Start();
-                    Normol.Start();
-                }
-                else
-                {
-                    Random Rdom = new Random(Guid.NewGuid().GetHashCode());
-                    HitWeight.Hits = HitHand.Keys.Any(t => t > 1 && t < 5) ? HitHand.Keys.Select(t => Rdom.Next(1, HitHand.Keys.Count + 1)).FirstOrDefault() : HitHand.Keys.Min();
-                    HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
-                    var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
-                    var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
-                    High.Priority = ThreadPriority.Highest;
-                    Normol.Priority = ThreadPriority.Normal;
-                    High.Start();
-                    Normol.Start();
-                }
+                Fusing(HitHand, Hit);
+                HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
+                var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
+                var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
+                High.Priority = ThreadPriority.Highest;
+                Normol.Priority = ThreadPriority.Normal;
+                High.Start();
+                Normol.Start();
             }
+            while (true)
+            {
+                if (SocketCodition.Result.FirstOrDefault() != null)
+                {
+                    Object ResultObject = JsonConvert.DeserializeObject<Object>(SocketCodition.Result.FirstOrDefault());
+                    String Code = JToken.FromObject(ResultObject).SelectToken("StatusCode").ToString();
+                    //返回数据中的状态码不是200则服务器有问题
+                    if (Convert.ToInt32(Code) != 200)
+                    {
+                        if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
+                        {
+                            if (HitWeight.HitsRecord[HitWeight.Hits] >= 2)
+                                return ResultObject;
+                            HitWeight.HitsRecord[HitWeight.Hits] += 1;
 
-            try
-            {
-                Thread.Sleep(1500);
-                return JsonConvert.DeserializeObject<Object>(SocketCodition.Result.FirstOrDefault());
-            }
-            catch (Exception)
-            {
-                Thread.Sleep(2000);
-                return SocketCodition.Result.FirstOrDefault();
+                        }
+                        else
+                            HitWeight.HitsRecord.Add(HitWeight.Hits, 1);
+                        var Temp = JsonAsync(Context, RequestPath, MapData, Hit).Result;
+                    }
+                    else
+                    {
+                        //错误的服务器如果修复了则移除
+                        if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
+                        {
+                            HitWeight.HitsRecord.Remove(HitWeight.Hits);
+                        }
+                        RedisCaches.StringSet(RequestPath, ResultObject, new TimeSpan(0, 0, 10));
+                        return ResultObject;
+                    }
+                }
             }
         }
 
@@ -297,13 +327,59 @@ namespace Mily.Service.SocketServ
             if (RequestPath.ToUpper().IsContainsIn("PAGE"))
             {
                 PageQuery View = MapData.ToJson().ToModel<PageQuery>();
-                View.KeyWord.Add("DbTypeAttribute", Configuration.DbType);
+                if (View.KeyWord.ContainsKey("DbTypeAttribute"))
+                    View.KeyWord["DbTypeAttribute"] = Configuration.DbType;
+                else
+                    View.KeyWord.Add("DbTypeAttribute", Configuration.DbType);
                 return View.ToJson().ToModel<Dictionary<string, Object>>();
             }
             else
             {
-                MapData.Add("DbTypeAttribute", Configuration.DbType);
+                if (MapData.ContainsKey("DbTypeAttribute"))
+                    MapData["DbTypeAttribute"] = Configuration.DbType;
+                else
+                    MapData.Add("DbTypeAttribute", Configuration.DbType);
                 return MapData;
+            }
+        }
+
+        /// <summary>
+        /// 检测是否熔断
+        /// </summary>
+        [NotAction]
+        private static void Fusing(Dictionary<Int32, SessionReceiveEventArgs> HitHand, Int32 Hit)
+        {
+            while (true)
+            {
+                //取随机英子
+                Random Rdom = new Random(Guid.NewGuid().GetHashCode());
+                //取一个高位负载
+                if (Hit >= 50 && Hit < 99)
+                {
+                    //高位负载值
+                    HitWeight.Hits = HitHand.Keys.Any(t => t >= 5) ? HitHand.Keys.Select(t => Rdom.Next(4, HitHand.Keys.Select(t => t >= 5).Count() + 1)).FirstOrDefault() : HitHand.Keys.Min();
+                    if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
+                        //错误次数大于3取新值
+                        if (HitWeight.HitsRecord[HitWeight.Hits] > 2)
+                            Fusing(HitHand, Hit);
+                        else
+                            break;
+                    else
+                        break;
+                }
+                else //低位负载
+                {
+                    //低位负载值
+                    HitWeight.Hits = HitHand.Keys.Any(t => t > 1 && t < 5) ? HitHand.Keys.Select(t => Rdom.Next(1, HitHand.Keys.Count + 1)).FirstOrDefault() : HitHand.Keys.Min();
+                    if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
+                        //错误次数大于3取新值
+                        if (HitWeight.HitsRecord[HitWeight.Hits] > 2)
+                            Fusing(HitHand, Hit);
+                        else
+                            break;
+                    else
+                        break;
+                }
             }
         }
         #endregion 权重分配

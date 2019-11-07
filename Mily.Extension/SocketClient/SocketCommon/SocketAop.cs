@@ -82,95 +82,105 @@ namespace Mily.Extension.SocketClient.SocketCommon
         /// <param name="Client"></param>
         private static void HitHand(Type BaseType, ParamCmd Cmd, AsyncTcpClient AsyncClient = null, TcpClient Client = null)
         {
-            if (Cmd.HashData.ContainsKey("Global"))
+            try
             {
-                MilyConfig.CacheKey = Cmd.HashData["Global"].ToString().ToLzStringDec();
-                Cmd.HashData.Remove("Global");
-            }
-            //查询请求的控制器
-            Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.BaseType == BaseType)).Where(t => t.Name.Contains(Cmd.Controller)).FirstOrDefault();
-            if (Control != null)
-            {
-                MethodInfo Method = Control.GetMethod(Cmd.Method);
-                List<ParameterInfo> ParameterCollentcion = Method.GetParameters().ToList();
-                Object Controller = Activator.CreateInstance(Control);
-                Object[] parameters = null;
-                //非实体类型参数即多参数
-                if (ParameterCollentcion.Count >= 2)
+                if (Cmd.HashData.ContainsKey("Global"))
                 {
-                    ParameterCollentcion.ForEach(item =>
+                    MilyConfig.CacheKey = Cmd.HashData["Global"].ToString().ToLzStringDec();
+                    Cmd.HashData.Remove("Global");
+                }
+                //查询请求的控制器
+                Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.BaseType == BaseType)).Where(t => t.Name.Contains(Cmd.Controller)).FirstOrDefault();
+                if (Control != null)
+                {
+                    MethodInfo Method = Control.GetMethod(Cmd.Method);
+                    List<ParameterInfo> ParameterCollentcion = Method.GetParameters().ToList();
+                    Object Controller = Activator.CreateInstance(Control);
+                    Object[] parameters = null;
+                    //非实体类型参数即多参数
+                    if (ParameterCollentcion.Count >= 2)
                     {
-                        string ParamName = item.Name;
-                        string TypeName = item.ParameterType.Name;
+                        ParameterCollentcion.ForEach(item =>
+                        {
+                            string ParamName = item.Name;
+                            string TypeName = item.ParameterType.Name;
                         //判断是否可空参数
                         if (!TypeName.IsContainsIn("Nullable`1"))
-                        {
+                            {
                             //必需参数
                             var CheckParam = Cmd.HashData.Keys.ToList().Where(t => t == ParamName).FirstOrDefault();
-                            if (CheckParam.IsNullOrEmpty())
-                            {
-                                SendByClient(ResultApiMiddleWare.Instance(false, 503, null, "必需参数不正确"), AsyncClient, Client);
-                                return;
+                                if (CheckParam.IsNullOrEmpty())
+                                {
+                                    SendByClient(ResultApiMiddleWare.Instance(false, 503, null, "必需参数不正确"), AsyncClient, Client);
+                                    return;
+                                }
                             }
+                            else
+                            {
+                            //可选参数
+                            int ParamCount = Control.GetMethod(Cmd.Method).GetParameters().Count();
+                                int RequestCount = Cmd.HashData.Count();
+                                if (ParamCount > RequestCount)
+                                    for (int index = RequestCount; index < ParamCount; index++)
+                                    {
+                                        Cmd.HashData.Add(index.ToString(), null);
+                                    }
+                            }
+                        });
+                        parameters = Cmd.HashData.Values.ToArray();
+                    }
+                    //实体类型参数只能用实体
+                    else if (ParameterCollentcion.Count == 1)
+                    {
+                        Type TargetType = ParameterCollentcion.FirstOrDefault().ParameterType;
+                        //是否为系统参数
+                        if (!TargetType.Namespace.ToUpper().IsContainsIn("SYSTEM"))
+                        {
+                            var ViewModel = JsonConvert.DeserializeObject(Cmd.HashData.ToJson(), TargetType);
+                            parameters = new[] { ViewModel };
                         }
                         else
                         {
-                            //可选参数
-                            int ParamCount = Control.GetMethod(Cmd.Method).GetParameters().Count();
-                            int RequestCount = Cmd.HashData.Count();
-                            if (ParamCount > RequestCount)
-                                for (int index = RequestCount; index < ParamCount; index++)
-                                {
-                                    Cmd.HashData.Add(index.ToString(), null);
-                                }
+                            //校验是否包含数据库类型
+                            MilyConfig.DbTypeAttribute = Cmd.HashData.ContainsKey("DbTypeAttribute") ? (DBType)Convert.ToInt32(Cmd.HashData["DbTypeAttribute"]) : DBType.Default;
+                            Cmd.HashData.Remove("DbTypeAttribute");
+                            parameters = new[] { Cmd.HashData.Values.FirstOrDefault() };
                         }
-                    });
-                    parameters = Cmd.HashData.Values.ToArray();
-                }
-                //实体类型参数只能用实体
-                else if (ParameterCollentcion.Count == 1)
-                {
-                    Type TargetType = ParameterCollentcion.FirstOrDefault().ParameterType;
-                    //是否为系统参数
-                    if (!TargetType.Namespace.ToUpper().IsContainsIn("SYSTEM"))
-                    {
-                        var ViewModel = JsonConvert.DeserializeObject(Cmd.HashData.ToJson(), TargetType);
-                        parameters = new[] { ViewModel };
                     }
+                    //无参数
                     else
                     {
                         //校验是否包含数据库类型
                         MilyConfig.DbTypeAttribute = Cmd.HashData.ContainsKey("DbTypeAttribute") ? (DBType)Convert.ToInt32(Cmd.HashData["DbTypeAttribute"]) : DBType.Default;
-                        Cmd.HashData.Remove("DbTypeAttribute");
-                        parameters = new[] { Cmd.HashData.Values.FirstOrDefault() };
+                        parameters = null;
                     }
-                }
-                //无参数
-                else {
-                    //校验是否包含数据库类型
-                    MilyConfig.DbTypeAttribute = Cmd.HashData.ContainsKey("DbTypeAttribute") ? (DBType)Convert.ToInt32(Cmd.HashData["DbTypeAttribute"]) : DBType.Default;
-                    parameters = null;
-                }
-                try
-                {
-                    //判断方法的执行权限是否足够
-                    if (JudgeAttribute(Method))
+                    try
                     {
-                        Object Result = ((Task<ActionResult<Object>>)Method.Invoke(Controller, parameters)).Result.Value;
-                        SendByClient(ResultApiMiddleWare.Instance(true, 200, Result, "执行成功"), AsyncClient, Client);
+                        //判断方法的执行权限是否足够
+                        if (JudgeAttribute(Method))
+                        {
+                            Object Result = ((Task<ActionResult<Object>>)Method.Invoke(Controller, parameters)).Result.Value;
+                            SendByClient(ResultApiMiddleWare.Instance(true, 200, Result, "执行成功"), AsyncClient, Client);
+                        }
+                        else
+                            SendByClient(ResultApiMiddleWare.Instance(false, 401, null, "无权访问"), AsyncClient, Client);
                     }
-                    else
-                        SendByClient(ResultApiMiddleWare.Instance(false, 401, null, "无权访问"), AsyncClient, Client);
+                    catch (Exception ex)
+                    {
+                        RecordExcetion(ex, Cmd.Path);
+                        SendByClient(ResultApiMiddleWare.Instance(false, 500, null, "服务器异常"), AsyncClient, Client);
+                        return;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    RecordExcetion(ex, Cmd.Path);
-                    SendByClient(ResultApiMiddleWare.Instance(false, 500, null, "系统出现异常"), AsyncClient, Client);
-                    return;
-                }
+                else
+                    SendByClient(ResultApiMiddleWare.Instance(false, 400, null, "错误的请求"), AsyncClient, Client);
             }
-            else
-                SendByClient(ResultApiMiddleWare.Instance(false, 400, null, "错误的请求"), AsyncClient, Client);
+            catch (Exception ex)
+            {
+                RecordExcetion(ex, Cmd.Path);
+                SendByClient(ResultApiMiddleWare.Instance(false, 500, null, "服务器异常"), AsyncClient, Client);
+                return;
+            }
         }
 
         /// <summary>
