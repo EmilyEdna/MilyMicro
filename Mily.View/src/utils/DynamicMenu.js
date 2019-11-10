@@ -9,10 +9,10 @@ let Paths = [];
 /**
  * 初始化菜单
  * */
-const InitMenu = () => {
+const InitMenu = async () => {
     if (store.getters.login) {
         let Params = { MapData: { "Key": JSON.parse(store.state.token).RolePermissionId } };
-        Menu(Params).then(res => {
+        await Menu(Params).then(res => {
             InitRouter(res.ResultData);
             let TempData = {
                 loadmenus: true,

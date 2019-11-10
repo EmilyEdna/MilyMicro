@@ -10,7 +10,7 @@ export const Login = (param) => {
         url: 'JsonAsync',
         method: 'post',
         data: target,
-        headers: { "Cross":"LISwNgnkA==="}
+        headers: { "Cross": "LISwNgnkA===" }
     })
 }
 
@@ -18,11 +18,10 @@ export const Login = (param) => {
  * 全局菜单
  * @param {any} param
  */
-export const Menu = (param) => {
+export const Menu =  (param) => {
     const target = Object.assign({ RequestPath: "System_SearchMenuItem_Main", Hit: 100 }, param);
     return servcie({
         url: "JsonAsync",
-        async: false,
         method: 'post',
         data: target
     });

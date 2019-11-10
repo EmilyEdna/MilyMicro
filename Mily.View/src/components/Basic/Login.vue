@@ -44,8 +44,12 @@
             submit() {
                 this.$refs.login.validate(v => {
                     Login(this.param).then(res => {
-                        this.$store.commit('changeToken', JSON.stringify(res.ResultData));
-                        this.$router.push('/');
+                        if (res.ResultData.Target) {
+                            this.$store.commit('changeToken', JSON.stringify(res.ResultData.Data));
+                            this.$router.push('/');
+                        }
+                        else
+                            alert(res.ResultData.Data)
                     });
                 });
             },

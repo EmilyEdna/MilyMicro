@@ -7,6 +7,9 @@ const service = axios.create({
     timeout:15000
 });
 
+/*
+ *处理请求
+ */
 service.interceptors.request.use(config => {
     //Default Use SqlServer DataBase
     config.headers.Type = 1;
@@ -18,9 +21,12 @@ service.interceptors.request.use(config => {
 }, err => {
     return Promise.reject(err);
 })
+/*
+ *处理返回结果
+ */
 service.interceptors.response.use(response => {
     if (response.config.headers.Cross)
-        cookie.set("Global", lzstring.compressToBase64(response.data.Data.ResultData.KeyId));
+        cookie.set("Global", lzstring.compressToBase64(response.data.Data.ResultData.Data.KeyId));
     return response.data.Data;
 }, err => {
     if (err && err.response) {

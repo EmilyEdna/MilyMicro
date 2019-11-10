@@ -138,64 +138,10 @@ namespace Mily.Service.SocketServ
             Object Result = RedisCaches.StringGet<Object>(RequestPath);
             if (Result != null)
                 return Result;
-            ParamCmd Param = new ParamCmd
-            {
-                Path = RequestPath,
-                HashData = TypeJudge(RequestPath, MapData)
-            };
-            ParseCmd.HashData = JsonConvert.SerializeObject(Param);
-            SocketCodition.Boots = NetType.Listen;
-            if (Hit >= 100) //权重100以上默认单机发送不负载
-                HitBalance(Param);
-            else //默认双机负载
-            {
-                Dictionary<Int32, SessionReceiveEventArgs> HitHand = SocketCodition.Session.Where(t => t.Key.Contains(Param.Service.ToUpper())).Select(t => t.Value).FirstOrDefault();
-                Fusing(HitHand, Hit);
-                HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
-                var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
-                var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
-                High.Priority = ThreadPriority.Highest;
-                Normol.Priority = ThreadPriority.Normal;
-                High.Start();
-                Normol.Start();
-            }
+            SocketComplate(RequestPath, MapData, Hit);
             return await Task.Run<Object>(() =>
             {
-                while (true)
-                {
-                    lock (Locker)
-                    {
-                        if (SocketCodition.Result.FirstOrDefault() != null)
-                        {
-                            Object ResultObject = JsonConvert.DeserializeObject<Object>(SocketCodition.Result.FirstOrDefault());
-                            String Code = JToken.FromObject(ResultObject).SelectToken("StatusCode").ToString();
-                            //返回数据中的状态码不是200则服务器有问题
-                            if (Convert.ToInt32(Code) != 200)
-                            {
-                                if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
-                                {
-                                    if (HitWeight.HitsRecord[HitWeight.Hits] >= 2)
-                                        return ResultObject;
-                                    HitWeight.HitsRecord[HitWeight.Hits] += 1;
-
-                                }
-                                else
-                                    HitWeight.HitsRecord.Add(HitWeight.Hits, 1);
-                                var Temp = JsonAsync(Context, RequestPath, MapData, Hit).Result;
-                            }
-                            else
-                            {
-                                //错误的服务器如果修复了则移除
-                                if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
-                                {
-                                    HitWeight.HitsRecord.Remove(HitWeight.Hits);
-                                }
-                                RedisCaches.StringSet(RequestPath, ResultObject, new TimeSpan(0, 0, 10));
-                                return ResultObject;
-                            }
-                        }
-                    }
-                }
+                return HandleSocketResults(Context, RequestPath, MapData, Hit);
             });
         }
 
@@ -214,59 +160,8 @@ namespace Mily.Service.SocketServ
             Object Result = RedisCaches.StringGet<Object>(RequestPath);
             if (Result != null)
                 return Result;
-            ParamCmd Param = new ParamCmd
-            {
-                Path = RequestPath,
-                HashData = TypeJudge(RequestPath, MapData)
-            };
-            ParseCmd.HashData = JsonConvert.SerializeObject(Param);
-            SocketCodition.Boots = NetType.Listen;
-            if (Hit >= 100) //权重100以上默认单机发送不负载
-                HitBalance(Param);
-            else //默认双机负载
-            {
-                Dictionary<Int32, SessionReceiveEventArgs> HitHand = SocketCodition.Session.Where(t => t.Key.Contains(Param.Service.ToUpper())).Select(t => t.Value).FirstOrDefault();
-                Fusing(HitHand, Hit);
-                HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
-                var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
-                var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
-                High.Priority = ThreadPriority.Highest;
-                Normol.Priority = ThreadPriority.Normal;
-                High.Start();
-                Normol.Start();
-            }
-            while (true)
-            {
-                if (SocketCodition.Result.FirstOrDefault() != null)
-                {
-                    Object ResultObject = JsonConvert.DeserializeObject<Object>(SocketCodition.Result.FirstOrDefault());
-                    String Code = JToken.FromObject(ResultObject).SelectToken("StatusCode").ToString();
-                    //返回数据中的状态码不是200则服务器有问题
-                    if (Convert.ToInt32(Code) != 200)
-                    {
-                        if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
-                        {
-                            if (HitWeight.HitsRecord[HitWeight.Hits] >= 2)
-                                return ResultObject;
-                            HitWeight.HitsRecord[HitWeight.Hits] += 1;
-
-                        }
-                        else
-                            HitWeight.HitsRecord.Add(HitWeight.Hits, 1);
-                        var Temp = JsonAsync(Context, RequestPath, MapData, Hit).Result;
-                    }
-                    else
-                    {
-                        //错误的服务器如果修复了则移除
-                        if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
-                        {
-                            HitWeight.HitsRecord.Remove(HitWeight.Hits);
-                        }
-                        RedisCaches.StringSet(RequestPath, ResultObject, new TimeSpan(0, 0, 10));
-                        return ResultObject;
-                    }
-                }
-            }
+            SocketComplate(RequestPath, MapData, Hit);
+            return HandleSocketResults(Context, RequestPath, MapData, Hit);
         }
 
         #endregion AJAX提交方式
@@ -383,5 +278,85 @@ namespace Mily.Service.SocketServ
             }
         }
         #endregion 权重分配
+
+        #region 优化请求
+        /// <summary>
+        /// 优化Socket请求
+        /// </summary>
+        /// <param name="RequestPath"></param>
+        /// <param name="MapData"></param>
+        /// <param name="Hit"></param>
+        [NotAction]
+        private void SocketComplate(String RequestPath, Dictionary<String, Object> MapData, Int32 Hit)
+        {
+            ParamCmd Param = new ParamCmd
+            {
+                Path = RequestPath,
+                HashData = TypeJudge(RequestPath, MapData)
+            };
+            ParseCmd.HashData = JsonConvert.SerializeObject(Param);
+            SocketCodition.Boots = NetType.Listen;
+            if (Hit >= 100) //权重100以上默认单机发送不负载
+                HitBalance(Param);
+            else //默认双机负载
+            {
+                Dictionary<Int32, SessionReceiveEventArgs> HitHand = SocketCodition.Session.Where(t => t.Key.Contains(Param.Service.ToUpper())).Select(t => t.Value).FirstOrDefault();
+                Fusing(HitHand, Hit);
+                HitWeight.SessionEvnet = HitHand[HitWeight.Hits];
+                var High = new Thread(new ThreadStart(() => HitWeight.SessionEvnet.Session.Server.Handler.SessionReceive(HitWeight.SessionEvnet.Server, HitWeight.SessionEvnet)));
+                var Normol = new Thread(new ThreadStart(() => HitBalance(Param)));
+                High.Priority = ThreadPriority.Highest;
+                Normol.Priority = ThreadPriority.Normal;
+                High.Start();
+                Normol.Start();
+            }
+        }
+        /// <summary>
+        /// 处理返回结果
+        /// </summary>
+        /// <param name="Context"></param>
+        /// <param name="RequestPath"></param>
+        /// <param name="MapData"></param>
+        /// <param name="Hit"></param>
+        /// <returns></returns>
+        [NotAction]
+        private Object HandleSocketResults(IHttpContext Context, String RequestPath, Dictionary<String, Object> MapData, Int32 Hit)
+        {
+            Thread.Sleep(1000);
+            if (SocketCodition.Result.FirstOrDefault() != null)
+            {
+                Object ResultObject = JsonConvert.DeserializeObject<Object>(SocketCodition.Result.FirstOrDefault());
+                String Code = JToken.FromObject(ResultObject).SelectToken("StatusCode").ToString();
+                //返回数据中的状态码不是200则服务器有问题
+                if (Convert.ToInt32(Code) != 200)
+                {
+                    if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
+                    {
+                        if (HitWeight.HitsRecord[HitWeight.Hits] >= 2)
+                            return ResultObject;
+                        HitWeight.HitsRecord[HitWeight.Hits] += 1;
+                    }
+                    else
+                        HitWeight.HitsRecord.Add(HitWeight.Hits, 1);
+                    Json(Context, RequestPath, MapData, Hit);
+                    return null;
+                }
+                else
+                {
+                    //错误的服务器如果修复了则移除
+                    if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
+                    {
+                        HitWeight.HitsRecord.Remove(HitWeight.Hits);
+                    }
+                    RedisCaches.StringSet(RequestPath, ResultObject, new TimeSpan(0, 0, 10));
+                    return ResultObject;
+                }
+            }
+            else
+            {
+                return HandleSocketResults(Context, RequestPath, MapData, Hit);
+            }
+        }
+        #endregion
     }
 }

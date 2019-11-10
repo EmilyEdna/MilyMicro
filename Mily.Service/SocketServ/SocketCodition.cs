@@ -169,6 +169,7 @@ namespace Mily.Service.SocketServ
                     if (!Session.ContainsKey(ServName.ToUpper()))
                         Session.Add(ServName.ToUpper(), SessionId);
                     else if (Session.ContainsKey(ServName.ToUpper()))
+                        //每一个服务的名称
                         Session.Add($"{ServName.ToUpper()}_{Event.Session.ID}", SessionId);
                 }
             }

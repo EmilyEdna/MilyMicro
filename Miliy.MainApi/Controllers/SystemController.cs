@@ -41,7 +41,7 @@ namespace Miliy.MainApi.Controllers
             var claimIdentity = new ClaimsIdentity("Cookie");
             var RoleAdmin = await SysService.Login(ViewModel);
             if (RoleAdmin == null)
-                return "登录失败，请检查用户名和密码是否正确!";
+                return new { Data = "登录失败，请检查用户名和密码是否正确!" ,Target=false};
             if (HttpContext != null)
             {
                 claimIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, RoleAdmin.RolePermissionId.ToString()));
@@ -49,7 +49,7 @@ namespace Miliy.MainApi.Controllers
                 claimIdentity.AddClaim(new Claim(ClaimTypes.Role, RoleAdmin.HandlerRole));
                 await HttpContext.SignInAsync(new ClaimsPrincipal(claimIdentity), new AuthenticationProperties { IsPersistent = true });
             }
-            return RoleAdmin;
+            return new { Data = RoleAdmin, Target = true };
         }
 
         #endregion
