@@ -22,7 +22,7 @@ router.beforeEach((to, from, next) => {
     if (!global && to.path !== '/login') {
         next("/login");
     } else {
-        if (!store.getters.loadmenus)
+        if (!store.getters.loadmenus) 
             dynamic();
         next();
     }

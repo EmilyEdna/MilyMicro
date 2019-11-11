@@ -6,9 +6,7 @@ namespace Mily.RabbitMQ.Subscriber
 {
     public class ServiceQueryExcute
     {
-        public static ServiceQueryExcute QueryExcute => new Lazy<ServiceQueryExcute>().Value;
-
-        public void ExtuteMQ<T>(MQEnum Type) where T : new()
+        public static void ExtuteMQ<T>(MQEnum Type) where T : new()
         {
             Task.Run(() =>
             {

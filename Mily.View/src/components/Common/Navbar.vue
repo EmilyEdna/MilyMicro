@@ -63,7 +63,12 @@
             });
         },
         mounted() {
-           this.Menus = localStorage.getItem("Menu");
+            setInterval(() => {
+                if (this.Menu)
+                    this.Menus = JSON.parse(localStorage.Menu);
+                else
+                    clearInterval();
+            }, 1000);
         }
     };
 </script>
