@@ -24,6 +24,7 @@ export default new Router({
         },
         {
             path: '/login',
+            meta: { tilte: "后台登录" },
             component: login
         }
     ]

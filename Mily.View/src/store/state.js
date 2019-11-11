@@ -5,13 +5,16 @@ let objects = {
     MenuData:''
 }
 try {
-    if (localStorage.token) {
+    let token = localStorage.token;
+    let router = localStorage.Router;
+    let menu = localStorage.Menu;
+    if (token) {
         objects.defaultToken = localStorage.token
     };
-    if (localStorage.Router) {
+    if (router) {
         objects.RouterData = JSON.parse(localStorage.Router)
     };
-    if (localStorage.Menu) {
+    if (menu) {
         objects.MenuData = JSON.parse(localStorage.Menu)
     }
 } catch (e) { }

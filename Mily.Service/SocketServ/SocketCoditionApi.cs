@@ -24,8 +24,6 @@ namespace Mily.Service.SocketServ
     [ActionFilter]
     public class SocketCoditionApi
     {
-        private static object Locker = new object();
-
         #region InitApi
 
         [NotAction]
@@ -332,12 +330,14 @@ namespace Mily.Service.SocketServ
                 {
                     if (HitWeight.HitsRecord.ContainsKey(HitWeight.Hits))
                     {
+                        //重试如果2次都错误则直接返回错误
                         if (HitWeight.HitsRecord[HitWeight.Hits] >= 2)
                             return ResultObject;
                         HitWeight.HitsRecord[HitWeight.Hits] += 1;
                     }
                     else
                         HitWeight.HitsRecord.Add(HitWeight.Hits, 1);
+                    //重试
                     Json(Context, RequestPath, MapData, Hit);
                     return null;
                 }

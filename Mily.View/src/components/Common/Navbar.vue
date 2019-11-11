@@ -46,7 +46,8 @@
         data() {
             return {
                 collapse: false,
-                Menus: []
+                Menus: [],
+                Count: false
             };
         },
         computed: {
@@ -55,7 +56,6 @@
             }
         },
         created() {
-
             //通过 Event Bus 进行组件间通信，来折叠侧边栏
             bus.$on('collapse', msg => {
                 this.collapse = msg;
@@ -63,12 +63,12 @@
             });
         },
         mounted() {
-            setInterval(() => {
-                if (this.Menu)
-                    this.Menus = JSON.parse(localStorage.Menu);
-                else
-                    clearInterval();
-            }, 1000);
+            let first = setTimeout(() => {
+                this.Menus = JSON.parse(localStorage.Menu);
+                this.Count = true
+            }, 2000);
+            if (this.Count)
+                clearTimeout(first);
         }
     };
 </script>
