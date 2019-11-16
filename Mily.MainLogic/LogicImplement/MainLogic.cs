@@ -81,7 +81,7 @@ namespace Mily.MainLogic.LogicImplement
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
            .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
            .Where(t => t.Deleted == false).ToList();
-            return await base.AlterData<Administrator>(null, administrator, DbReturnTypes.AlterSoft);
+            return await base.AlterData<Administrator>(null, null, administrator, DbReturnTypes.AlterSoft);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace Mily.MainLogic.LogicImplement
         {
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
                 .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString())).ToList();
-            return await base.RemoveData<Administrator>(null, administrator);
+            return await base.RemoveData<Administrator>(null, null, administrator);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<Object> EditAdmin(AdminRoleViewModel ViewModel)
         {
             Administrator administrator = ViewModel.AutoMapper<Administrator>();
-            return await base.AlterData(administrator, null, DbReturnTypes.AlterDefault, null, t => t.KeyId == ViewModel.KeyId);
+            return await base.AlterData(administrator, null, null, DbReturnTypes.AlterDefault, null, t => t.KeyId == ViewModel.KeyId);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Mily.MainLogic.LogicImplement
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
                 .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
                 .Where(t => t.Deleted == true).ToList();
-            return await base.AlterData<Administrator>(null, administrator, DbReturnTypes.AlterSoft, false);
+            return await base.AlterData<Administrator>(null, null, administrator, DbReturnTypes.AlterSoft, false);
         }
 
         #endregion

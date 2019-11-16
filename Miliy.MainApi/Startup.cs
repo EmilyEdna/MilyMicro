@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Mily.Extension.InitSystem;
 using Mily.Extension.SocketClient;
+using XExten.XPlus;
 
 namespace Miliy.MainApi
 {
@@ -17,7 +17,8 @@ namespace Miliy.MainApi
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile("appsettings.dbconfig.json", false, true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -31,14 +32,15 @@ namespace Miliy.MainApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder Application, IWebHostEnvironment Environment)
         {
-            if (env.IsDevelopment())
+            if (Environment.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                Application.UseDeveloperExceptionPage();
             }
-            ConfigInit.InitConfigCollection(app, env, Configuration);
-            NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
+            ConfigInit.InitConfigCollection(Application, Environment, Configuration);
+            XPlusEx.ReadXml();
+            //NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
             //NetSocketClinet.Socket(9090, typeof(BaseApiController));
         }
     }

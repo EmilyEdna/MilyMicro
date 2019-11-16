@@ -14,4 +14,10 @@
     <ProjectReference Include="..\Mily.MainLogic\Mily.MainLogic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="XmlConfig\SQL.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

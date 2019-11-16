@@ -47,7 +47,7 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Mily.Templater", "Mily.Temp
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Mily.View", "Mily.View\Mily.View.njsproj", "{10A6A989-5D41-4308-ADC1-9B48718A0180}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.ViewModels", "Mily.ViewModels\Mily.ViewModels.csproj", "{E31C744E-0DCD-4419-B2C4-3A958766393C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.ViewModels", "Mily.ViewModels\Mily.ViewModels.csproj", "{E31C744E-0DCD-4419-B2C4-3A958766393C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

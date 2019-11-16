@@ -47,6 +47,16 @@ namespace Mily.Setting
         public static String CacheKey { get; set; }
 
         /// <summary>
+        /// 数据库名集合
+        /// </summary>
+        public static  List<string> DbName { get; set; }
+
+        /// <summary>
+        /// 默认数据库
+        /// </summary>
+        public static string Default { get; set; }
+
+        /// <summary>
         /// 所有程序集
         /// </summary>
         public static IList<Assembly> Assembly { get; set; } = GetAssembly();

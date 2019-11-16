@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Mily.Extension.Infrastructure.GeneralModel;
 using Mily.Setting;
 using NLog;
-
 using System;
 using XExten.CacheFactory.RedisCache;
 
@@ -41,12 +39,14 @@ namespace Mily.Extension.InitSystem
 
         private static void SetConfig(IConfiguration Builder)
         {
+            Builder.Bind(new MilyConfig());
             MilyConfig.ConnectionString1 = Builder.GetConnectionString("ConnectionString1");
             MilyConfig.ConnectionString2 = Builder.GetConnectionString("ConnectionString2");
             MilyConfig.ConnectionStringSlave = Builder.GetConnectionString("ConnectionStringSlave");
             MilyConfig.RabbitMQConnectionString = Builder.GetConnectionString("RabbitMQConnectionString");
             MilyConfig.Discovery = Builder["Discovery"].ToString();
             RedisCaches.RedisConnectionString = Builder.GetConnectionString("RedisConnectionString");
+
         }
     }
 }

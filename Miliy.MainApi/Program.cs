@@ -30,9 +30,18 @@ namespace Miliy.MainApi
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args);
-
+        /// <summary>
+        /// 不以WindowsService服务创建
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public static IHostBuilder WebHostDefaults(string[] args) => CreateHostBuilder(args).ConfigureWebHostDefaults(WebBuilder => { WebBuilder.UseStartup<Startup>(); });
-
+        /// <summary>
+        /// 以WindowsService服务创建
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="port"></param>
+        /// <returns></returns>
         public static IHostBuilder WindowsServiceDefaults(string[] args, int port) => CreateHostBuilder(args)
             .UseWindowsService()
             .UseContentRoot(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName))
