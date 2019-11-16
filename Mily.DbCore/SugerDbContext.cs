@@ -16,6 +16,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using XExten.XCore;
 using XExten.XExpres;
+using XExten.XPlus;
 using XCache = XExten.CacheFactory;
 using Mily.Extension.Attributes;
 
@@ -26,6 +27,8 @@ namespace Mily.DbCore
     /// </summary>
     public class SugerDbContext
     {
+        public static readonly IDictionary<string, string> AdoSQL = XPlusEx.XmlMap;
+
         /// <summary>
         /// 获取连接客服端
         /// </summary>
@@ -67,6 +70,7 @@ namespace Mily.DbCore
         /// 目标库
         /// </summary>
         private static string TargetDbName { get; set; }
+
         /// <summary>
         /// 数据库类型切换
         /// </summary>
