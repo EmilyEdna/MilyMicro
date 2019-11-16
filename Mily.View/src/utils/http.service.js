@@ -13,6 +13,7 @@ const service = axios.create({
 service.interceptors.request.use(config => {
     //Default Use SqlServer DataBase
     config.headers.Type = 1;
+    config.headers["Content-Type"]="application/json"
     if (!config.headers.Cross)
         //if not login push the cookie in this data
         config.data.MapData.Global = cookie.get("Global");

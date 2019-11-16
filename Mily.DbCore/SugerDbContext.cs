@@ -126,7 +126,7 @@ namespace Mily.DbCore
                 });
             };
             #endif
-            if (!InitDbTable)
+            if (InitDbTable)
             {
                 Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
                 if (TargetDbName.Equals(MilyConfig.Default))
@@ -172,7 +172,7 @@ namespace Mily.DbCore
                 });
             };
             #endif
-            if (!InitDbTable)
+            if (InitDbTable)
             {
                 Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
                 if (TargetDbName.Equals(MilyConfig.Default))
