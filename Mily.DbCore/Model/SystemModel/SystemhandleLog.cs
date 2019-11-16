@@ -1,4 +1,5 @@
-﻿using Mily.Setting.ModelEnum;
+﻿using Mily.Extension.Attributes;
+using Mily.Setting.ModelEnum;
 using SqlSugar;
 using System;
 
@@ -8,6 +9,7 @@ namespace Mily.DbCore.Model.SystemModel
     ///操作日志表
     /// </summary>
     [SugarTable("System_HandleLog", "操作日志表")]
+    [DataBaseName("Test")]
     public class SystemhandleLog : BaseModel
     {
         /// <summary>

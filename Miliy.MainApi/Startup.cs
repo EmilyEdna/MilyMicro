@@ -40,7 +40,7 @@ namespace Miliy.MainApi
             }
             ConfigInit.InitConfigCollection(Application, Environment, Configuration);
             XPlusEx.ReadXml();
-            //NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
+            NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
             //NetSocketClinet.Socket(9090, typeof(BaseApiController));
         }
     }

@@ -2,9 +2,8 @@
 using Mily.DbCore.Model.SystemModel;
 #if RELEASE
 using Mily.Extension.LoggerFactory;
-#elif DEBUG
-using Mily.DbCore.Model;
 #endif
+using Mily.DbCore.Model;
 using Mily.Setting;
 using Mily.Setting.DbTypes;
 using Mily.Setting.ModelEnum;
@@ -18,6 +17,7 @@ using System.Threading.Tasks;
 using XExten.XCore;
 using XExten.XExpres;
 using XCache = XExten.CacheFactory;
+using Mily.Extension.Attributes;
 
 namespace Mily.DbCore
 {
@@ -104,7 +104,7 @@ namespace Mily.DbCore
             {
                 DataInfoCacheService = new DbCache()
             };
-#if RELEASE
+            #if RELEASE
             Emily.Aop.OnError = (Ex) =>
             {
                 var Logs = $"SQL语句：{Ex.Sql}[SQL参数：{Ex.Parametres}]";
@@ -121,13 +121,19 @@ namespace Mily.DbCore
                         LogFactoryExtension.WriteSqlWarn(Logs);
                 });
             };
-            #elif DEBUG
-            if (InitDbTable)
+            #endif
+            if (!InitDbTable)
             {
                 Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
-                Emily.CodeFirst.InitTables(ModelTypes);
+                if (!TargetDbName.Equals(MilyConfig.Default))
+                    Emily.CodeFirst.InitTables(ModelTypes);
+                else
+                {
+                    List<Type> Condition = ModelTypes.Where(Item => Item.CustomAttributes.Any(Attr => Attr.AttributeType == typeof(DataBaseNameAttribute))).ToList();
+                    Type[] Complete = Condition.Where(Item => (Item.GetCustomAttributes(typeof(DataBaseNameAttribute), false).FirstOrDefault() as DataBaseNameAttribute).DbHostAttr.Contains(TargetDbName)).ToArray();
+                    Emily.CodeFirst.InitTables(Complete);
+                }
             }
-            #endif
             return Emily;
         }
 
@@ -161,13 +167,19 @@ namespace Mily.DbCore
                         LogFactoryExtension.WriteSqlWarn(Logs);
                 });
             };
-            #elif DEBUG
-            if (InitDbTable)
+            #endif
+            if (!InitDbTable)
             {
                 Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
-                Emily.CodeFirst.InitTables(ModelTypes);
+                if (!TargetDbName.Equals(MilyConfig.Default))
+                    Emily.CodeFirst.InitTables(ModelTypes);
+                else
+                {
+                    List<Type> Condition = ModelTypes.Where(Item => Item.CustomAttributes.Any(Attr => Attr.AttributeType == typeof(DataBaseNameAttribute))).ToList();
+                    Type[] Complete = Condition.Where(Item => (Item.GetCustomAttributes(typeof(DataBaseNameAttribute), false).FirstOrDefault() as DataBaseNameAttribute).DbHostAttr.Contains(TargetDbName)).ToArray();
+                    Emily.CodeFirst.InitTables(Complete);
+                }
             }
-            #endif
             return Emily;
         }
 
@@ -197,7 +209,7 @@ namespace Mily.DbCore
                     XExp.SetProptertiesValue(DataValue, t);
                 });
                 Insert = Client.Insertable(entities);
-                await AddSystemLog(Client,entities.FirstOrDefault().GetType().Name, HandleEnum.Add); ;
+                await AddSystemLog(Client, entities.FirstOrDefault().GetType().Name, HandleEnum.Add); ;
             }
             else
             {
@@ -209,7 +221,7 @@ namespace Mily.DbCore
                  };
                 XExp.SetProptertiesValue(DataValue, entity);
                 Insert = Client.Insertable(entity);
-                await AddSystemLog(Client,typeof(Entity).Name, HandleEnum.Add);
+                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Add);
             }
             return type switch
             {
@@ -251,7 +263,7 @@ namespace Mily.DbCore
                         XExp.SetProptertiesValue(DataValue, t);
                     }
                 });
-                await AddSystemLog(Client,entities.FirstOrDefault().GetType().Name, HandleEnum.Edit);
+                await AddSystemLog(Client, entities.FirstOrDefault().GetType().Name, HandleEnum.Edit);
                 Update = Client.Updateable(entities);
             }
             else
@@ -301,13 +313,13 @@ namespace Mily.DbCore
                     Ids.Add(Guid.Parse(Map["KeyId"].ToString()));
                 });
                 Delete = Client.Deleteable(entities);
-                await AddSystemLog(Client,entities.FirstOrDefault().GetType().Name, HandleEnum.Remove);
+                await AddSystemLog(Client, entities.FirstOrDefault().GetType().Name, HandleEnum.Remove);
             }
             else
             {
                 Delete = Client.Deleteable(entity);
                 Ids.Add(Guid.Parse(entity.ToDic()["KeyId"].ToString()));
-                await AddSystemLog(Client,typeof(Entity).Name, HandleEnum.Remove);
+                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);
             }
 
             return type switch
@@ -327,7 +339,7 @@ namespace Mily.DbCore
         /// <param name="entity"></param>
         /// <param name="handle"></param>
         /// <returns></returns>
-        private async Task<Object> AddSystemLog(SqlSugarClient Client,string entity, HandleEnum handle)
+        private async Task<Object> AddSystemLog(SqlSugarClient Client, string entity, HandleEnum handle)
         {
             SystemhandleLog Log = new SystemhandleLog
             {

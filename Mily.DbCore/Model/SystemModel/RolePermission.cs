@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using Mily.Extension.Attributes;
+using SqlSugar;
 
 namespace Mily.DbCore.Model.SystemModel
 {
@@ -6,6 +7,7 @@ namespace Mily.DbCore.Model.SystemModel
     /// 权限许可表
     /// </summary>
     [SugarTable("System_RolePermission", "权限许可表")]
+    [DataBaseName("Test")]
     public class RolePermission : BaseModel
     {
         /// <summary>

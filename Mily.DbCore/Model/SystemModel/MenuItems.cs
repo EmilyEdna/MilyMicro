@@ -1,4 +1,5 @@
-﻿using Mily.Setting.ModelEnum;
+﻿using Mily.Extension.Attributes;
+using Mily.Setting.ModelEnum;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace Mily.DbCore.Model.SystemModel
     /// 菜单表
     /// </summary>
     [SugarTable("System_MenuItems", "系统菜单表")]
+    [DataBaseName("Test")]
     public class MenuItems : BaseModel
     {
         /// <summary>

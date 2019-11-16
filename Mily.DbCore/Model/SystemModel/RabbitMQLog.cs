@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using Mily.Extension.Attributes;
+using SqlSugar;
 
 namespace Mily.DbCore.Model.SystemModel
 {
@@ -6,6 +7,7 @@ namespace Mily.DbCore.Model.SystemModel
     /// 消费记录日志表
     /// </summary>
     [SugarTable("System_RabbitMQLog", "消费记录日志表")]
+    [DataBaseName("Test")]
     public class RabbitMQLog : BaseModel
     {
         /// <summary>

@@ -1,11 +1,16 @@
-﻿using SqlSugar;
+﻿using Mily.Extension.Attributes;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Mily.DbCore.Model.SystemModel
 {
+    /// <summary>
+    /// 权限菜单表
+    /// </summary>
     [SugarTable("System_RoleMenuItems", "权限菜单表")]
+    [DataBaseName("Test")]
     public class RoleMenuItems : BaseModel
     {
         /// <summary>

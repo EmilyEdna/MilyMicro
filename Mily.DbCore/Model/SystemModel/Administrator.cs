@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using Mily.Extension.Attributes;
+using SqlSugar;
 using System;
 
 namespace Mily.DbCore.Model.SystemModel
@@ -7,6 +8,7 @@ namespace Mily.DbCore.Model.SystemModel
     /// 系统用户表
     /// </summary>
     [SugarTable("System_Administrator", "系统用户表")]
+    [DataBaseName("Test")]
     public class Administrator : BaseModel
     {
         /// <summary>
