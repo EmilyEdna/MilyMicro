@@ -5,8 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mily.Forms"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="MainWindow" Height="600" Width="400">
+    <Border Padding="10">
+    <StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Test1" Grid.Column="0" Margin="0 0 10 0"/>
+            <Button Content="Test2" Grid.Column="1" />
+            <Button Content="Test3" Grid.Column="2"  Margin="10 0 0 0"/>
+        </Grid>
+    </StackPanel>
+    </Border>
 </Window>
