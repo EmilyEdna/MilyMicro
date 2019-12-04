@@ -1,8 +1,9 @@
-﻿using Mily.OhterLogic.LogicInterface;
+﻿using Mily.DbCore;
+using Mily.OhterLogic.LogicInterface;
 
 namespace Mily.OhterLogic.LogicImplement
 {
-    public class OtherLogic : IOtherLogic
+    public class OtherLogic : SugerDbContext, IOtherLogic
     {
     }
 }

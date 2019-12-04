@@ -7,8 +7,10 @@ namespace Mily.Service.CenterApi.ViewModel
     public class ServerCondition:BaseCondition
     {
         public int No { get; set; }
-        public string Addr { get; set; }
-        public string Port { get; set; }
+        public string ServiceName { get; set; }
+        public string Host { get; set; }
+        public string TcpPort { get; set; }
+        public string HttpPort { get; set; }
         public int Stutas { get; set; }
     }
 }

@@ -62,7 +62,7 @@
                                     <td>{{item.Port}}</td>
                                     <td>{{item.Status?"正常":"错误"}}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-danger" @click="">{{item.Status?"停用":"启用"}}</button>
+                                        <button class="btn btn-sm btn-danger" @click="insert()">{{item.Status?"停用":"启用"}}</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -106,10 +106,8 @@
                     axios({
                         url: '/center/insert',
                         method: 'post',
-                        data: { No: '1', Addr:}
-                    }).then(res => {
-                        this.ServList = res.data.Data;
-                    })
+                        data: { No: 1, Addr: '192.168.1.1', Port: '8080', Stutas: 0 }
+                    });
                 }
             }
         });

@@ -8,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using XExten.XCore;
 using System.Linq;
+using Mily.Service.CenterApi.ViewModel;
+using XExten.CacheFactory;
 
 namespace Mily.Service.SocketServ
 {
@@ -98,7 +100,8 @@ namespace Mily.Service.SocketServ
         /// </summary>
         /// <param name="Server"></param>
         /// <param name="Content"></param>
-        private void Write(IServer Server, string Content) {
+        private void Write(IServer Server, string Content)
+        {
             try
             {
                 ISession Session = Server.GetOnlines().Where(item => item.ID == KeyId).FirstOrDefault();
@@ -171,6 +174,17 @@ namespace Mily.Service.SocketServ
                     else if (Session.ContainsKey(ServName.ToUpper()))
                         //每一个服务的名称
                         Session.Add($"{ServName.ToUpper()}_{Event.Session.ID}", SessionId);
+                    if (Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == ServName) == null)
+                    {
+                        Caches.MongoDBCacheSet(new ServerCondition
+                        {
+                            No = (int)Event.Session.ID,
+                            Addr = Event.Session.RemoteEndPoint.ToString().Split(":")[0],
+                            Port = Event.Session.RemoteEndPoint.ToString().Split(":")[1],
+                            Stutas = 1,
+                            ServiceName = ServName
+                        });
+                    }
                 }
             }
         }

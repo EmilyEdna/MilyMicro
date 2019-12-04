@@ -7,6 +7,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Mily.DbCore\Mily.DbCore.csproj" />
     <ProjectReference Include="..\Mily.Setting\Mily.Setting.csproj" />
   </ItemGroup>
 </Project>
