@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh-cn" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>服务中心</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div id="app" class="container-fluid">
+        <h2>Mily服务中心</h2>
+        <p>https://github.com/EmilyEdna</p>
+        <p>————————————————————————</p>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#admin" role="tab" aria-controls="home"
+                   aria-selected="true">
+                    <h6>服务中心</h6>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#edit" role="tab" aria-controls="profile"
+                   aria-selected="false">
+                    <h6>服务负载</h6>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#audit" role="tab" aria-controls="contact"
+                   aria-selected="false">
+                    <h6>健康检查</h6>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+                   aria-selected="false">
+                    <h6>插件中心</h6>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content border border-top-0" id="myTabContent">
+            <div class="tab-pane fade show active" id="admin" role="tabpanel" aria-labelledby="home-tab">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>服务编号</th>
+                                    <th>服务地址</th>
+                                    <th>服务端口</th>
+                                    <th>服务状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item,index) in ServList" class="text-center">
+                                    <td>{{item.No}}</td>
+                                    <td>{{item.Addr}}</td>
+                                    <td>{{item.Port}}</td>
+                                    <td>{{item.Status?"正常":"错误"}}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger" @click="">{{item.Status?"停用":"启用"}}</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="profile-tab">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">新闻编辑内容</li>
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="audit" role="tabpanel" aria-labelledby="contact-tab">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">新闻审核内容</li>
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">问题反馈内容</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                ServList: []
+            },
+            created() {
+                axios({
+                    url: '/center/GetServer',
+                    method: 'get',
+                }).then(res => {
+                    this.ServList = res.data.Data;
+                })
+            },
+            methods: {
+                insert() {
+                    axios({
+                        url: '/center/insert',
+                        method: 'post',
+                        data: { No: '1', Addr:}
+                    }).then(res => {
+                        this.ServList = res.data.Data;
+                    })
+                }
+            }
+        });
+    </script>
+</body>
+</html>

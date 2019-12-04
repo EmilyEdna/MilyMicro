@@ -29,13 +29,14 @@ namespace Mily.Service.SocketServ
         [NotAction]
         public static void NetApiServProvider()
         {
-            RedisCaches.RedisConnectionString = Configuration.Redis;
+            //RedisCaches.RedisConnectionString = Configuration.Redis;
             HttpApiServer ApiServ = new HttpApiServer();
             ApiServ.Register(typeof(SocketCoditionApi).Assembly);
             ApiServ.Options.LogLevel = LogType.Warring;
             ApiServ.Options.Host = Configuration.SOCKET_Host;
             ApiServ.Options.Port = Configuration.SOCKET_Port;
-            ApiServ.Options.StaticResourcePath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "UpLoadFile";
+            ApiServ.Options.StaticResourcePath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "Views";
+            ApiServ.Options.SetDebug();
             ApiServ.ServerLog = (Server, Event) =>
             {
                 if (Event.Type == LogType.Error)
@@ -177,7 +178,7 @@ namespace Mily.Service.SocketServ
         public async Task<Object> UploadFile(IHttpContext Context, String DirName)
         {
             Char Separator = Path.DirectorySeparatorChar;
-            String Bin = $"{Directory.GetCurrentDirectory() + Separator}UpLoadFile{Separator + DirName + DateTime.Now.ToString("yyyyMMdd") + Separator}";
+            String Bin = $"{Directory.GetCurrentDirectory() + Separator}Views{Separator}UpLoadFile{Separator + DirName + DateTime.Now.ToString("yyyyMMdd") + Separator}";
             List<String> Paths = new List<String>();
             if (!Directory.Exists(Bin))
                 Directory.CreateDirectory(Bin);
@@ -187,7 +188,7 @@ namespace Mily.Service.SocketServ
                 {
                     await Files.Data.CopyToAsync(stream);
                 }
-                Paths.Add($"{Separator}UpLoadFile{Separator + DirName + DateTime.Now.ToString("yyyyMMdd") + Separator + Files.FileName}");
+                Paths.Add($"Views{Separator}UpLoadFile{Separator + DirName + DateTime.Now.ToString("yyyyMMdd") + Separator + Files.FileName}");
             }
             return Paths;
         }
