@@ -179,8 +179,9 @@ namespace Mily.Service.SocketServ
                         Caches.MongoDBCacheSet(new ServerCondition
                         {
                             No = (int)Event.Session.ID,
-                            Addr = Event.Session.RemoteEndPoint.ToString().Split(":")[0],
-                            Port = Event.Session.RemoteEndPoint.ToString().Split(":")[1],
+                            Host = Event.Session.RemoteEndPoint.ToString().Split(":")[0],
+                            TcpPort = Event.Session.RemoteEndPoint.ToString().Split(":")[1],
+                            HttpPort="2020",
                             Stutas = 1,
                             ServiceName = ServName
                         });

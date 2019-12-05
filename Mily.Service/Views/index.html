@@ -49,21 +49,35 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>服务编号</th>
+                                    <th>服务名称</th>
                                     <th>服务地址</th>
-                                    <th>服务端口</th>
+                                    <th>TCP端口</th>
+                                    <th>HTTP端口</th>
                                     <th>服务状态</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(item,index) in ServList" class="text-center">
+                                <tr v-for="(item,index) in ServList" class="text-center" v-if="`index`">
                                     <td>{{item.No}}</td>
-                                    <td>{{item.Addr}}</td>
-                                    <td>{{item.Port}}</td>
+                                    <td>{{item.ServiceName}}</td>
+                                    <td>{{item.Host}}</td>
+                                    <td>{{item.TcpPort}}</td>
+                                    <td>{{item.HttpPort}}</td>
                                     <td>{{item.Status?"正常":"错误"}}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-danger" @click="insert()">{{item.Status?"停用":"启用"}}</button>
+                                        <button class="btn btn-sm btn-danger" @click="">{{item.Status?"停用":"启用"}}</button>
+                                        <button class="btn btn-sm btn-danger" @click="Edit(index,item)">编辑</button>
                                     </td>
+                                </tr>
+                                <tr v-else>
+                                    <td><input type="text" class="form-control" v-model="Param.No" readonly /></td>
+                                    <td><input type="text" class="form-control" v-model="Param.ServiceName" /></td>
+                                    <td><input type="text" class="form-control" v-model="Param.Host" /></td>
+                                    <td><input type="text" class="form-control" v-model="Param.TcpPort" /></td>
+                                    <td><input type="text" class="form-control" v-model="Param.HttpPort" /></td>
+                                    <td><select class="form-control" v-model="Param.Stutas"><option :value="0">错误</option><option :value="1">正常</option></select></td>
+                                    <td><button class="btn btn-sm btn-danger" @click="Save(index,item)">保存</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -91,7 +105,10 @@
         var vm = new Vue({
             el: "#app",
             data: {
-                ServList: []
+                NoEdit: true,
+                DoEdit: false,
+                ServList: [],
+                Param: {No:'',ServiceName:'',Host:'',TcpPort:'',HttpPort:'',Stutas:''},
             },
             created() {
                 axios({
@@ -102,11 +119,26 @@
                 })
             },
             methods: {
+                Edit(index, data) {
+                    this.Param.No = data.No;
+                    this.Param.ServiceName = data.ServiceName;
+                    this.Param.Host = data.Host;
+                    this.Param.TcpPort = data.TcpPort;
+                    this.Param.HttpPort = data.HttpPort;
+                    this.Param.Stutas = data.Stutas;
+                    this.DoEdit = true;
+                    this.NoEdit = false;
+                },
+                Save(index) {
+                    this.DoEdit = false;
+                    this.NoEdit = true;
+                    this.ServList[index] = this.Param;
+                },
                 insert() {
                     axios({
                         url: '/center/insert',
                         method: 'post',
-                        data: { No: 1, Addr: '192.168.1.1', Port: '8080', Stutas: 0 }
+                        data: { No: 2, ServiceName: 'Ohter', Host: '192.168.1.2', TcpPort: '8085', HttpPort: '8089', Stutas: 1 }
                     });
                 }
             }

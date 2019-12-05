@@ -14,10 +14,10 @@ namespace Mily.Service.EventServ
             //初始化链接
             Configuration.InitConnection();
             //激活TCP服务端
-            SocketCodition.NetServProvider();
+            //SocketCodition.NetServProvider();
             //激活Api
-            SocketCoditionApi.NetApiServProvider();
-            //NetApiServProvider.InitApiProvider();
+            //SocketCoditionApi.NetApiServProvider();
+            NetApiServProvider.InitApiProvider();
             //创建powershell指令
             BatCondition.CreateShellCondition();
         }
