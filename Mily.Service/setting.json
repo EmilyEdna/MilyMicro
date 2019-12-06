@@ -12,6 +12,6 @@
   },
   "MongoDb": {
     "DbName": "configer",
-    "MongoConnectionString": "mongodb://localhost:27017" //MongoDb
+    "MongoConnectionString": "mongodb://127.0.0.1:27017" //MongoDb
   }
 }

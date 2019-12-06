@@ -1,19 +1,20 @@
 ﻿using BeetleX.FastHttpApi;
 using BeetleX.FastHttpApi.Data;
-using System.Linq;
-using XExten.CacheFactory;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Mily.Service.CenterApi.CenterAop;
 using Mily.Service.CenterApi.ViewModel;
-using XExten.XCore;
-using System.Threading.Tasks;
 using MongoDB.Driver;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using XExten.CacheFactory;
+using XExten.XCore;
 
 namespace Mily.Service.CenterApi
 {
     [Options(AllowOrigin = "*", AllowHeaders = "*")]
-    [Controller(BaseUrl = "/center")]
+    [Controller(BaseUrl = "/Center")]
+    [CenterFilter]
+    [DefaultJsonResultFilter]
     public class ServCenterApi
     {
         [Post]
@@ -26,7 +27,6 @@ namespace Mily.Service.CenterApi
         [Get]
         public async Task<Object> GetServer()
         {
-
             return await Task.Run(() =>
            {
                return Caches.MongoDBCachesGet<ServerCondition>(t => true);

@@ -65,7 +65,7 @@
                                     <td v-if="EditRow!=item.No">{{item.TcpPort}}</td>
                                     <td v-if="EditRow!=item.No">{{item.HttpPort}}</td>
                                     <td v-if="EditRow!=item.No">{{item.Stutas?"正常":"错误"}}</td>
-                                    <td v-if="EditRow==item.No"><input type="text" class="form-control text-center" v-model="Param.No" disabled  style="width:50px;"/></td>
+                                    <td v-if="EditRow==item.No"><input type="text" class="form-control text-center" v-model="Param.No" disabled style="width:50px;" /></td>
                                     <td v-if="EditRow==item.No"><input type="text" class="form-control" v-model="Param.ServiceName" /></td>
                                     <td v-if="EditRow==item.No"><input type="text" class="form-control" v-model="Param.Host" /></td>
                                     <td v-if="EditRow==item.No"><input type="text" class="form-control" v-model="Param.TcpPort" /></td>
@@ -108,14 +108,17 @@
                 Param: {},
             },
             created() {
-                axios({
-                    url: '/center/GetServer',
-                    method: 'get',
-                }).then(res => {
-                    this.ServList = res.data.Data;
-                })
+                this.Init();
             },
             methods: {
+                Init() {
+                    axios({
+                        url: '/Center/GetServer',
+                        method: 'get',
+                    }).then(res => {
+                        this.ServList = res.data;
+                    })
+                },
                 Edit(data) {
                     this.Param = data;
                     this.EditRow = data.No;
