@@ -7,6 +7,7 @@ using Mily.Extension.LoggerFactory;
 using System.Linq;
 using XExten.Common;
 using System.Collections.Generic;
+using System;
 
 namespace Mily.Extension.ClientRpc
 {
@@ -29,7 +30,7 @@ namespace Mily.Extension.ClientRpc
             {
                 LogFactoryExtension.WriteError(Error.Error.Source, Error.Error.TargetSite.Name, string.Join("|", Error.Error.TargetSite.GetParameters().ToList()), Error.Message, "");
             };
-            Client.Send(ResultProvider.SetValue(NetTypeEnum.Connect, new Dictionary<object, object> { { "RegistService", "Other" } }));
+            Client.Send(ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.Connect, "Other"), new Dictionary<object, object> { { "RegistService", "Other" } }));
         }
     }
 }

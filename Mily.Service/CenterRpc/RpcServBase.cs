@@ -3,6 +3,9 @@ using BeetleX.EventArgs;
 using Mily.Service.CenterRpc.RpcSetting.Handler;
 using XExten.Common;
 using XExten.CacheFactory;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace Mily.Service.CenterRpc
 {
@@ -16,7 +19,7 @@ namespace Mily.Service.CenterRpc
         public override void SessionPacketDecodeCompleted(IServer Server, PacketDecodeCompletedEventArgs Event)
         {
             ResultProvider Provider = ProxyHandler.InitProxy((ResultProvider)Event.Message);
-            Caches.MongoDBCacheSet(Event);
+            EventCache.SetPacketCache(Provider, Event);
             Server.Send(Provider, Event.Session);
         }
     }

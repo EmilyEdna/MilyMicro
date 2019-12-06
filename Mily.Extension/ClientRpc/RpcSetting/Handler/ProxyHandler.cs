@@ -1,8 +1,10 @@
 ﻿using Mily.Extension.ClientRpc.RpcSetting.View;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using XExten.Common;
+using XExten.XCore;
 
 namespace Mily.Extension.ClientRpc.RpcSetting.Handler
 {
@@ -17,21 +19,25 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Handler
         /// <param name="Provider"></param>
         public static ResultProvider InitProxy(ResultProvider Provider)
         {
-            return EachProxy((NetTypeEnum)Convert.ToInt32(Provider.ObjectProvider));
+            return EachProxy(Provider.ObjectProvider.ToJson().ToModel<ClientKey>());
         }
         /// <summary>
         /// 遍历结果
         /// </summary>
         /// <param name="Net"></param>
         /// <returns></returns>
-        private static ResultProvider EachProxy(NetTypeEnum Net)
+        private static ResultProvider EachProxy(ClientKey Key)
         {
-            return Net switch
+            return Key.NetType switch
             {
-                NetTypeEnum.Connect => ResultProvider.SetValue(NetTypeEnum.Listened, new Dictionary<Object, Object> { { "RegistSuccessful", "OK" } }),
-                NetTypeEnum.Listened => ResultProvider.SetValue(NetTypeEnum.Listened, new Dictionary<Object, Object> { { "ListenedSuccessful", "OK" } }),
-                NetTypeEnum.DisConnect => ResultProvider.SetValue(NetTypeEnum.DisConnect, new Dictionary<Object, Object> { { "ListenedFailed", "FAILED" } }),
-                _ => ResultProvider.SetValue(NetTypeEnum.Listened, new Dictionary<Object, Object> { { "ListenedSuccessful", "OK" } }),
+                NetTypeEnum.Connect => ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.Listened, Key.ServName),
+                new Dictionary<Object, Object> { { "RegistSuccessful", "OK" } }),
+                NetTypeEnum.Listened => ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.Listened, Key.ServName),
+                new Dictionary<Object, Object> { { "ListenedSuccessful", "OK" } }),
+                NetTypeEnum.DisConnect => ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.DisConnect, Key.ServName),
+                new Dictionary<Object, Object> { { "ListenedFailed", "FAILED" } }),
+                _ => ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.Listened, Key.ServName),
+                new Dictionary<Object, Object> { { "ListenedSuccessful", "OK" } }),
             };
         }
     }
