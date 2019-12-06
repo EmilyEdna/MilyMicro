@@ -2,11 +2,9 @@
 using BeetleX.Packets;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
-namespace Mily.Clinet.ClientRpc.RpcSetting
+namespace Mily.Extension.ClientRpc.RpcSetting
 {
     public class TypeHandler : IMessageTypeHeader
     {

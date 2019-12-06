@@ -6,13 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mily.Clinet.ClientRpc.RpcSetting
+namespace Mily.Extension.ClientRpc.RpcSetting
 {
     public class RcpClientPacket : FixeHeaderClientPacket
     {
         public IMessageTypeHeader TypeHeader { get; set; }
 
-        public RcpClientPacket() {
+        public RcpClientPacket()
+        {
             TypeHeader = new TypeHandler();
         }
 

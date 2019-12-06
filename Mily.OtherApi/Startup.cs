@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Mily.Extension.ClientRpc;
 using Mily.Extension.InitSystem;
 using Mily.Extension.SocketClient;
 using XExten.XPlus;
@@ -40,7 +41,8 @@ namespace Mily.OtherApi
             }
             ConfigInit.InitConfigCollection(Application, Environment, Configuration);
             XPlusEx.ReadXml();
-            NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
+            NetRpcClientProvider.InitRpcProvider();
+            //NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
             //NetSocketClinet.Socket(9090, typeof(BaseApiController));
         }
     }

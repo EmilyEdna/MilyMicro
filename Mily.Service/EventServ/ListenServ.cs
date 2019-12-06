@@ -19,7 +19,7 @@ namespace Mily.Service.EventServ
             //激活Api
             //SocketCoditionApi.NetApiServProvider();
             //初始化服务中心API
-            //NetApiServProvider.InitApiProvider();
+            NetApiServProvider.InitApiProvider();
             //创建powershell指令
             BatCondition.CreateShellCondition();
             NetRpcServProvider.InitRpcProvider();

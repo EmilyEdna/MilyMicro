@@ -1,12 +1,14 @@
 ﻿using BeetleX;
 using BeetleX.Clients;
-using Mily.Clinet.ClientRpc.RpcSetting;
-using System;
+using Mily.Extension.ClientRpc.RpcSetting;
+using Mily.Extension.ClientRpc.RpcSetting.Handler;
+using Mily.Extension.ClientRpc.RpcSetting.View;
+using Mily.Extension.LoggerFactory;
+using System.Linq;
+using XExten.Common;
 using System.Collections.Generic;
-using System.Text;
-using XExten.XCore;
 
-namespace Mily.Clinet.ClientRpc
+namespace Mily.Extension.ClientRpc
 {
     public class NetRpcClientProvider
     {
@@ -21,22 +23,13 @@ namespace Mily.Clinet.ClientRpc
             Client.Socket.ReceiveBufferSize = int.MaxValue;
             Client.PacketReceive = (Client, Data) =>
             {
-
+                ProxyHandler.InitProxy((ResultProvider)Data);
             };
             Client.ClientError = (Client, Error) =>
             {
-
+                LogFactoryExtension.WriteError(Error.Error.Source, Error.Error.TargetSite.Name, string.Join("|", Error.Error.TargetSite.GetParameters().ToList()), Error.Message, "");
             };
-            while (true)
-            {
-                Console.ReadLine();
-                var p = new Dictionary<Object, Object>
-                {
-                    { "Main","1"}
-                };
-               var  p1 =  XExten.Common.ResultProvider.SetValue(p.ToJson(), p);
-                Client.Send(p1);
-            }
+            Client.Send(ResultProvider.SetValue(NetTypeEnum.Connect, new Dictionary<object, object> { { "RegistService", "Other" } }));
         }
     }
 }
