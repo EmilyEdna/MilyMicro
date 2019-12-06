@@ -15,7 +15,7 @@ namespace Mily.Service.CenterRpc
         }
         public override void SessionPacketDecodeCompleted(IServer Server, PacketDecodeCompletedEventArgs Event)
         {
-            var Result = (Dictionary<String, Object>)Event.Message;
+            var Result = (XExten.Common.ResultProvider)Event.Message;
             Server.Send(Result, Event.Session);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Mily.Service.CenterApi;
+using Mily.Service.CenterRpc;
 using Mily.Service.Shell;
 using Mily.Service.SocketServ;
 using Mily.Service.ViewSetting;
@@ -18,9 +19,10 @@ namespace Mily.Service.EventServ
             //激活Api
             //SocketCoditionApi.NetApiServProvider();
             //初始化服务中心API
-            NetApiServProvider.InitApiProvider();
+            //NetApiServProvider.InitApiProvider();
             //创建powershell指令
             BatCondition.CreateShellCondition();
+            NetRpcServProvider.InitRpcProvider();
         }
 
         public void Stop()

@@ -9,9 +9,12 @@ namespace Mily.Service.RcpSetting.CenterRpc
     public class RcpServerPacket : FixedHeaderPacket
     {
         public IMessageTypeHeader TypeHeader { get; set; }
-        public override IPacket Clone()
+        public RcpServerPacket()
         {
             TypeHeader = new TypeHandler();
+        }
+        public override IPacket Clone()
+        {
             return new RcpServerPacket();
         }
 

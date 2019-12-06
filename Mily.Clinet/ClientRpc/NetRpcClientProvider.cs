@@ -4,6 +4,7 @@ using Mily.Clinet.ClientRpc.RpcSetting;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using XExten.XCore;
 
 namespace Mily.Clinet.ClientRpc
 {
@@ -18,14 +19,24 @@ namespace Mily.Clinet.ClientRpc
             Client.Connect();
             Client.Socket.SendBufferSize = int.MaxValue;
             Client.Socket.ReceiveBufferSize = int.MaxValue;
-            Client.PacketReceive = (Client, Data) => 
-            { 
-            
+            Client.PacketReceive = (Client, Data) =>
+            {
+
             };
             Client.ClientError = (Client, Error) =>
             {
 
             };
+            while (true)
+            {
+                Console.ReadLine();
+                var p = new Dictionary<Object, Object>
+                {
+                    { "Main","1"}
+                };
+               var  p1 =  XExten.Common.ResultProvider.SetValue(p.ToJson(), p);
+                Client.Send(p1);
+            }
         }
     }
 }

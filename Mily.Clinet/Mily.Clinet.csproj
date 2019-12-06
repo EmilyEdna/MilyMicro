@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="BeetleX" Version="1.4.7" />
-    <PackageReference Include="XExten" Version="2.2.0.6" />
+    <PackageReference Include="XExten" Version="2.2.0.7" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mily.Clinet.ClientRpc;
+using System;
 
 namespace Mily.Clinet
 {
@@ -6,6 +7,7 @@ namespace Mily.Clinet
     {
         static void Main(string[] args)
         {
+            NetRpcClientProvider.InitRpcProvider();
         }
     }
 }

@@ -11,9 +11,13 @@ namespace Mily.Clinet.ClientRpc.RpcSetting
     public class RcpClientPacket : FixeHeaderClientPacket
     {
         public IMessageTypeHeader TypeHeader { get; set; }
+
+        public RcpClientPacket() {
+            TypeHeader = new TypeHandler();
+        }
+
         public override IClientPacket Clone()
         {
-            TypeHeader = new TypeHandler();
             return new RcpClientPacket();
         }
 
