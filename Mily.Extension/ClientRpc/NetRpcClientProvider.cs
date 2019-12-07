@@ -6,8 +6,6 @@ using Mily.Extension.ClientRpc.RpcSetting.View;
 using Mily.Extension.LoggerFactory;
 using System.Linq;
 using XExten.Common;
-using System.Collections.Generic;
-using System;
 
 namespace Mily.Extension.ClientRpc
 {
@@ -18,19 +16,21 @@ namespace Mily.Extension.ClientRpc
         /// </summary>
         public static void InitRpcProvider()
         {
-            AsyncTcpClient Client = SocketFactory.CreateClient<AsyncTcpClient, RcpClientPacket>("127.0.0.1", 9090);
-            Client.Connect();
-            Client.Socket.SendBufferSize = int.MaxValue;
-            Client.Socket.ReceiveBufferSize = int.MaxValue;
-            Client.PacketReceive = (Client, Data) =>
+            AsyncTcpClient ClientAsnyc = SocketFactory.CreateClient<AsyncTcpClient, RcpClientPacket>("127.0.0.1", 9090);
+            ClientAsnyc.Connect();
+            ClientAsnyc.Socket.SendBufferSize = int.MaxValue;
+            ClientAsnyc.Socket.ReceiveBufferSize = int.MaxValue;
+            ClientAsnyc.PacketReceive = (Client, Data) =>
             {
-                ProxyHandler.InitProxy((ResultProvider)Data);
+                ResultProvider  Provider = ProxyHandler.InitProxy((ResultProvider)Data);
+                if (Client.IsConnected)
+                    ClientHandler.SendInvoke(ClientAsnyc, Provider);
             };
-            Client.ClientError = (Client, Error) =>
+            ClientAsnyc.ClientError = (Client, Error) =>
             {
                 LogFactoryExtension.WriteError(Error.Error.Source, Error.Error.TargetSite.Name, string.Join("|", Error.Error.TargetSite.GetParameters().ToList()), Error.Message, "");
             };
-            Client.Send(ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.Connect, "Other"), new Dictionary<object, object> { { "RegistService", "Other" } }));
+            ClientAsnyc.Send(ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.Connect, "Other"), ClientValue.SetStrValue("注册服务", "Others")));
         }
     }
 }

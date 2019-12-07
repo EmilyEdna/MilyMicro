@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Mily.Extension.ClientRpc;
 using Mily.Extension.InitSystem;
 using Mily.Extension.SocketClient;
+using Mily.Setting;
 using XExten.XPlus;
 
 namespace Mily.OtherApi
@@ -40,7 +41,7 @@ namespace Mily.OtherApi
                 Application.UseDeveloperExceptionPage();
             }
             ConfigInit.InitConfigCollection(Application, Environment, Configuration);
-            XPlusEx.ReadXml();
+            MilyConfig.XmlSQL = XPlusEx.ReadXml();
             NetRpcClientProvider.InitRpcProvider();
             //NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
             //NetSocketClinet.Socket(9090, typeof(BaseApiController));

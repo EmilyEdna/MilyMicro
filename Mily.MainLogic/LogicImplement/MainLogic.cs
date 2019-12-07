@@ -1,8 +1,6 @@
 ﻿using Mily.DbCore;
 using Mily.DbCore.Model.SystemModel;
-using Mily.Extension.ModelMapper;
 using Mily.MainLogic.LogicInterface;
-using Mily.Setting.DbTypes;
 using Mily.Setting.ModelEnum;
 using Mily.ViewModels;
 using SqlSugar;
@@ -103,7 +101,7 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> EditAdmin(AdminRoleViewModel ViewModel)
         {
-            Administrator administrator = ViewModel.AutoMapper<Administrator>();
+            Administrator administrator = ViewModel.ToAutoMapper<Administrator>();
             return await base.AlterData(administrator, null, null, DbReturnTypes.AlterDefault, null, t => t.KeyId == ViewModel.KeyId);
         }
 

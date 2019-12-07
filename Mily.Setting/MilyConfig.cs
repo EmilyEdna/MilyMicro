@@ -57,6 +57,11 @@ namespace Mily.Setting
         public static string Default { get; set; }
 
         /// <summary>
+        /// 配置SQL语句
+        /// </summary>
+        public static Dictionary<string, string> XmlSQL { get; set; }
+
+        /// <summary>
         /// 所有程序集
         /// </summary>
         public static IList<Assembly> Assembly { get; set; } = GetAssembly();

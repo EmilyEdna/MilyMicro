@@ -29,7 +29,8 @@ namespace Mily.Service.CenterApi
             //Caches.MongoDBCacheSet(Condition);
             ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.Stutas != 0);
             var Event = EventCache.GetPacketCache(Condition.ServiceName);
-            var NewEvent = Event.SetInfo(Event.Session, ResultProvider.SetValue(NetTypeEnum.Listened, new Dictionary<object, object> { { "我是", "1" } }));
+            var NewEvent = Event.SetInfo(Event.Session, ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.Listened, Condition.ServiceName), 
+                ServerValue.SetStrValue("刘泽华","25")));
             Event.Session.Server.Handler.SessionPacketDecodeCompleted(Event.Server, NewEvent);
         }
         [Get]

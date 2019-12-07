@@ -72,7 +72,7 @@
                                     <td v-if="EditRow==item.No"><input type="text" class="form-control" v-model="Param.HttpPort" /></td>
                                     <td v-if="EditRow==item.No"><select class="form-control" v-model="Param.Stutas"><option :value="0">错误</option><option :value="1">正常</option></select></td>
                                     <td>
-                                        <button class="btn btn-sm btn-danger" @click="">{{item.Status?"禁用":"启用"}}</button>
+                                        <button class="btn btn-sm btn-danger" @click="insert()">{{item.Status?"禁用":"启用"}}</button>
                                         <button class="btn btn-sm btn-danger" @click="SaveOrEdit?Edit(item):Save(index)">{{SaveOrEdit?"编辑":"保存"}}</button>
                                     </td>
                                 </tr>

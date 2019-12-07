@@ -27,7 +27,7 @@ namespace Mily.DbCore
     /// </summary>
     public class SugerDbContext
     {
-        public static readonly IDictionary<string, string> AdoSQL = XPlusEx.XmlMap;
+        public static readonly IDictionary<string, string> AdoSQL = MilyConfig.XmlSQL;
 
         /// <summary>
         /// 获取连接客服端

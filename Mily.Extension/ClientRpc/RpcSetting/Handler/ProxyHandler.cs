@@ -1,8 +1,4 @@
 ﻿using Mily.Extension.ClientRpc.RpcSetting.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using XExten.Common;
 using XExten.XCore;
 
@@ -19,25 +15,25 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Handler
         /// <param name="Provider"></param>
         public static ResultProvider InitProxy(ResultProvider Provider)
         {
-            return EachProxy(Provider.ObjectProvider.ToJson().ToModel<ClientKey>());
+            return EachProxy(Provider.ObjectProvider.ToJson().ToModel<ClientKey>(),Provider);
         }
         /// <summary>
         /// 遍历结果
         /// </summary>
-        /// <param name="Net"></param>
+        /// <param name="Key"></param>
+        /// <param name=""></param>
+        /// <param name=""></param>
         /// <returns></returns>
-        private static ResultProvider EachProxy(ClientKey Key)
+        private static ResultProvider EachProxy(ClientKey Key, ResultProvider Provider)
         {
             return Key.NetType switch
             {
-                NetTypeEnum.Connect => ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.Listened, Key.ServName),
-                new Dictionary<Object, Object> { { "RegistSuccessful", "OK" } }),
-                NetTypeEnum.Listened => ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.Listened, Key.ServName),
-                new Dictionary<Object, Object> { { "ListenedSuccessful", "OK" } }),
+                NetTypeEnum.Connect => null,
+                NetTypeEnum.Listened => ClientHandler.Invoke(Provider),
                 NetTypeEnum.DisConnect => ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.DisConnect, Key.ServName),
-                new Dictionary<Object, Object> { { "ListenedFailed", "FAILED" } }),
+                ClientValue.SetStrValue(ClientValue.ListenedFailed, "FAIL")),
                 _ => ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.Listened, Key.ServName),
-                new Dictionary<Object, Object> { { "ListenedSuccessful", "OK" } }),
+                ClientValue.SetStrValue(ClientValue.ListenedSuccessful, "Ok")),
             };
         }
     }
