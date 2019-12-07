@@ -25,6 +25,7 @@ namespace Mily.Service.ReplyApi
         public void ProxyServcie(IHttpContext Context)
         {
             var Request = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<Dictionary<string, Object>>();
+            Request.Add("TargetPath", Context.Request.Header["Path"]);
             ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName== Configuration.ServiceName);
             var Event = EventCache.GetPacketCache(Condition.ServiceName);
             ServerKey Key = ServerKey.SetValue(NetTypeEnum.Listened, Condition.ServiceName);

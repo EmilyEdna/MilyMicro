@@ -24,13 +24,8 @@ namespace Mily.Service.CenterApi
         [JsonDataConvert]
         public void insert(IHttpContext Context)
         {
-            //ServerCondition Condition = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<ServerCondition>();
-            //Caches.MongoDBCacheSet(Condition);
-            ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.Stutas != 0);
-            var Event = EventCache.GetPacketCache(Condition.ServiceName);
-            var NewEvent = Event.SetInfo(Event.Session, ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.Listened, Condition.ServiceName), 
-                ServerValue.SetStrValue("刘泽华","25")));
-            Event.Session.Server.Handler.SessionPacketDecodeCompleted(Event.Server, NewEvent);
+            ServerCondition Condition = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<ServerCondition>();
+            Caches.MongoDBCacheSet(Condition);
         }
         [Get]
         public async Task<Object> GetServer()
