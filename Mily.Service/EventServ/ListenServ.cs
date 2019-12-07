@@ -22,6 +22,7 @@ namespace Mily.Service.EventServ
             NetApiServProvider.InitApiProvider();
             //创建powershell指令
             BatCondition.CreateShellCondition();
+            //初始化Rpc服务
             NetRpcServProvider.InitRpcProvider();
         }
 

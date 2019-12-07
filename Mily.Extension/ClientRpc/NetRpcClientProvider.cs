@@ -22,8 +22,8 @@ namespace Mily.Extension.ClientRpc
             ClientAsnyc.Socket.ReceiveBufferSize = int.MaxValue;
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
-                ResultProvider  Provider = ProxyHandler.InitProxy((ResultProvider)Data);
-                if (Client.IsConnected)
+                ResultProvider Provider = ProxyHandler.InitProxy((ResultProvider)Data);
+                if (Client.IsConnected && Provider != null)
                     ClientHandler.SendInvoke(ClientAsnyc, Provider);
             };
             ClientAsnyc.ClientError = (Client, Error) =>

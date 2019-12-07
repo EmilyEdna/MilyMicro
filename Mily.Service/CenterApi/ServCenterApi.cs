@@ -18,7 +18,6 @@ namespace Mily.Service.CenterApi
     [Options(AllowOrigin = "*", AllowHeaders = "*")]
     [Controller(BaseUrl = "/Center")]
     [CenterFilter]
-    [DefaultJsonResultFilter]
     public class ServCenterApi
     {
         [Post]

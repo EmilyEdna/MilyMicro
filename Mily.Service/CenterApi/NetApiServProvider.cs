@@ -1,4 +1,5 @@
-﻿using BeetleX.EventArgs;
+﻿using BeetleX;
+using BeetleX.EventArgs;
 using BeetleX.FastHttpApi;
 using Mily.Service.ViewSetting;
 using System;
@@ -8,7 +9,8 @@ namespace Mily.Service.CenterApi
 {
     public class NetApiServProvider
     {
-        public static void InitApiProvider() {
+        public static void InitApiProvider()
+        {
             HttpApiServer ApiServ = new HttpApiServer();
             ApiServ.Register(typeof(NetApiServProvider).Assembly);
             ApiServ.Options.LogLevel = LogType.Warring;
@@ -16,6 +18,7 @@ namespace Mily.Service.CenterApi
             ApiServ.Options.Port = Configuration.SOCKET_Port;
             ApiServ.Options.StaticResourcePath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "Views";
             ApiServ.Options.SetDebug();
+            ApiServ.Options.AddFilter<DefaultJsonResultFilter>();
             ApiServ.ServerLog = (Server, Event) =>
             {
                 if (Event.Type == LogType.Error)
@@ -27,11 +30,11 @@ namespace Mily.Service.CenterApi
             };
             ApiServ.Options.OutputStackTrace = true;
             ApiServ.Open();
-            ApiServ.HttpRequestNotfound += (o, e) =>
+            ApiServ.HttpRequestNotfound += (Obj, Event) =>
             {
-                e.Cancel = true;
-                e.Response.SetStatus("404", "Not Found");
-                e.Response.Result("404 Not Found");
+                Event.Cancel = true;
+                Event.Response.SetStatus("404", "Not Found");
+                Event.Response.Result("404 Not Found");
             };
         }
     }

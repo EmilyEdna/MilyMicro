@@ -12,8 +12,8 @@ namespace Mily.Service.ViewSetting
         public static int TCP_Port { get; set; } = Convert.ToInt32((Builder["TCP:TcpPort"] == null ? "9090" : Builder["TCP:TcpPort"].ToString()));
         public static string SOCKET_Host { get; set; } = Builder["Socket:SocketHost"] == null ? "0.0.0.0" : Builder["Socket:SocketHost"].ToString();
         public static int SOCKET_Port { get; set; } = Convert.ToInt32((Builder["Socket:SocketPort"] == null ? "9091" : Builder["Socket:SocketPort"].ToString()));
-        public static string Redis { get; set; } = Builder["Redis:RedisConnectionString"].ToString();
         public static string DbType { get; set; }
+        public static string ServiceName { get; set; }
         public static void InitConnection()
         {
             try
@@ -26,7 +26,6 @@ namespace Mily.Service.ViewSetting
             {
                 throw new Exception("请配置Redis和Mongodb链接字符串");
             }
-
         }
         private static IConfiguration GetSetting()
         {
