@@ -31,10 +31,11 @@ namespace Mily.Service.CenterRpc.RpcSetting.Handler
         {
             return Key.NetType switch
             {
-                NetTypeEnum.Connect => ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.Connect, Key.ServName), ServerValue.SetStrValue(ServerValue.RegistSuccessful, "Ok")),
+                NetTypeEnum.Connect => ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.Connect, Key.ServName), ServerValue.SetStrValue(ServerValue.RegistSuccessful, "OK")),
                 NetTypeEnum.Listened => Provider,
                 NetTypeEnum.DisConnect => ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.DisConnect, Key.ServName), ServerValue.SetStrValue(ServerValue.ListenedFailed, "FAIL")),
-                _ => ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.Listened, Key.ServName), ServerValue.SetStrValue(ServerValue.ListenedSuccessful, "Ok")),
+                NetTypeEnum.CallBack => ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.CallBack, Key.ServName), ServerValue.SetStrValue(ServerValue.CallBackSuccessful, "CALL")),
+                _ => ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.Listened, Key.ServName), ServerValue.SetStrValue(ServerValue.ListenedSuccessful, "OK")),
             };
         }
     }

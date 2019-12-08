@@ -17,6 +17,10 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         /// <summary>
         /// 断链
         /// </summary>
-        DisConnect = 3
+        DisConnect = 3,
+        /// <summary>
+        /// 回调
+        /// </summary>
+        CallBack =4,
     }
 }

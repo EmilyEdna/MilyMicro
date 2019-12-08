@@ -39,10 +39,22 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         public virtual AsyncTcpClient SendInvoke(AsyncTcpClient ClientAsync, ResultProvider Provider)
         {
             NetTypeEnum TypeEnum = Provider.ObjectProvider.ToJson().ToModel<ClientKey>().NetType;
-            if (TypeEnum == NetTypeEnum.Listened)
-                return ClientAsync.Send(Provider);
+            if (TypeEnum == NetTypeEnum.Listened) 
+                return ClientAsync.Send(ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.CallBack, MilyConfig.Discovery), Provider.DictionaryStringProvider));
             return null;
         }
+        /// <summary>
+        /// 失败
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <returns></returns>
+        internal ResultProvider InvokeFail(ResultProvider Provider)
+        {
+            Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, MilyConfig.Discovery);
+            Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 500, null, "执行失败").ToJson().ToModel<Dictionary<String, Object>>();
+            return Provider;
+        }
+
         /// <summary>
         /// 执行结果
         /// </summary>
@@ -55,7 +67,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         {
             Object TargetCtrl = Activator.CreateInstance(Control);
             Object Result = null;
-            if (ParamInfo.ParameterType == typeof(PageQuery))
+            if (ParamInfo?.ParameterType == typeof(PageQuery))
             {
                 PageQuery TargetParamerter = Provider.DictionaryStringProvider.ToJson().ToModel<PageQuery>();
                 Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { TargetParamerter })).Result.Value;
@@ -64,13 +76,21 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
                 else
                     return InvokeFail(Provider);
             }
-            else
+            else if (ParamInfo?.ParameterType == typeof(ResultProvider))
             {
                 Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { Provider.DictionaryStringProvider })).Result.Value;
                 if (Result != null)
                     return InvokeSuccess(Provider, Result);
                 else
-               return InvokeFail(Provider);
+                    return InvokeFail(Provider);
+            }
+            else
+            {
+                Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, null)).Result.Value;
+                if (Result != null)
+                    return InvokeSuccess(Provider, Result);
+                else
+                    return InvokeFail(Provider);
             }
         }
         /// <summary>
@@ -81,19 +101,8 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         /// <returns></returns>
         internal ResultProvider InvokeSuccess(ResultProvider Provider, Object Result)
         {
-            Provider.DynamicProvider = ClientKey.SetValue(NetTypeEnum.Listened, MilyConfig.Discovery);
+            Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, MilyConfig.Discovery);
             Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 200, Result, "执行成功").ToJson().ToModel<Dictionary<String, Object>>();
-            return Provider;
-        }
-        /// <summary>
-        /// 失败
-        /// </summary>
-        /// <param name="Provider"></param>
-        /// <returns></returns>
-        internal ResultProvider InvokeFail(ResultProvider Provider)
-        {
-            Provider.DynamicProvider = ClientKey.SetValue(NetTypeEnum.Listened, MilyConfig.Discovery);
-            Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 500, null, "执行失败").ToJson().ToModel<Dictionary<String, Object>>();
             return Provider;
         }
     }

@@ -17,6 +17,10 @@ namespace Mily.Service.CenterRpc.RpcSetting.Handler
         /// <summary>
         /// 断链
         /// </summary>
-        DisConnect = 3
+        DisConnect = 3,
+        /// <summary>
+        /// 回调
+        /// </summary>
+        CallBack=4
     }
 }

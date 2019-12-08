@@ -9,6 +9,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         public const string RegistSuccessful = "RegistSuccessful";
         public const string ListenedSuccessful = "ListenedSuccessful";
         public const string ListenedFailed = "ListenedFailed";
+        public const string CallBackSuccessful = "CallBackSuccessful";
         /// <summary>
         /// 设置运行时值
         /// </summary>

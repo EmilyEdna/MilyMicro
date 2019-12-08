@@ -20,7 +20,8 @@ namespace Mily.Service.CenterRpc
         {
             ResultProvider Provider = ProxyHandler.InitProxy((ResultProvider)Event.Message);
             EventCache.SetPacketCache(Provider, Event);
-            Server.Send(Provider, Event.Session);
+            if (((ServerKey)Provider.ObjectProvider).NetType != NetTypeEnum.CallBack)
+                Server.Send(Provider, Event.Session);
         }
     }
 }
