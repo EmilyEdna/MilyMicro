@@ -18,8 +18,7 @@ namespace Mily.Extension.ClientRpc
         /// </summary>
         /// <param name="Ip"></param>
         /// <param name="Port"></param>
-        /// <param name="BaseType"></param>
-        public static void InitRpcProvider(string Ip,int Port,Type BaseType)
+        public static void InitRpcProvider(string Ip,int Port)
         {
             AsyncTcpClient ClientAsnyc = SocketFactory.CreateClient<AsyncTcpClient, RcpClientPacket>(Ip,Port);
             ClientAsnyc.Connect();
@@ -27,7 +26,7 @@ namespace Mily.Extension.ClientRpc
             ClientAsnyc.Socket.ReceiveBufferSize = int.MaxValue;
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
-                ResultProvider Provider = ProxyHandler.InitProxy((ResultProvider)Data, BaseType);
+                ResultProvider Provider = ProxyHandler.InitProxy((ResultProvider)Data);
                 if (Client.IsConnected && Provider != null)
                     ClientHandler.SendInvoke(ClientAsnyc, Provider);
             };

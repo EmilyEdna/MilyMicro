@@ -14,11 +14,9 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         /// </summary>
         /// <param name="Provider"></param>
         /// <returns></returns>
-        public static ResultProvider Invoke(ResultProvider Provider,Type BaseType)
+        public static ResultProvider Invoke(ResultProvider Provider)
         {
-            String[] ControllerAndMethod = Provider.DictionaryStringProvider["TargetPath"].ToString().Split("|");
-            String Controller = ControllerAndMethod.FirstOrDefault();
-            String Method = ControllerAndMethod.LastOrDefault();
+            String Method = Provider.DictionaryStringProvider["Method"].ToString();
             Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.BaseType == BaseType))
                 .Where(t => t.Name.Contains(Controller)).FirstOrDefault();
 
