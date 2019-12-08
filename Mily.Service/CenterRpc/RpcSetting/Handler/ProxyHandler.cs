@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mily.Service.CenterRpc.RpcSetting.Result;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,14 +30,21 @@ namespace Mily.Service.CenterRpc.RpcSetting.Handler
         /// <returns></returns>
         private static ResultProvider EachProxy(ServerKey Key, ResultProvider Provider)
         {
-            return Key.NetType switch
+            switch (Key.NetType)
             {
-                NetTypeEnum.Connect => ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.Connect, Key.ServName), ServerValue.SetStrValue(ServerValue.RegistSuccessful, "OK")),
-                NetTypeEnum.Listened => Provider,
-                NetTypeEnum.DisConnect => ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.DisConnect, Key.ServName), ServerValue.SetStrValue(ServerValue.ListenedFailed, "FAIL")),
-                NetTypeEnum.CallBack => ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.CallBack, Key.ServName), ServerValue.SetStrValue(ServerValue.CallBackSuccessful, "CALL")),
-                _ => ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.Listened, Key.ServName), ServerValue.SetStrValue(ServerValue.ListenedSuccessful, "OK")),
-            };
+                case NetTypeEnum.Connect:
+                    return ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.Connect, Key.ServName), ServerValue.SetStrValue(ServerValue.RegistSuccessful, "OK"));
+                case NetTypeEnum.Listened:
+                    return Provider;
+                case NetTypeEnum.DisConnect:
+                    return ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.DisConnect, Key.ServName), ServerValue.SetStrValue(ServerValue.ListenedFailed, "FAIL"));
+                case NetTypeEnum.CallBack:
+                    ResultEvent.StaticResult = Provider.DictionaryStringProvider;
+                    ResultEvent.Event.CacheResult(Key.ServName, Provider.DictionaryStringProvider);
+                    return ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.CallBack, Key.ServName), ServerValue.SetStrValue(ServerValue.CallBackSuccessful, "CALL"));
+                default:
+                    return ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.Listened, Key.ServName), ServerValue.SetStrValue(ServerValue.ListenedSuccessful, "OK"));
+            }
         }
     }
 }

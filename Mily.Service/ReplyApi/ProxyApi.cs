@@ -2,6 +2,7 @@
 using BeetleX.FastHttpApi.Data;
 using Mily.Service.CenterApi.ViewModel;
 using Mily.Service.CenterRpc.RpcSetting.Handler;
+using Mily.Service.CenterRpc.RpcSetting.Result;
 using Mily.Service.ReplyApi.ProxyFilter;
 using Mily.Service.ViewSetting;
 using System;
@@ -22,7 +23,7 @@ namespace Mily.Service.ReplyApi
     {
         [Post]
         [JsonDataConvert]
-        public void ProxyServcie(IHttpContext Context)
+        public object ProxyServcie(IHttpContext Context)
         {
             var Request = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<Dictionary<string, Object>>();
             Request.Add("Method", Context.Request.Header["Method"]);
@@ -31,6 +32,7 @@ namespace Mily.Service.ReplyApi
             ServerKey Key = ServerKey.SetValue(NetTypeEnum.Listened, Condition.ServiceName);
             var NewEvent = Event.SetInfo(Event.Session, ResultProvider.SetValue(Key, Request));
             Event.Session.Server.Handler.SessionPacketDecodeCompleted(Event.Server, NewEvent);
+            return ResultEvent.StaticResult;
         }
     }
 }

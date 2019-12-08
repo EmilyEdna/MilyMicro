@@ -50,7 +50,8 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         /// <returns></returns>
         internal ResultProvider InvokeFail(ResultProvider Provider)
         {
-            Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, MilyConfig.Discovery);
+            String Method = Provider.DictionaryStringProvider["Method"].ToString();
+            Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
             Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 500, null, "执行失败").ToJson().ToModel<Dictionary<String, Object>>();
             return Provider;
         }
@@ -101,7 +102,8 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         /// <returns></returns>
         internal ResultProvider InvokeSuccess(ResultProvider Provider, Object Result)
         {
-            Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, MilyConfig.Discovery);
+            String Method = Provider.DictionaryStringProvider["Method"].ToString();
+            Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
             Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 200, Result, "执行成功").ToJson().ToModel<Dictionary<String, Object>>();
             return Provider;
         }
