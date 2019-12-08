@@ -57,6 +57,16 @@ namespace Mily.Setting
         public static string Default { get; set; }
 
         /// <summary>
+        /// 服务中心IP
+        /// </summary>
+        public static string ServerCenterIP { get; set; }
+
+        /// <summary>
+        /// 服务中心端口
+        /// </summary>
+        public static int ServerCenterPort { get; set; }
+
+        /// <summary>
         /// 配置SQL语句
         /// </summary>
         public static Dictionary<string, string> XmlSQL { get; set; }

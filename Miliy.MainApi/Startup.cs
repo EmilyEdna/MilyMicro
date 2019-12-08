@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Mily.Extension.ClientRpc;
 using Mily.Extension.InitSystem;
 using Mily.Extension.SocketClient;
 using Mily.Setting;
@@ -19,6 +20,7 @@ namespace Miliy.MainApi
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile("appsettings.config.json", false, true)
                 .AddJsonFile("appsettings.dbconfig.json", false, true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
@@ -41,6 +43,7 @@ namespace Miliy.MainApi
             }
             ConfigInit.InitConfigCollection(Application, Environment, Configuration);
             MilyConfig.XmlSQL = XPlusEx.ReadXml();
+            //NetRpcClientProvider.InitRpcProvider(MilyConfig.ServerCenterIP, MilyConfig.ServerCenterPort, typeof(BaseApiController));
             NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
             //NetSocketClinet.Socket(9090, typeof(BaseApiController));
         }

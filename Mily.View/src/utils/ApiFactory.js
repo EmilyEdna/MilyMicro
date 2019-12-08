@@ -10,7 +10,7 @@ export const Login = (param) => {
         url: 'JsonAsync',
         method: 'post',
         data: target,
-        headers: { "Cross": "LISwNgnkA===" }
+        headers: { "Cross": "EdnaEmily" }
     })
 }
 

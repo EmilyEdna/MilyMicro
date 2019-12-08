@@ -5,7 +5,7 @@ using Mily.Extension.Infrastructure.GeneralModel;
 using Mily.Setting;
 using NLog;
 using System;
-using XExten.CacheFactory.RedisCache;
+using XExten.CacheFactory;
 
 namespace Mily.Extension.InitSystem
 {
@@ -44,9 +44,12 @@ namespace Mily.Extension.InitSystem
             MilyConfig.ConnectionString2 = Builder.GetConnectionString("ConnectionString2");
             MilyConfig.ConnectionStringSlave = Builder.GetConnectionString("ConnectionStringSlave");
             MilyConfig.RabbitMQConnectionString = Builder.GetConnectionString("RabbitMQConnectionString");
-            MilyConfig.Discovery = Builder["Discovery"].ToString();
-            RedisCaches.RedisConnectionString = Builder.GetConnectionString("RedisConnectionString");
-
+            MilyConfig.Discovery = Builder["Discovery"];
+            MilyConfig.ServerCenterIP = Builder["ServerCenterIPV4"];
+            MilyConfig.ServerCenterPort =Convert.ToInt32(Builder["ServerCenterIPV4Port"]);
+            Caches.DbName = Builder["MongoDbName"];
+            Caches.RedisConnectionString = Builder.GetConnectionString("RedisConnectionString");
+            Caches.MongoDBConnectionString = Builder.GetConnectionString("MongoDBConnectionString");
         }
     }
 }

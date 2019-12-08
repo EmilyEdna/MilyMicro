@@ -22,7 +22,6 @@ namespace Mily.OtherApi
                     if (item.IsContainsIn("--Service:"))
                     {
                         int Port = Convert.ToInt32(item.Split(":")[1]);
-                        Startup.Port = Port + 1;
                         WindowsServiceDefaults(args, Port);
                     }
                 });

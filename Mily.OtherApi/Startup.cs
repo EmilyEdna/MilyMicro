@@ -13,13 +13,12 @@ namespace Mily.OtherApi
 {
     public class Startup
     {
-        public static int Port { get; set; }
-
         public Startup(IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile("appsettings.config.json", false, true)
                 .AddJsonFile("appsettings.dbconfig.json", false, true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
@@ -42,7 +41,7 @@ namespace Mily.OtherApi
             }
             ConfigInit.InitConfigCollection(Application, Environment, Configuration);
             MilyConfig.XmlSQL = XPlusEx.ReadXml();
-            NetRpcClientProvider.InitRpcProvider("127.0.0.1",9090, typeof(BaseApiController));
+            NetRpcClientProvider.InitRpcProvider(MilyConfig.ServerCenterIP,MilyConfig.ServerCenterPort, typeof(BaseApiController));
             //NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
             //NetSocketClinet.Socket(9090, typeof(BaseApiController));
         }
