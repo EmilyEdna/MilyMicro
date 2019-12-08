@@ -42,7 +42,7 @@ namespace Mily.OtherApi
             }
             ConfigInit.InitConfigCollection(Application, Environment, Configuration);
             MilyConfig.XmlSQL = XPlusEx.ReadXml();
-            NetRpcClientProvider.InitRpcProvider("0.0.0.0",9090);
+            NetRpcClientProvider.InitRpcProvider("127.0.0.1",9090, typeof(BaseApiController));
             //NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
             //NetSocketClinet.Socket(9090, typeof(BaseApiController));
         }
