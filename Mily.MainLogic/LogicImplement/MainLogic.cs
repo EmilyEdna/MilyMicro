@@ -22,9 +22,9 @@ namespace Mily.MainLogic.LogicImplement
         /// </summary>
         /// <param name="ViewModel"></param>
         /// <returns></returns>
-        public async Task<Object> RegistAdmin(AdminRoleViewModel ViewModel)
+        public async Task<Object> RegistAdmin(ResultProvider Provider)
         {
-            Administrator Admin = ViewModel.ToMapper<AdminRoleViewModel, Administrator>();
+            Administrator Admin = Provider.DictionaryStringProvider.ToJson().ToModel<AdminRoleViewModel>().ToAutoMapper<Administrator>();
             return await base.InsertData<Administrator>(Admin);
         }
 
@@ -33,8 +33,9 @@ namespace Mily.MainLogic.LogicImplement
         /// </summary>
         /// <param name="ViewModel"></param>
         /// <returns></returns>
-        public async Task<AdminRoleViewModel> Login(AdminRoleViewModel ViewModel)
+        public async Task<AdminRoleViewModel> Login(ResultProvider Provider)
         {
+            AdminRoleViewModel ViewModel = Provider.DictionaryStringProvider.ToJson().ToModel<AdminRoleViewModel>();
             AdminRoleViewModel AdminRole = DbContext().Queryable<Administrator, RolePermission>((Admin, Role) => new Object[] { JoinType.Left, Admin.RolePermissionId == Role.KeyId })
                 .Where(Admin => Admin.Account.Equals(ViewModel.Account))
                 .Where(Admin => Admin.PassWord.Equals(ViewModel.PassWord))

@@ -11,9 +11,9 @@ namespace Mily.MainLogic.LogicInterface
     {
         #region 登录注册
 
-        Task<AdminRoleViewModel> Login(AdminRoleViewModel ViewModel);
+        Task<AdminRoleViewModel> Login(ResultProvider Provider);
 
-        Task<Object> RegistAdmin(AdminRoleViewModel ViewModel);
+        Task<Object> RegistAdmin(ResultProvider Provider);
 
         #endregion
 

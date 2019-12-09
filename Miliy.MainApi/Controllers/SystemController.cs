@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.Attributes;
 using Mily.Extension.Attributes.RoleHandler;
-using Mily.Setting.DbTypes;
 using Mily.ViewModels;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using XExten.Common;
+using XExten.XCore;
 
 namespace Miliy.MainApi.Controllers
 {
@@ -28,7 +28,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [AllowAnonymous]
-        public async Task<ActionResult<Object>> RegistAdmin(AdminRoleViewModel ViewModel) => await SysService.RegistAdmin(ViewModel);
+        public async Task<ActionResult<Object>> RegistAdmin(ResultProvider Provider) => await SysService.RegistAdmin(Provider);
 
         /// <summary>
         /// 登录后台API
@@ -36,10 +36,10 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [AllowAnonymous]
-        public async Task<ActionResult<Object>> Login(AdminRoleViewModel ViewModel)
+        public async Task<ActionResult<Object>> Login(ResultProvider Provider)
         {
             var claimIdentity = new ClaimsIdentity("Cookie");
-            var RoleAdmin = await SysService.Login(ViewModel);
+            var RoleAdmin = await SysService.Login(Provider);
             if (RoleAdmin == null)
                 return new { Data = "登录失败，请检查用户名和密码是否正确!" ,Target=false};
             if (HttpContext != null)

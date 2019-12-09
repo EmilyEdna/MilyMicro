@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.ClientRpc.RpcSetting.Handler;
 using Mily.Extension.Infrastructure.GeneralMiddleWare;
 using Mily.Setting;
+using Mily.Setting.DbTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         public virtual ResultProvider Invoke(ResultProvider Provider)
         {
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
+            MilyConfig.DbTypeAttribute = InvokeDyType(Provider.DictionaryStringProvider["DataBase"]);
             Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IClientService))))
                 .Where(t => t.GetMethods().Any(x => x.Name.ToLower() == Method.ToLower())).FirstOrDefault();
             MethodInfo CtrlMehtod = Control.GetMethod(Method);
@@ -43,6 +45,20 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
                 return ClientAsync.Send(ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.CallBack, MilyConfig.Discovery), Provider.DictionaryStringProvider));
             return null;
         }
+        /// <summary>
+        /// 转化动态DB
+        /// </summary>
+        /// <param name="DbType"></param>
+        /// <returns></returns>
+        internal DBType InvokeDyType(Object DbType)
+        {
+            int.TryParse(DbType?.ToString(), out int Target);
+            if (Target > 5 && Target < 0)
+                return DBType.Default;
+            else
+                return (DBType)Target;
+        }
+
         /// <summary>
         /// 失败
         /// </summary>
@@ -79,7 +95,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
             }
             else if (ParamInfo?.ParameterType == typeof(ResultProvider))
             {
-                Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { Provider.DictionaryStringProvider })).Result.Value;
+                Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { Provider })).Result.Value;
                 if (Result != null)
                     return InvokeSuccess(Provider, Result);
                 else
@@ -104,7 +120,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         {
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
             Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
-            Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 200, Result, "执行成功").ToJson().ToModel<Dictionary<String, Object>>();
+            Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 200, Result.ToJson(), "执行成功").ToJson().ToModel<Dictionary<String, Object>>();
             return Provider;
         }
     }
