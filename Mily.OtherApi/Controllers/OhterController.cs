@@ -8,5 +8,6 @@ namespace Mily.OtherApi.Controllers
     [ApiController]
     public class OhterController : BaseApiController
     {
+        public async Task<ActionResult<object>> Test() => await Task.Run(() => { return "Mily"; });
     }
 }

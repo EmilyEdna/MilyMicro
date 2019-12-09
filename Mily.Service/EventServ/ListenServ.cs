@@ -15,15 +15,15 @@ namespace Mily.Service.EventServ
             //初始化链接
             Configuration.InitConnection();
             //激活TCP服务端
-            SocketCodition.NetServProvider();
+            //SocketCodition.NetServProvider();
             //激活Api
-            SocketCoditionApi.NetApiServProvider();
+            //SocketCoditionApi.NetApiServProvider();
             //初始化服务中心API
-            //NetApiServProvider.InitApiProvider();
+            NetApiServProvider.InitApiProvider();
             //创建powershell指令
             BatCondition.CreateShellCondition();
             //初始化Rpc服务
-            //NetRpcServProvider.InitRpcProvider();
+            NetRpcServProvider.InitRpcProvider();
         }
 
         public void Stop()

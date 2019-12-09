@@ -1,5 +1,6 @@
 ﻿using BeetleX.Clients;
 using Microsoft.AspNetCore.Mvc;
+using Mily.Extension.ClientRpc.RpcSetting.Handler;
 using Mily.Extension.Infrastructure.GeneralMiddleWare;
 using Mily.Setting;
 using System;
@@ -19,12 +20,11 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         /// 查询方法
         /// </summary>
         /// <param name="Provider"></param>
-        /// <param name="BaseType"></param>
         /// <returns></returns>
-        public virtual ResultProvider Invoke(ResultProvider Provider, Type BaseType)
+        public virtual ResultProvider Invoke(ResultProvider Provider)
         {
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
-            Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.BaseType == BaseType))
+            Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IClientService))))
                 .Where(t => t.GetMethods().Any(x => x.Name.ToLower() == Method.ToLower())).FirstOrDefault();
             MethodInfo CtrlMehtod = Control.GetMethod(Method);
             ParameterInfo ParamInfo = CtrlMehtod.GetParameters().FirstOrDefault();

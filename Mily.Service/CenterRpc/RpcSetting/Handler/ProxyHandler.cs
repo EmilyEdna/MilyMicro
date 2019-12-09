@@ -19,7 +19,6 @@ namespace Mily.Service.CenterRpc.RpcSetting.Handler
         /// <param name="Provider"></param>
         public static ResultProvider InitProxy(ResultProvider Provider)
         {
-
             return EachProxy(Provider.ObjectProvider.ToJson().ToModel<ServerKey>(), Provider);
         }
         /// <summary>

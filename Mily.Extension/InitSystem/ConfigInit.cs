@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Mily.Extension.ClientRpc;
 using Mily.Extension.Infrastructure.GeneralModel;
 using Mily.Setting;
 using NLog;
 using System;
 using XExten.CacheFactory;
+using XExten.XPlus;
 
 namespace Mily.Extension.InitSystem
 {
@@ -34,6 +36,13 @@ namespace Mily.Extension.InitSystem
                 endpoints.MapControllers();
             });
             SetConfig(builder);
+            //初始化RPC客户端
+            NetRpcClientProvider.InitClinet(Option =>
+            {
+                Option.IPAddress = MilyConfig.ServerCenterIP;
+                Option.IPPort = MilyConfig.ServerCenterPort;
+            });
+            MilyConfig.XmlSQL = XPlusEx.ReadXml();
             WebPath = env.WebRootPath;
         }
 

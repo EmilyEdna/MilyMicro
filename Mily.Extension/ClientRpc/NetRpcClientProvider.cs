@@ -13,37 +13,25 @@ namespace Mily.Extension.ClientRpc
 {
     public class NetRpcClientProvider
     {
+
+        public string IPAddress { get; set; }
+        public int IPPort { get; set; }
         /// <summary>
-        /// 初始化Rpc
+        /// 初始化客服端
         /// </summary>
-        /// <param name="Ip"></param>
-        /// <param name="Port"></param>
-        /// <param name="BaseType"></param>
-        public static void InitRpcProvider(string Ip,int Port,Type BaseType)
+        /// <param name="Action"></param>
+        public static void InitClinet(Action<NetRpcClientProvider> Action)
         {
-            AsyncTcpClient ClientAsnyc = SocketFactory.CreateClient<AsyncTcpClient, RcpClientPacket>(Ip,Port);
-            ClientAsnyc.Connect();
-            ClientAsnyc.Socket.SendBufferSize = int.MaxValue;
-            ClientAsnyc.Socket.ReceiveBufferSize = int.MaxValue;
-            ClientAsnyc.PacketReceive = (Client, Data) =>
-            {
-                ResultProvider Provider = ProxyHandler.Instance.InitProxy((ResultProvider)Data, BaseType);
-                if (Client.IsConnected && Provider != null)
-                    ClientHandler.Instance.SendInvoke(ClientAsnyc, Provider);
-            };
-            ClientAsnyc.ClientError = (Client, Error) =>
-            {
-                LogFactoryExtension.WriteError(Error.Error.Source, Error.Error.TargetSite.Name, string.Join("|", Error.Error.TargetSite.GetParameters().ToList()), Error.Message, "");
-            };
-            ClientAsnyc.Send(ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.Connect, MilyConfig.Discovery), ClientValue.SetStrValue("注册服务", MilyConfig.Discovery)));
+            NetRpcClientProvider Clinet = new NetRpcClientProvider();
+            Action(Clinet);
+            Clinet.InitRpcProviderCustomer(Clinet.IPAddress, Clinet.IPPort);
         }
         /// <summary>
         /// 初始化Rpc
         /// </summary>
         /// <param name="Ip"></param>
         /// <param name="Port"></param>
-        /// <param name="BaseType"></param>
-        public virtual void InitRpcProviderCustomer(string Ip, int Port, Type BaseType)
+        public virtual void InitRpcProviderCustomer(string Ip, int Port)
         {
             AsyncTcpClient ClientAsnyc = SocketFactory.CreateClient<AsyncTcpClient, RcpClientPacket>(Ip, Port);
             ClientAsnyc.Connect();
@@ -51,7 +39,7 @@ namespace Mily.Extension.ClientRpc
             ClientAsnyc.Socket.ReceiveBufferSize = int.MaxValue;
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
-                ResultProvider Provider = ProxyHandler.Instance.InitProxy((ResultProvider)Data, BaseType);
+                ResultProvider Provider = ProxyHandler.Instance.InitProxy((ResultProvider)Data);
                 if (Client.IsConnected && Provider != null)
                     ClientHandler.Instance.SendInvoke(ClientAsnyc, Provider);
             };
