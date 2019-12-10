@@ -13,8 +13,13 @@ namespace Mily.Extension.ClientRpc
 {
     public class NetRpcClientProvider
     {
-
+        /// <summary>
+        /// 地址
+        /// </summary>
         public string IPAddress { get; set; }
+        /// <summary>
+        /// 端口
+        /// </summary>
         public int IPPort { get; set; }
         /// <summary>
         /// 初始化客服端
@@ -22,9 +27,9 @@ namespace Mily.Extension.ClientRpc
         /// <param name="Action"></param>
         public static void InitClinet(Action<NetRpcClientProvider> Action)
         {
-            NetRpcClientProvider Clinet = new NetRpcClientProvider();
-            Action(Clinet);
-            Clinet.InitRpcProviderCustomer(Clinet.IPAddress, Clinet.IPPort);
+            NetRpcClientProvider Client = new NetRpcClientProvider();
+            Action(Client);
+            Client.InitRpcProviderCustomer(Client.IPAddress, Client.IPPort);
         }
         /// <summary>
         /// 初始化Rpc
