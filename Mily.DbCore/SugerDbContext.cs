@@ -86,7 +86,7 @@ namespace Mily.DbCore
             if (DbName.IsNullOrEmpty())
                 TargetDbName = MilyConfig.Default;
             else
-                TargetDbName = MilyConfig.DbName.Where(Name => Name.Equals(DbName)).FirstOrDefault();
+                TargetDbName = MilyConfig.DbName.Where(Name => Name.Equals(DbName)).FirstOrDefault().IsNullOrEmpty() ? MilyConfig.Default : MilyConfig.DbName.Where(Name => Name.Equals(DbName)).FirstOrDefault();
             return TypeAttrbuite switch
             {
                 DBType.MSSQL => DB_MSSQL(InitDbTable),
