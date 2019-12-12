@@ -26,6 +26,7 @@ namespace Mily.Service.CenterApi
                     {
                         String ExceptionInfomations = $"Service errored with exception：【{Event.Message}】====write time：{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}\n";
                         File.AppendAllText(Path.Combine(AppContext.BaseDirectory, "FastApiError.log"), ExceptionInfomations);
+                        Console.WriteLine(ExceptionInfomations);
                     }
             };
             ApiServ.Options.OutputStackTrace = true;
