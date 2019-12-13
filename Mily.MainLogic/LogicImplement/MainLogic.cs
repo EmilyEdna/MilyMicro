@@ -49,8 +49,8 @@ namespace Mily.MainLogic.LogicImplement
                     HandlerRole = Role.HandlerRole,
                     RoleName = Role.RoleName
                 }).FirstAsync();
-            if (adminrole != null)
-                await caches.rediscachesetasync(adminrole.keyid.tostring(), adminrole, 120);
+            if (AdminRole != null)
+                await Caches.RedisCacheSetAsync(AdminRole.KeyId.ToString(), AdminRole, 120);
             return  AdminRole;
         }
 

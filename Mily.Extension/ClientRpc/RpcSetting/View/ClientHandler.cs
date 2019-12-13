@@ -26,6 +26,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         {
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
             MilyConfig.DbTypeAttribute = InvokeDyType(Provider.DictionaryStringProvider["DataBase"]);
+            RemoveInvoke(Provider);
             Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IClientService))))
                 .Where(t => t.GetMethods().Any(x => x.Name.ToLower() == Method.ToLower())).FirstOrDefault();
             MethodInfo CtrlMehtod = Control.GetMethod(Method);
@@ -120,6 +121,15 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
             Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
             Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 200, Result.ToJson(), "执行成功").ToJson().ToModel<Dictionary<String, Object>>();
             return Provider;
+        }
+        /// <summary>
+        /// 删除Header数据
+        /// </summary>
+        /// <param name="Provider"></param>
+        internal void RemoveInvoke(ResultProvider Provider)
+        {
+            Provider.DictionaryStringProvider.Remove("Method");
+            Provider.DictionaryStringProvider.Remove("DataBase");
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using Mily.Setting.DbTypes;
 
 namespace Mily.Extension.Filters
 {
@@ -47,6 +48,7 @@ namespace Mily.Extension.Filters
         {
             Object ParamType = Context.ActionArguments.Values.FirstOrDefault();
             HttpRequest Request = Context.HttpContext.Request;
+            InvokeHeader(Request);
             if (ParamType.GetType() == typeof(ResultProvider))
             {
                 Dictionary<String, Object> DictionaryStringProvider = new Dictionary<String, Object>();
@@ -67,6 +69,46 @@ namespace Mily.Extension.Filters
                     ((ResultProvider)ParamType).DictionaryStringProvider = DictionaryStringProvider;
                 }
             }
+            if (ParamType.GetType() == typeof(PageQuery))
+            {
+
+                Dictionary<String, Object> Query = new Dictionary<String, Object>();
+                if (Request.Method == "POST")
+                {
+                    Request.Form.ToList().ForEach(item =>
+                    {
+                        if (item.Key.Contains("KeyWord"))
+                        {
+                            string Key = item.Key.Split("[")[1].Split("]")[0];
+                            Query.Add(Key, item.Value.ToString());
+                           
+                        }
+                    });
+                    ((PageQuery)ParamType).KeyWord = Query;
+                }
+                else
+                {
+                    Request.Query.ToList().ForEach(item =>
+                    {
+                        if (item.Key.Contains("KeyWord"))
+                        {
+                            string Key = item.Key.Split("[")[1].Split("]")[0];
+                            Query.Add(Key, item.Value.ToString());
+
+                        }
+                    });
+                    ((PageQuery)ParamType).KeyWord = Query;
+                }
+            }
+        }
+
+        internal void InvokeHeader(HttpRequest Request)
+        {
+            int.TryParse(Request.Headers["ActionType"].ToString(), out int Target);
+            if (Target > 5 && Target <= 0)
+                MilyConfig.DbTypeAttribute = DBType.Default;
+            else
+                MilyConfig.DbTypeAttribute = (DBType)Target;
         }
     }
 }
