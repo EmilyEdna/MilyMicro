@@ -5,6 +5,11 @@ using Mily.Extension.LoggerFactory;
 using System.Linq;
 using XExten.XCore;
 using Mily.Setting;
+using XExten.Common;
+using System.Collections.Generic;
+using System;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace Mily.Extension.Filters
 {
@@ -14,35 +19,54 @@ namespace Mily.Extension.Filters
         /// 第四执行
         /// </summary>
         /// <param name="context"></param>
-        public void OnActionExecuted(ActionExecutedContext context)
+        public void OnActionExecuted(ActionExecutedContext Context)
         {
-            if (context.Exception != null)
+            if (Context.Exception != null)
             {
-                string Path = context.Exception.Source;
-                string WebPath = context.HttpContext.Request.Path;
-                string MethodName = context.Exception.TargetSite.Name;
+                string Path = Context.Exception.Source;
+                string WebPath = Context.HttpContext.Request.Path;
+                string MethodName = Context.Exception.TargetSite.Name;
                 string Parameter = string.Empty;
-                string Message = context.Exception.Message;
-                context.Exception.TargetSite.GetParameters().ToList().ForEach(t =>
+                string Message = Context.Exception.Message;
+                Context.Exception.TargetSite.GetParameters().ToList().ForEach(t =>
                 {
                     Parameter += "[" + t.Name + "]";
                 });
                 LogFactoryExtension.WriteError(Path, MethodName, Parameter, Message, WebPath);
                 return;
             }
-            if (!context.HttpContext.Request.Path.Value.Contains("Login"))
-                MilyConfig.CacheKey = context.HttpContext.Request.Headers["Global"].ToString().ToLzStringDec();
-            ResultApiMiddleWare Result = ResultApiMiddleWare.Instance(true, context.HttpContext.Response.StatusCode, (context.Result as ObjectResult).Value, "执行成功!");
-            context.Result = new ObjectResult(Result);
+            ResultApiMiddleWare Result = ResultApiMiddleWare.Instance(true, Context.HttpContext.Response.StatusCode, (Context.Result as ObjectResult).Value, "执行成功!");
+            Context.Result = new ObjectResult(Result);
         }
 
         /// <summary>
         /// 第三执行
         /// </summary>
-        /// <param name="context"></param>
-        public void OnActionExecuting(ActionExecutingContext context)
+        /// <param name="Context"></param>
+        public void OnActionExecuting(ActionExecutingContext Context)
         {
-
+            Object ParamType = Context.ActionArguments.Values.FirstOrDefault();
+            HttpRequest Request = Context.HttpContext.Request;
+            if (ParamType.GetType() == typeof(ResultProvider))
+            {
+                Dictionary<String, Object> DictionaryStringProvider = new Dictionary<String, Object>();
+                if (Request.Method == "POST")
+                {
+                    Request.Form.ToList().ForEach(item =>
+                    {
+                        DictionaryStringProvider.Add(item.Key, item.Value.ToString());
+                    });
+                    ((ResultProvider)ParamType).DictionaryStringProvider = DictionaryStringProvider;
+                }
+                else
+                {
+                    Request.Query.ToList().ForEach(item =>
+                    {
+                        DictionaryStringProvider.Add(item.Key, item.Value.ToString());
+                    });
+                    ((ResultProvider)ParamType).DictionaryStringProvider = DictionaryStringProvider;
+                }
+            }
         }
     }
 }

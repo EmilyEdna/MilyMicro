@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using XExten.CacheFactory;
 using XExten.Common;
 using XExten.XCore;
+using System.Linq;
 
 namespace Mily.MainLogic.LogicImplement
 {
@@ -36,7 +37,7 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<AdminRoleViewModel> Login(ResultProvider Provider)
         {
             AdminRoleViewModel ViewModel = Provider.DictionaryStringProvider.ToJson().ToModel<AdminRoleViewModel>();
-            AdminRoleViewModel AdminRole = DbContext().Queryable<Administrator, RolePermission>((Admin, Role) => new Object[] { JoinType.Left, Admin.RolePermissionId == Role.KeyId })
+            AdminRoleViewModel AdminRole =await DbContext().Queryable<Administrator, RolePermission>((Admin, Role) => new Object[] { JoinType.Left, Admin.RolePermissionId == Role.KeyId })
                 .Where(Admin => Admin.Account.Equals(ViewModel.Account))
                 .Where(Admin => Admin.PassWord.Equals(ViewModel.PassWord))
                 .Select((Admin, Role) => new AdminRoleViewModel
@@ -47,10 +48,10 @@ namespace Mily.MainLogic.LogicImplement
                     RolePermissionId = Admin.RolePermissionId,
                     HandlerRole = Role.HandlerRole,
                     RoleName = Role.RoleName
-                }).First();
-            if (AdminRole != null)
-                await Caches.RedisCacheSetAsync(AdminRole.KeyId.ToString(), AdminRole, 120);
-            return AdminRole;
+                }).FirstAsync();
+            if (adminrole != null)
+                await caches.rediscachesetasync(adminrole.keyid.tostring(), adminrole, 120);
+            return  AdminRole;
         }
 
         #endregion
@@ -75,8 +76,9 @@ namespace Mily.MainLogic.LogicImplement
         /// </summary>
         /// <param name="Key"></param>
         /// <returns></returns>
-        public async Task<Object> DeleteAdmin(string Key)
+        public async Task<Object> DeleteAdmin(ResultProvider Provider)
         {
+            string Key = Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString();
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
            .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
            .Where(t => t.Deleted == false).ToList();
@@ -88,8 +90,9 @@ namespace Mily.MainLogic.LogicImplement
         /// </summary>
         /// <param name="Key"></param>
         /// <returns></returns>
-        public async Task<Object> RemoveAdmin(string Key)
+        public async Task<Object> RemoveAdmin(ResultProvider Provider)
         {
+            string Key = Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString();
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
                 .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString())).ToList();
             return await base.RemoveData<Administrator>(null, null, administrator);
@@ -100,18 +103,19 @@ namespace Mily.MainLogic.LogicImplement
         /// </summary>
         /// <param name="ViewModel"></param>
         /// <returns></returns>
-        public async Task<Object> EditAdmin(AdminRoleViewModel ViewModel)
+        public async Task<Object> EditAdmin(ResultProvider Provider)
         {
-            Administrator administrator = ViewModel.ToAutoMapper<Administrator>();
-            return await base.AlterData(administrator, null, null, DbReturnTypes.AlterDefault, null, t => t.KeyId == ViewModel.KeyId);
+            Administrator Admin = Provider.DictionaryStringProvider.ToJson().ToModel<AdminRoleViewModel>().ToAutoMapper<Administrator>();
+            return await base.AlterData(Admin, null, null, DbReturnTypes.AlterDefault, null, t => t.KeyId == Admin.KeyId);
         }
 
         /// <summary>
         /// 恢复管理员数据
         /// </summary>
         /// <returns></returns>
-        public async Task<Object> RecoveryAdminData(string Key)
+        public async Task<Object> RecoveryAdminData(ResultProvider Provider)
         {
+            string Key = Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString();
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
                 .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
                 .Where(t => t.Deleted == true).ToList();
@@ -127,29 +131,30 @@ namespace Mily.MainLogic.LogicImplement
         /// </summary>
         /// <param name="db"></param>
         /// <returns></returns>
-        public async Task<Object> SearchMenuItem(Guid Key)
+        public async Task<Object> SearchMenuItem(ResultProvider Provider)
         {
+            Guid Key = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
             return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
-                      .Where(Role => Role.RolePermissionId == Key).Select((Role, Menu) => new MenuItems
-                      {
-                          KeyId = Menu.KeyId,
-                          RouterPath = Menu.RouterPath,
-                          Path = Menu.Path,
-                          Lv = Menu.Lv,
-                          Icon = Menu.Icon,
-                          Title = Menu.Title,
-                          ParentId = Menu.ParentId,
-                          Parent = Menu.Parent,
-                          Created = Menu.Created,
-                          Deleted = Menu.Deleted
-                      }).MergeTable().Where(Item => Item.Lv == MenuItemEnum.Lv1).Mapper(Item =>
-                      {
-                          Item.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Item.KeyId).Where(t => t.Lv == MenuItemEnum.Lv2).ToList();
-                          Item.ChildMenus.ForEach(Menus =>
-                          {
-                              Menus.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Menus.KeyId).Where(t => t.Lv == MenuItemEnum.Lv3).ToList();
-                          });
-                      }).ToListAsync();
+               .Where(Role => Role.RolePermissionId == Key).Select((Role, Menu) => new MenuItems
+               {
+                   KeyId = Menu.KeyId,
+                   RouterPath = Menu.RouterPath,
+                   Path = Menu.Path,
+                   Lv = Menu.Lv,
+                   Icon = Menu.Icon,
+                   Title = Menu.Title,
+                   ParentId = Menu.ParentId,
+                   Parent = Menu.Parent,
+                   Created = Menu.Created,
+                   Deleted = Menu.Deleted
+               }).MergeTable().Where(Item => Item.Lv == MenuItemEnum.Lv1).Mapper(Item =>
+               {
+                   Item.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Item.KeyId).Where(t => t.Lv == MenuItemEnum.Lv2).ToList();
+                   Item.ChildMenus.ForEach(Menus =>
+                   {
+                       Menus.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Menus.KeyId).Where(t => t.Lv == MenuItemEnum.Lv3).ToList();
+                   });
+               }).ToListAsync();
         }
         #endregion
     }

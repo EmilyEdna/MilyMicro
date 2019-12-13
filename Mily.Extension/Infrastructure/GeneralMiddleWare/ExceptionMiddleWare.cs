@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mily.Extension.Infrastructure.GeneralModel
+namespace Mily.Extension.Infrastructure.GeneralMiddleWare
 {
     /// <summary>
     /// 异常中间件
@@ -33,34 +33,34 @@ namespace Mily.Extension.Infrastructure.GeneralModel
             };
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext Context)
         {
             Exception Ex = null;
             try
             {
-                await RequestDelegate(context);
+                await RequestDelegate(Context);
             }
             catch (Exception ex)
             {
-                context.Response.Clear();
-                context.Response.StatusCode = 500;
+                Context.Response.Clear();
+                Context.Response.StatusCode = 500;
                 Ex = ex;
             }
             finally
             {
-                if (ExceptionMap.ContainsKey(context.Response.StatusCode) && !context.Items.ContainsKey("ExceptionHandled"))
+                if (ExceptionMap.ContainsKey(Context.Response.StatusCode) && !Context.Items.ContainsKey("ExceptionHandled"))
                 {
-                    var ErrorMsg = string.Empty;
-                    if (context.Response.StatusCode == 500 && Ex != null)
-                        ErrorMsg = $"状态信息:{ExceptionMap[context.Response.StatusCode]}";
+                    string ErrorMsg;
+                    if (Context.Response.StatusCode == 500 && Ex != null)
+                        ErrorMsg = $"状态信息:{ExceptionMap[Context.Response.StatusCode]}";
                     else
-                        ErrorMsg = ExceptionMap[context.Response.StatusCode];
+                        ErrorMsg = ExceptionMap[Context.Response.StatusCode];
                     Ex = new Exception(ErrorMsg);
                     if (Ex != null)
                     {
-                        ResultApiMiddleWare Result = new ResultApiMiddleWare() { IsSuccess = false, Info = Ex.Message, StatusCode = context.Response.StatusCode };
-                        context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsync(JsonConvert.SerializeObject(Result), Encoding.UTF8);
+                        ResultApiMiddleWare Result = new ResultApiMiddleWare() { IsSuccess = false, Info = Ex.Message, StatusCode = Context.Response.StatusCode };
+                        Context.Response.ContentType = "application/json";
+                        await Context.Response.WriteAsync(JsonConvert.SerializeObject(Result), Encoding.UTF8);
                     }
                 }
             }

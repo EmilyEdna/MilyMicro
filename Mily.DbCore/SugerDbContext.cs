@@ -191,10 +191,10 @@ namespace Mily.DbCore
         /// 新增数据通用
         /// </summary>
         /// <typeparam name="Entity"></typeparam>
-        /// <param name="entity"></param>
-        /// <param name="DbName"></param>
-        /// <param name="entities"></param>
-        /// <param name="type"></param>
+        /// <param name="entity">实体</param>
+        /// <param name="DbName">数据库名称</param>
+        /// <param name="entities">多实体</param>
+        /// <param name="type">执行类型</param>
         /// <returns></returns>
         public virtual async Task<Object> InsertData<Entity>(Entity entity, String DbName = null, List<Entity> entities = null, DbReturnTypes type = DbReturnTypes.InsertDefault) where Entity : class, new()
         {
@@ -241,13 +241,13 @@ namespace Mily.DbCore
         /// 更新数据通用
         /// </summary>
         /// <typeparam name="Entity"></typeparam>
-        /// <param name="entity"></param>
-        /// <param name="DbName"></param>
-        /// <param name="entities"></param>
-        /// <param name="type"></param>
-        /// <param name="Del"></param>
-        /// <param name="ObjExp"></param>
-        /// <param name="BoolExp"></param>
+        /// <param name="entity">实体</param>
+        /// <param name="DbName">数据库名称</param>
+        /// <param name="entities">多实体</param>
+        /// <param name="type">执行类型</param>
+        /// <param name="Del">是否逻辑删除</param>
+        /// <param name="ObjExp">对象表达式</param>
+        /// <param name="BoolExp">条件表达式</param>
         /// <returns></returns>
         public virtual async Task<Object> AlterData<Entity>(Entity entity, String DbName = null, List<Entity> entities = null, DbReturnTypes type = DbReturnTypes.AlterDefault,
             Boolean? Del = true, Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
@@ -296,12 +296,12 @@ namespace Mily.DbCore
         /// 删除数据通用
         /// </summary>
         /// <typeparam name="Entity"></typeparam>
-        /// <param name="entity"></param>
-        /// <param name="DbName"></param>
-        /// <param name="entities"></param>
-        /// <param name="type"></param>
-        /// <param name="BoolExp"></param>
-        /// <param name="ObjExp"></param>
+        /// <param name="entity">实体</param>
+        /// <param name="DbName">数据库名称</param>
+        /// <param name="entities">多实体</param>
+        /// <param name="type">执行类型</param>
+        /// <param name="BoolExp">条件表达式</param>
+        /// <param name="ObjExp">对象表达式</param>
         /// <returns></returns>
         public virtual async Task<Object> RemoveData<Entity>(Entity entity, String DbName = null, List<Entity> entities = null, DbReturnTypes type = DbReturnTypes.RemoveDefault,
             Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()

@@ -58,7 +58,6 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
             else
                 return (DBType)Target;
         }
-
         /// <summary>
         /// 失败
         /// </summary>
@@ -71,7 +70,6 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
             Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 500, null, "执行失败").ToJson().ToModel<Dictionary<String, Object>>();
             return Provider;
         }
-
         /// <summary>
         /// 执行结果
         /// </summary>

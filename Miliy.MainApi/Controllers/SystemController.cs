@@ -41,7 +41,7 @@ namespace Miliy.MainApi.Controllers
             var claimIdentity = new ClaimsIdentity("Cookie");
             var RoleAdmin = await SysService.Login(Provider);
             if (RoleAdmin == null)
-                return new { Data = "登录失败，请检查用户名和密码是否正确!" ,Target=false};
+                return new { Data = "登录失败，请检查用户名和密码是否正确!", Target = false };
             if (HttpContext != null)
             {
                 claimIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, RoleAdmin.RolePermissionId.ToString()));
@@ -72,7 +72,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Delete)]
-        public async Task<ActionResult<Object>> DeleteAdmin(string Key) => await SysService.DeleteAdmin(Key);
+        public async Task<ActionResult<Object>> DeleteAdmin(ResultProvider Provider) => await SysService.DeleteAdmin(Provider);
 
         /// <summary>
         /// 真删除管理员API
@@ -81,7 +81,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Delete)]
-        public async Task<ActionResult<Object>> RemoveAdmin(string Key) => await SysService.RemoveAdmin(Key);
+        public async Task<ActionResult<Object>> RemoveAdmin(ResultProvider Provider) => await SysService.RemoveAdmin(Provider);
 
         /// <summary>
         /// 编辑管理员API
@@ -90,7 +90,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Update)]
-        public async Task<ActionResult<Object>> EditAdmin(AdminRoleViewModel ViewModel) => await SysService.EditAdmin(ViewModel);
+        public async Task<ActionResult<Object>> EditAdmin(ResultProvider Provider) => await SysService.EditAdmin(Provider);
 
         /// <summary>
         /// 恢复管理员数据API
@@ -98,7 +98,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Update)]
-        public async Task<ActionResult<Object>> RecoveryAdminData(string Key) => await SysService.RecoveryAdminData(Key);
+        public async Task<ActionResult<Object>> RecoveryAdminData(ResultProvider Provider) => await SysService.RecoveryAdminData(Provider);
 
         #endregion
 
@@ -109,7 +109,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Read)]
-        public async Task<ActionResult<Object>> SearchMenuItem(string Key) => await SysService.SearchMenuItem(Guid.Parse(Key));
+        public async Task<ActionResult<Object>> SearchMenuItem(ResultProvider Provider) => await SysService.SearchMenuItem(Provider);
         #endregion
     }
 }

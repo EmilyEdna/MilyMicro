@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Mily.Extension.ClientRpc;
-using Mily.Extension.Infrastructure.GeneralModel;
+using Mily.Extension.Infrastructure.GeneralMiddleWare;
 using Mily.Setting;
 using NLog;
 using System;
@@ -23,6 +23,8 @@ namespace Mily.Extension.InitSystem
             app.UseAuthentication();
             //注册异常中间件
             app.UseMiddleware<ExceptionMiddleWare>();
+            //结果中间件
+            app.UseMiddleware<ResultMiddleWare>();
             //注册跨域
             app.UseCors("EdnaCore");
             app.UseSwagger();

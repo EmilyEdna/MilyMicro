@@ -21,18 +21,18 @@ namespace Mily.MainLogic.LogicInterface
 
         Task<Object> SearchAdminPage(PageQuery Page);
 
-        Task<Object> EditAdmin(AdminRoleViewModel ViewModel);
+        Task<Object> EditAdmin(ResultProvider Provider);
 
-        Task<Object> RemoveAdmin(string Key);
+        Task<Object> RemoveAdmin(ResultProvider Provider);
 
-        Task<Object> DeleteAdmin(string Key);
+        Task<Object> DeleteAdmin(ResultProvider Provider);
 
-        Task<Object> RecoveryAdminData(string Key);
+        Task<Object> RecoveryAdminData(ResultProvider Provider);
 
         #endregion
 
         #region 获取菜单
-        Task<Object> SearchMenuItem(Guid Key);
+        Task<Object> SearchMenuItem(ResultProvider Provider);
         #endregion
     }
 }
