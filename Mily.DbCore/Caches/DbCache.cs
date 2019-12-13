@@ -1,30 +1,30 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
-using XExten.CacheFactory.RedisCache;
+using XCache = XExten.CacheFactory;
 
 namespace Mily.DbCore.Caches
 {
-    public class DbCache : RedisCaches, ICacheService
+    public class DbCache : XCache.Caches,ICacheService
     {
         public void Add<T>(string key, T value)
         {
-            StringSet(key, value);
+            RedisCacheSet(key, value);
         }
 
         public void Add<T>(string key, T value, int cacheDurationInSeconds)
         {
-            StringSet(key, value, (DateTime.Now.AddSeconds(cacheDurationInSeconds) - DateTime.Now));
+            RedisCacheSet(key, value, cacheDurationInSeconds, true);
         }
 
         public bool ContainsKey<T>(string key)
         {
-            return StringGet<T>(key) != null ? true : false;
+            return RedisCacheGet<T>(key) != null ? true : false;
         }
 
         public T Get<T>(string key)
         {
-            return StringGet<T>(key);
+            return RedisCacheGet<T>(key);
         }
 
         public IEnumerable<string> GetAllKey<T>()
@@ -48,7 +48,7 @@ namespace Mily.DbCore.Caches
 
         public void Remove<T>(string key)
         {
-            KeyDelete(key);
+            RedisCacheRemove(key);
         }
     }
 }
