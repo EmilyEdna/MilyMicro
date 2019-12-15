@@ -2,7 +2,7 @@
 using BeetleX.Clients;
 using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.Attributes;
-using Mily.Extension.Infrastructure.GeneralMiddleWare;
+using Mily.Extension.Infrastructure.Common;
 using Mily.Extension.LoggerFactory;
 using Mily.Setting;
 using Mily.Setting.DbTypes;
@@ -111,7 +111,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
                             var CheckParam = Cmd.HashData.Keys.ToList().Where(t => t == ParamName).FirstOrDefault();
                                 if (CheckParam.IsNullOrEmpty())
                                 {
-                                    SendByClient(ResultApiMiddleWare.Instance(false, 503, null, "必需参数不正确"), AsyncClient, Client);
+                                    SendByClient(ResultCondition.Instance(false, 503, null, "必需参数不正确"), AsyncClient, Client);
                                     return;
                                 }
                             }
@@ -160,25 +160,25 @@ namespace Mily.Extension.SocketClient.SocketCommon
                         if (JudgeAttribute(Method))
                         {
                             Object Result = ((Task<ActionResult<Object>>)Method.Invoke(Controller, parameters)).Result.Value;
-                            SendByClient(ResultApiMiddleWare.Instance(true, 200, Result, "执行成功"), AsyncClient, Client);
+                            SendByClient(ResultCondition.Instance(true, 200, Result, "执行成功"), AsyncClient, Client);
                         }
                         else
-                            SendByClient(ResultApiMiddleWare.Instance(false, 401, null, "无权访问"), AsyncClient, Client);
+                            SendByClient(ResultCondition.Instance(false, 401, null, "无权访问"), AsyncClient, Client);
                     }
                     catch (Exception ex)
                     {
                         RecordExcetion(ex, Cmd.Path);
-                        SendByClient(ResultApiMiddleWare.Instance(false, 500, null, "服务器异常"), AsyncClient, Client);
+                        SendByClient(ResultCondition.Instance(false, 500, null, "服务器异常"), AsyncClient, Client);
                         return;
                     }
                 }
                 else
-                    SendByClient(ResultApiMiddleWare.Instance(false, 400, null, "错误的请求"), AsyncClient, Client);
+                    SendByClient(ResultCondition.Instance(false, 400, null, "错误的请求"), AsyncClient, Client);
             }
             catch (Exception ex)
             {
                 RecordExcetion(ex, Cmd.Path);
-                SendByClient(ResultApiMiddleWare.Instance(false, 500, null, "服务器异常"), AsyncClient, Client);
+                SendByClient(ResultCondition.Instance(false, 500, null, "服务器异常"), AsyncClient, Client);
                 return;
             }
         }
@@ -189,7 +189,7 @@ namespace Mily.Extension.SocketClient.SocketCommon
         /// <param name="ResultApi"></param>
         /// <param name="AsyncClient"></param>
         /// <param name="Client"></param>
-        private static void SendByClient(ResultApiMiddleWare ResultApi, AsyncTcpClient AsyncClient = null, TcpClient Client = null)
+        private static void SendByClient(ResultCondition ResultApi, AsyncTcpClient AsyncClient = null, TcpClient Client = null)
         {
             if (AsyncClient != null)
                 InitClientAsync(AsyncClient, NetType.Listen, JsonConvert.SerializeObject(ResultApi));

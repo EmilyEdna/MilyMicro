@@ -17,7 +17,7 @@ namespace Miliy.MainApi.Controllers
     /// </summary>
     [Route("Api/[controller]/[action]")]
     [ApiController]
-    public class SystemController : BaseApiController
+    public class SystemController : Controller
     {
         #region 注册登录
 

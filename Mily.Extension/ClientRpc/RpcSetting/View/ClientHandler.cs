@@ -1,7 +1,7 @@
 ﻿using BeetleX.Clients;
 using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.ClientRpc.RpcSetting.Handler;
-using Mily.Extension.Infrastructure.GeneralMiddleWare;
+using Mily.Extension.Infrastructure.Common;
 using Mily.Setting;
 using Mily.Setting.DbTypes;
 using System;
@@ -68,7 +68,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         {
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
             Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
-            Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 500, null, "执行失败").ToJson().ToModel<Dictionary<String, Object>>();
+            Provider.DictionaryStringProvider = ResultCondition.Instance(true, 500, null, "执行失败").ToJson().ToModel<Dictionary<String, Object>>();
             return Provider;
         }
         /// <summary>
@@ -82,7 +82,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         internal ResultProvider InvokeMthond(ResultProvider Provider, Type Control, MethodInfo TargetMethod, ParameterInfo ParamInfo)
         {
             Object TargetCtrl = Activator.CreateInstance(Control);
-            Object Result = null;
+            Object Result;
             if (ParamInfo?.ParameterType == typeof(PageQuery))
             {
                 PageQuery TargetParamerter = Provider.DictionaryStringProvider.ToJson().ToModel<PageQuery>();
@@ -119,7 +119,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         {
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
             Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
-            Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 200, Result.ToJson(), "执行成功").ToJson().ToModel<Dictionary<String, Object>>();
+            Provider.DictionaryStringProvider = ResultCondition.Instance(true, 200, Result.ToJson(), "执行成功").ToJson().ToModel<Dictionary<String, Object>>();
             return Provider;
         }
         /// <summary>

@@ -8,6 +8,7 @@ using Mily.Extension.AutofacIoc;
 using Mily.Extension.Filters;
 using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
+using Polly;
 
 namespace Mily.Extension.InitSystem
 {

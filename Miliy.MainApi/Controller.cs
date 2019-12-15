@@ -5,8 +5,9 @@ using Mily.MainLogic.LogicInterface;
 
 namespace Miliy.MainApi
 {
-    public class BaseApiController : ControllerBase, IClientService
+    public abstract class Controller : ControllerBase, IClientService
     {
         public IMainLogic SysService = AutofocManage.CreateInstance().Resolve<IMainLogic>();
+
     }
 }

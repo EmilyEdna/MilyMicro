@@ -37,7 +37,7 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<AdminRoleViewModel> Login(ResultProvider Provider)
         {
             AdminRoleViewModel ViewModel = Provider.DictionaryStringProvider.ToJson().ToModel<AdminRoleViewModel>();
-            AdminRoleViewModel AdminRole =await DbContext().Queryable<Administrator, RolePermission>((Admin, Role) => new Object[] { JoinType.Left, Admin.RolePermissionId == Role.KeyId })
+            AdminRoleViewModel AdminRole = await DbContext().Queryable<Administrator, RolePermission>((Admin, Role) => new Object[] { JoinType.Left, Admin.RolePermissionId == Role.KeyId })
                 .Where(Admin => Admin.Account.Equals(ViewModel.Account))
                 .Where(Admin => Admin.PassWord.Equals(ViewModel.PassWord))
                 .Select((Admin, Role) => new AdminRoleViewModel
@@ -51,7 +51,7 @@ namespace Mily.MainLogic.LogicImplement
                 }).FirstAsync();
             if (AdminRole != null)
                 await Caches.RedisCacheSetAsync(AdminRole.KeyId.ToString(), AdminRole, 120);
-            return  AdminRole;
+            return AdminRole;
         }
 
         #endregion

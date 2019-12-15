@@ -8,6 +8,7 @@ using Mily.Setting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using XExten.XCore;
 
 namespace Mily.Extension.AutofacIoc
 {
@@ -36,6 +37,13 @@ namespace Mily.Extension.AutofacIoc
         public T Resolve<T>() => Container == null ? default : Container.Resolve<T>();
 
         /// <summary>
+        /// 取出实例
+        /// </summary>
+        /// <param name="Target"></param>
+        /// <returns></returns>
+        public Object Resolve(Type Target) => Container == null ? default : Container.Resolve(Target);
+
+        /// <summary>
         /// 返回AutoFac服务
         /// </summary>
         /// <param name="Collection"></param>
@@ -59,7 +67,7 @@ namespace Mily.Extension.AutofacIoc
             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().SingleInstance();
             builder.RegisterType(Aop);
             //注入业务逻辑
-            Service.ToList().ForEach(item =>
+            Service.ToEachs(item =>
             {
                 if (item.IsClass)
                     builder.RegisterType(Activator.CreateInstance(item).GetType())
