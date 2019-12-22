@@ -1,11 +1,10 @@
 ﻿using Castle.DynamicProxy;
 using Mily.Extension.Infrastructure.Common;
 using Mily.Setting;
-using Mily.Setting.DbTypes;
-using Polly;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
+using Mily.Extension.Retry;
+using System.Linq;
 
 namespace Mily.DbCore
 {
@@ -15,15 +14,17 @@ namespace Mily.DbCore
         {
             StarExcute();
             SugerDbContext.TypeAttrbuite = MilyConfig.DbTypeAttribute;
-            Invocation.ReturnValue = OnExcute(Invocation).GetAwaiter().GetResult();
+            Invocation.ReturnValue = RetryException.DoRetry(() => OnExcute(Invocation));
             EndExcute();
         }
-
-        public override async Task<object> OnExcute(dynamic Dynamic)
+        public override Object OnExcute(dynamic Dynamic)
         {
             IInvocation Invocation = (IInvocation)Dynamic;
-            Object Result = Invocation.Method.Invoke(Invocation.InvocationTarget, Invocation.Arguments);
-            return await Task.FromResult(Result);
+            dynamic Result = Invocation.Method.Invoke(Invocation.InvocationTarget, Invocation.Arguments);
+            if (Result.Exception.Count != null)
+                return Result.Exception.FirstOrDefault();
+            else
+                return Result;
         }
     }
 }

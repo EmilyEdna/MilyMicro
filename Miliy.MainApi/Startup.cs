@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Mily.Extension.ClientRpc;
 using Mily.Extension.InitSystem;
-using Mily.Extension.SocketClient;
-using Mily.Setting;
 
 namespace Miliy.MainApi
 {

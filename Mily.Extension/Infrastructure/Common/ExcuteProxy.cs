@@ -19,7 +19,7 @@ namespace Mily.Extension.Infrastructure.Common
         /// </summary>
         /// <param name="Dynamic"></param>
         /// <returns></returns>
-        public abstract Task<Object> OnExcute(dynamic Dynamic);
+        public abstract Object OnExcute(dynamic Dynamic);
         /// <summary>
         /// 执行结束
         /// </summary>

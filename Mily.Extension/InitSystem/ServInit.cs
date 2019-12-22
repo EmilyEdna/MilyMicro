@@ -45,7 +45,7 @@ namespace Mily.Extension.InitSystem
             services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
-                //opt.IncludeXmlComments(Path.Combine(Directory.GetCurrentDirectory(), "Edna.ApiCore.xml"));
+                //opt.IncludeXmlComments(Path.Combine(Directory.GetCurrentDirectory(), "Mily.OtherApi.xml"));
             });
             //使用NLog
             services.AddLogging(builder =>

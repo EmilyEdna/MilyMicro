@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Linq;
 using System;
-using Mily.Extension.AutofacIoc;
+
 
 namespace Mily.OtherApi.Controllers
 {
@@ -10,6 +10,5 @@ namespace Mily.OtherApi.Controllers
     [ApiController]
     public class OtherController : Controller
     {
-        public string Test() => "lzh";
     }
 }
