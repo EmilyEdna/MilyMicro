@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Polly;
 
 namespace Mily.Extension.Retry
@@ -32,6 +33,33 @@ namespace Mily.Extension.Retry
              {
                  Console.WriteLine($"重试次数{Count}，异常{Ex.Message}");
              }).Execute(action);
+        }
+        /// <summary>
+        /// 无返回重试
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="Times"></param>
+        /// <returns></returns>
+        public static async Task DoRetryAsync(Func<Task> action, int Times = 3)
+        {
+            await Policy.Handle<Exception>().RetryAsync(Times, (Ex, Count, Context) =>
+            {
+                Console.WriteLine($"重试次数{Count}，异常{Ex.Message}");
+            }).ExecuteAsync(action);
+        }
+        /// <summary>
+        /// 有返回重试
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="Times"></param>
+        /// <returns></returns>
+        public static async Task<T> DoRetryAsync<T>(Func<Task<T>> action, int Times = 3)
+        {
+            return await Policy.Handle<Exception>().RetryAsync(Times, (Ex, Count, Context) =>
+             {
+                 Console.WriteLine($"重试次数{Count}，异常{Ex.Message}");
+             }).ExecuteAsync(action);
         }
     }
 }
