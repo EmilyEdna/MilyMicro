@@ -2,6 +2,7 @@
 using XExten.CacheFactory;
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Mily.Service.ViewSetting
 {
@@ -12,8 +13,8 @@ namespace Mily.Service.ViewSetting
         public static int TCP_Port { get; set; } = Convert.ToInt32((Builder["TCP:TcpPort"] == null ? "9090" : Builder["TCP:TcpPort"].ToString()));
         public static string SOCKET_Host { get; set; } = Builder["Socket:SocketHost"] == null ? "0.0.0.0" : Builder["Socket:SocketHost"].ToString();
         public static int SOCKET_Port { get; set; } = Convert.ToInt32((Builder["Socket:SocketPort"] == null ? "9091" : Builder["Socket:SocketPort"].ToString()));
+        public static Dictionary<String, Object> Heads { get; set; }
         public static string DbType { get; set; }
-        public static string ServiceName { get; set; }
         public static void InitConnection()
         {
             try

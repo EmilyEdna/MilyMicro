@@ -11,14 +11,11 @@ const service = axios.create({
  *处理请求
  */
 service.interceptors.request.use(config => {
-    //Default Use SqlServer DataBase
-    config.headers.DataBase = 1;
     config.headers["Content-Type"]="application/json"
     if (!config.headers.Cross)
         //if not login push the cookie in this data
         config.data.Global = cookie.get("Global");
     config.data = JSON.stringify(config.data);
-    debugger;
     return config;
 }, err => {
     return Promise.reject(err);
@@ -31,7 +28,6 @@ service.interceptors.response.use(response => {
         cookie.set("Global", lzstring.compressToBase64(response.data.Data.ResultData.Data.KeyId));
     return response.data.Data;
 }, err => {
-        debugger;
     if (err && err.response) {
         switch (err.response.status) {
             case 400:

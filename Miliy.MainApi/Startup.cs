@@ -41,8 +41,6 @@ namespace Miliy.MainApi
                 Application.UseDeveloperExceptionPage();
             }
             ConfigInit.InitConfigCollection(Application, Environment, Configuration);
-            //NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
-            //NetSocketClinet.Socket(9090, typeof(BaseApiController));
         }
     }
 }

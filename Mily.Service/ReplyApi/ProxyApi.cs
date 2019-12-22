@@ -28,9 +28,12 @@ namespace Mily.Service.ReplyApi
             var Request = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<Dictionary<String, Object>>();
             if (Request == null)
                 Request = new Dictionary<String, Object>();
-            Request.Add("Method", Context.Request.Header["Method"]);
-            Request.Add("DataBase", Context.Request.Header["DataBase"]);
-            ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName== Configuration.ServiceName);
+            Configuration.Heads.ToEachs(Item =>
+            {
+                if (Item.Key != "Server")
+                    Request.Add(Item.Key,Item.Value);
+            });
+            ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName== Configuration.Heads["Server"].ToString());
             var Event = EventCache.GetPacketCache(Condition.ServiceName);
             ServerKey Key = ServerKey.SetValue(NetTypeEnum.Listened, Condition.ServiceName);
             var NewEvent = Event.SetInfo(Event.Session, ResultProvider.SetValue(Key, Request));

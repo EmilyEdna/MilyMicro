@@ -1,4 +1,6 @@
 import servcie from './http.service.js'
+import lzstring from 'lz-string'
+
 
 /**
  * 登录
@@ -6,11 +8,12 @@ import servcie from './http.service.js'
  */
 export const Login = (param) => {
     const target = Object.assign({}, param);
+    const Author = lzstring.compressToBase64(JSON.stringify({ "Cross": "EdnaEmily", "Method": "Login", "Server": "Main", "DataBase": 1 }));
     return servcie({
         url: 'ProxyServcie',
         method: 'post',
         data: target,
-        headers: { "Cross": "EdnaEmily", "Method": "Login", "Server": "Main"}
+        headers: { Author: Author}
     })
 }
 
@@ -20,10 +23,11 @@ export const Login = (param) => {
  */
 export const Menu = (param) => {
     const target = Object.assign({}, param);
+    const Author = lzstring.compressToBase64(JSON.stringify({ "Method": "SearchMenuItem", "Server": "Main", "DataBase": 1 }));
     return servcie({
         url: "ProxyServcie",
         method: 'post',
         data: target,
-        headers: { "Method": "SearchMenuItem", "Server": "Main" }
+        headers: { Author: Author }
     });
 }
