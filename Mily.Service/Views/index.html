@@ -116,7 +116,7 @@
                         url: '/Center/GetServer',
                         method: 'get',
                     }).then(res => {
-                        this.ServList = res.data;
+                        this.ServList = res.data.Data;
                     })
                 },
                 Edit(data) {
