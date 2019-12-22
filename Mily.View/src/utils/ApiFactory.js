@@ -5,12 +5,12 @@ import servcie from './http.service.js'
  * @param {any} param
  */
 export const Login = (param) => {
-    const target = Object.assign({ RequestPath: "System_Login_Main", Hit: 100 }, param);
+    const target = Object.assign({}, param);
     return servcie({
-        url: 'JsonAsync',
+        url: 'ProxyServcie',
         method: 'post',
         data: target,
-        headers: { "Cross": "EdnaEmily" }
+        headers: { "Cross": "EdnaEmily", "Method": "Login", "Server": "Main"}
     })
 }
 
@@ -18,11 +18,12 @@ export const Login = (param) => {
  * 全局菜单
  * @param {any} param
  */
-export const Menu =  (param) => {
-    const target = Object.assign({ RequestPath: "System_SearchMenuItem_Main", Hit: 100 }, param);
+export const Menu = (param) => {
+    const target = Object.assign({}, param);
     return servcie({
-        url: "JsonAsync",
+        url: "ProxyServcie",
         method: 'post',
-        data: target
+        data: target,
+        headers: { "Method": "SearchMenuItem", "Server": "Main" }
     });
 }

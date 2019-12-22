@@ -6,7 +6,6 @@ using Polly;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using XExten.Common;
 
 namespace Mily.DbCore
 {

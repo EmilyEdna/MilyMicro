@@ -44,7 +44,7 @@ namespace Mily.Extension.InitSystem
                 Option.IPAddress = MilyConfig.ServerCenterIP;
                 Option.IPPort = MilyConfig.ServerCenterPort;
             });
-            MilyConfig.XmlSQL = XPlusEx.ReadXml();
+            MilyConfig.XmlSQL = XPlusEx.XReadXml();
             WebPath = env.WebRootPath;
         }
 

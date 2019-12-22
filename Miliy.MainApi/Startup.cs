@@ -7,7 +7,6 @@ using Mily.Extension.ClientRpc;
 using Mily.Extension.InitSystem;
 using Mily.Extension.SocketClient;
 using Mily.Setting;
-using XExten.XPlus;
 
 namespace Miliy.MainApi
 {
@@ -42,7 +41,6 @@ namespace Miliy.MainApi
                 Application.UseDeveloperExceptionPage();
             }
             ConfigInit.InitConfigCollection(Application, Environment, Configuration);
-            MilyConfig.XmlSQL = XPlusEx.ReadXml();
             //NetSocketAsyncClinet.Socket(9090, typeof(BaseApiController));
             //NetSocketClinet.Socket(9090, typeof(BaseApiController));
         }
