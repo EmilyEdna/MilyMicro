@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Mily.Extension.Infrastructure.GeneralMiddleWare;
 using Mily.Extension.LoggerFactory;
 using System.Linq;
-using XExten.XCore;
 using Mily.Setting;
 using XExten.Common;
 using System.Collections.Generic;
@@ -11,6 +9,7 @@ using System;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Mily.Setting.DbTypes;
+using Mily.Extension.Infrastructure.Common;
 
 namespace Mily.Extension.Filters
 {
@@ -36,7 +35,7 @@ namespace Mily.Extension.Filters
                 LogFactoryExtension.WriteError(Path, MethodName, Parameter, Message, WebPath);
                 return;
             }
-            ResultApiMiddleWare Result = ResultApiMiddleWare.Instance(true, Context.HttpContext.Response.StatusCode, (Context.Result as ObjectResult).Value, "执行成功!");
+            ResultCondition Result = ResultCondition.Instance(true, Context.HttpContext.Response.StatusCode, (Context.Result as ObjectResult).Value, "执行成功!");
             Context.Result = new ObjectResult(Result);
         }
 
@@ -49,7 +48,7 @@ namespace Mily.Extension.Filters
             Object ParamType = Context.ActionArguments.Values.FirstOrDefault();
             HttpRequest Request = Context.HttpContext.Request;
             InvokeHeader(Request);
-            if (ParamType.GetType() == typeof(ResultProvider))
+            if (ParamType?.GetType() == typeof(ResultProvider))
             {
                 Dictionary<String, Object> DictionaryStringProvider = new Dictionary<String, Object>();
                 if (Request.Method == "POST")
@@ -69,7 +68,7 @@ namespace Mily.Extension.Filters
                     ((ResultProvider)ParamType).DictionaryStringProvider = DictionaryStringProvider;
                 }
             }
-            if (ParamType.GetType() == typeof(PageQuery))
+            if (ParamType?.GetType() == typeof(PageQuery))
             {
 
                 Dictionary<String, Object> Query = new Dictionary<String, Object>();

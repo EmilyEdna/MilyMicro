@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Mily.Extension.Infrastructure.GeneralMiddleWare;
+using Mily.Extension.Infrastructure.Common;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -58,7 +58,7 @@ namespace Mily.Extension.Infrastructure.GeneralMiddleWare
                     Ex = new Exception(ErrorMsg);
                     if (Ex != null)
                     {
-                        ResultApiMiddleWare Result = new ResultApiMiddleWare() { IsSuccess = false, Info = Ex.Message, StatusCode = Context.Response.StatusCode };
+                        ResultCondition Result = new ResultCondition() { IsSuccess = false, Info = Ex.Message, StatusCode = Context.Response.StatusCode };
                         Context.Response.ContentType = "application/json";
                         await Context.Response.WriteAsync(JsonConvert.SerializeObject(Result), Encoding.UTF8);
                     }

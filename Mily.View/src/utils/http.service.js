@@ -3,7 +3,7 @@ import cookie from 'js-cookie';
 import lzstring from 'lz-string'
 
 const service = axios.create({
-    baseURL: 'http://127.0.0.1:9091/Condition/',
+    baseURL: 'http://127.0.0.1:9091/Proxy/',
     timeout:15000
 });
 
@@ -11,12 +11,10 @@ const service = axios.create({
  *处理请求
  */
 service.interceptors.request.use(config => {
-    //Default Use SqlServer DataBase
-    config.headers.Type = 1;
     config.headers["Content-Type"]="application/json"
     if (!config.headers.Cross)
         //if not login push the cookie in this data
-        config.data.MapData.Global = cookie.get("Global");
+        config.data.Global = cookie.get("Global");
     config.data = JSON.stringify(config.data);
     return config;
 }, err => {

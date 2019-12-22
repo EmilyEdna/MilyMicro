@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.Attributes;
 using Mily.Extension.Attributes.RoleHandler;
-using Mily.ViewModels;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -17,7 +16,7 @@ namespace Miliy.MainApi.Controllers
     /// </summary>
     [Route("Api/[controller]/[action]")]
     [ApiController]
-    public class SystemController : BaseApiController
+    public class SystemController : Controller
     {
         #region 注册登录
 

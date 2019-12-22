@@ -1,7 +1,7 @@
 ﻿using BeetleX.Clients;
 using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.ClientRpc.RpcSetting.Handler;
-using Mily.Extension.Infrastructure.GeneralMiddleWare;
+using Mily.Extension.Infrastructure.Common;
 using Mily.Setting;
 using Mily.Setting.DbTypes;
 using System;
@@ -24,9 +24,9 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         /// <returns></returns>
         public virtual ResultProvider Invoke(ResultProvider Provider)
         {
+            GetCacheKeyInvoke(Provider);
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
             MilyConfig.DbTypeAttribute = InvokeDyType(Provider.DictionaryStringProvider["DataBase"]);
-            RemoveInvoke(Provider);
             Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IClientService))))
                 .Where(t => t.GetMethods().Any(x => x.Name.ToLower() == Method.ToLower())).FirstOrDefault();
             MethodInfo CtrlMehtod = Control.GetMethod(Method);
@@ -42,7 +42,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         public virtual AsyncTcpClient SendInvoke(AsyncTcpClient ClientAsync, ResultProvider Provider)
         {
             NetTypeEnum TypeEnum = Provider.ObjectProvider.ToJson().ToModel<ClientKey>().NetType;
-            if (TypeEnum == NetTypeEnum.Listened) 
+            if (TypeEnum == NetTypeEnum.Listened)
                 return ClientAsync.Send(ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.CallBack, MilyConfig.Discovery), Provider.DictionaryStringProvider));
             return null;
         }
@@ -68,7 +68,8 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         {
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
             Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
-            Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 500, null, "执行失败").ToJson().ToModel<Dictionary<String, Object>>();
+            Provider.DictionaryStringProvider = ResultCondition.Instance(true, 500, null, "执行失败").ToJson().ToModel<Dictionary<String, Object>>();
+            RemoveInvoke(Provider);
             return Provider;
         }
         /// <summary>
@@ -82,7 +83,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         internal ResultProvider InvokeMthond(ResultProvider Provider, Type Control, MethodInfo TargetMethod, ParameterInfo ParamInfo)
         {
             Object TargetCtrl = Activator.CreateInstance(Control);
-            Object Result = null;
+            Object Result;
             if (ParamInfo?.ParameterType == typeof(PageQuery))
             {
                 PageQuery TargetParamerter = Provider.DictionaryStringProvider.ToJson().ToModel<PageQuery>();
@@ -119,7 +120,8 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         {
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
             Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
-            Provider.DictionaryStringProvider = ResultApiMiddleWare.Instance(true, 200, Result.ToJson(), "执行成功").ToJson().ToModel<Dictionary<String, Object>>();
+            Provider.DictionaryStringProvider = ResultCondition.Instance(true, 200, Result.ToJson(), "执行成功").ToJson().ToModel<Dictionary<String, Object>>();
+            RemoveInvoke(Provider);
             return Provider;
         }
         /// <summary>
@@ -130,6 +132,18 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
         {
             Provider.DictionaryStringProvider.Remove("Method");
             Provider.DictionaryStringProvider.Remove("DataBase");
+        }
+        /// <summary>
+        /// 获取缓存的Key
+        /// </summary>
+        /// <param name="Provider"></param>
+        internal void GetCacheKeyInvoke(ResultProvider Provider)
+        {
+            if (Provider.DictionaryStringProvider.ContainsKey("Global"))
+            {
+                MilyConfig.CacheKey = Provider.DictionaryStringProvider["Global"].ToString();
+                Provider.DictionaryStringProvider.Remove("Global");
+            }
         }
     }
 }

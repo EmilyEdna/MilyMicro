@@ -2,14 +2,14 @@
     <div class="login-wrap">
         <div class="ms-login">
             <div class="ms-title">后台管理系统</div>
-            <el-form :model="param.MapData" :rules="rules" ref="login" label-width="0px" class="ms-content">
+            <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
                 <el-form-item prop="Account">
-                    <el-input v-model="param.MapData.Account" placeholder="请输入用户名">
+                    <el-input v-model="param.Account" placeholder="请输入用户名">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="PassWord">
-                    <el-input v-model="param.MapData.PassWord" placeholder="请输入密码">
+                    <el-input v-model="param.PassWord" placeholder="请输入密码">
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
@@ -26,10 +26,8 @@
         data() {
             return {
                 param: {
-                    MapData: {
-                        Account: '',
-                        PassWord: '',
-                    }
+                    Account: '',
+                    PassWord: '',
                 },
                 rules: {
                     Account: [{ required: true, message: '请输入用户名', trigger: 'blur' }],

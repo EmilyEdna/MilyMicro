@@ -1,16 +1,19 @@
 import servcie from './http.service.js'
+import lzstring from 'lz-string'
+
 
 /**
  * 登录
  * @param {any} param
  */
 export const Login = (param) => {
-    const target = Object.assign({ RequestPath: "System_Login_Main", Hit: 100 }, param);
+    const target = Object.assign({}, param);
+    const Author = lzstring.compressToBase64(JSON.stringify({ "Cross": "EdnaEmily", "Method": "Login", "Server": "Main", "DataBase": 1 }));
     return servcie({
-        url: 'JsonAsync',
+        url: 'ProxyServcie',
         method: 'post',
         data: target,
-        headers: { "Cross": "EdnaEmily" }
+        headers: { Author: Author}
     })
 }
 
@@ -18,11 +21,13 @@ export const Login = (param) => {
  * 全局菜单
  * @param {any} param
  */
-export const Menu =  (param) => {
-    const target = Object.assign({ RequestPath: "System_SearchMenuItem_Main", Hit: 100 }, param);
+export const Menu = (param) => {
+    const target = Object.assign({}, param);
+    const Author = lzstring.compressToBase64(JSON.stringify({ "Method": "SearchMenuItem", "Server": "Main", "DataBase": 1 }));
     return servcie({
-        url: "JsonAsync",
+        url: "ProxyServcie",
         method: 'post',
-        data: target
+        data: target,
+        headers: { Author: Author }
     });
 }
