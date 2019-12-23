@@ -17,7 +17,7 @@ namespace Mily.Extension.Retry
         {
             Policy.Handle<Exception>().Retry(Times, (Ex, Count, Context) =>
             {
-                Console.WriteLine($"重试次数{Count}，异常{Ex.Message}");
+                Console.WriteLine($"重试次数：{Count}，异常信息：{Ex.Message}，错误方法：{Context["MethodName"]}");
             }).Execute(action);
         }
         /// <summary>
@@ -31,7 +31,7 @@ namespace Mily.Extension.Retry
         {
             return Policy.Handle<Exception>().Retry(Times, (Ex, Count, Context) =>
              {
-                 Console.WriteLine($"重试次数{Count}，异常{Ex.Message}");
+                 Console.WriteLine($"重试次数：{Count}，异常信息：{Ex.Message}，错误方法：{Context["MethodName"]}");
              }).Execute(action);
         }
         /// <summary>
@@ -44,7 +44,7 @@ namespace Mily.Extension.Retry
         {
             await Policy.Handle<Exception>().RetryAsync(Times, (Ex, Count, Context) =>
             {
-                Console.WriteLine($"重试次数{Count}，异常{Ex.Message}");
+                Console.WriteLine($"重试次数：{Count}，异常信息：{Ex.Message}，错误方法：{Context["MethodName"]}");
             }).ExecuteAsync(action);
         }
         /// <summary>
@@ -58,7 +58,7 @@ namespace Mily.Extension.Retry
         {
             return await Policy.Handle<Exception>().RetryAsync(Times, (Ex, Count, Context) =>
              {
-                 Console.WriteLine($"重试次数{Count}，异常{Ex.Message}");
+                 Console.WriteLine($"重试次数：{Count}，异常信息：{Ex.Message}，错误方法：{Context["MethodName"]}");
              }).ExecuteAsync(action);
         }
     }
