@@ -7,6 +7,7 @@ using Mily.Extension.LoggerFactory;
 using Mily.Setting;
 using System;
 using System.Linq;
+using System.Net;
 using XExten.Common;
 
 namespace Mily.Extension.ClientRpc
@@ -16,11 +17,11 @@ namespace Mily.Extension.ClientRpc
         /// <summary>
         /// 地址
         /// </summary>
-        public string IPAddress { get; set; }
+        public string Address { get; set; }
         /// <summary>
         /// 端口
         /// </summary>
-        public int IPPort { get; set; }
+        public int Port { get; set; }
         /// <summary>
         /// 初始化客服端
         /// </summary>
@@ -29,7 +30,7 @@ namespace Mily.Extension.ClientRpc
         {
             NetRpcClientProvider Client = new NetRpcClientProvider();
             Action(Client);
-            Client.InitRpcProviderCustomer(Client.IPAddress, Client.IPPort);
+            Client.InitRpcProviderCustomer(Client.Address, Client.Port);
         }
         /// <summary>
         /// 初始化Rpc

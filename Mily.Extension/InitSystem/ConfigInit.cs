@@ -41,8 +41,8 @@ namespace Mily.Extension.InitSystem
             //初始化RPC客户端
             NetRpcClientProvider.InitClinet(Option =>
             {
-                Option.IPAddress = MilyConfig.ServerCenterIP;
-                Option.IPPort = MilyConfig.ServerCenterPort;
+                Option.Address = MilyConfig.ServerCenterIP;
+                Option.Port = MilyConfig.ServerCenterPort;
             });
             MilyConfig.XmlSQL = XPlusEx.XReadXml();
             WebPath = env.WebRootPath;
