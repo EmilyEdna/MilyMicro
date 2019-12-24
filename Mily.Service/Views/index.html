@@ -87,8 +87,8 @@
                             <kbd>服务名称：<span class="badge badge-primary">{{item.ServiceName}}</span></kbd>
                             <kbd>当前路由规则： <span class="badge badge-success">{{item.Route}}</span></kbd>
                             <kbd>HTTP负载是否启用： <span class="badge badge-info">{{item.UseHttp?'是':'否'}}</span></kbd>
-                            <kbd>TCP负载率： <span class="badge badge-warning">{{item.TcpWeight}}%</span><span class="badge badge-info">默认0不负载</span></kbd>
-                            <kbd>HTTP负载率： <span class="badge badge-warning">{{item.HttpWeight}}%</span><span class="badge badge-info">默认0不负载</span></kbd>
+                            <kbd>TCP负载率： <span class="badge badge-warning">{{item.TcpWeight}}</span><span class="badge badge-info">默认0不负载</span></kbd>
+                            <kbd>HTTP负载率： <span class="badge badge-warning">{{item.HttpWeight}}</span><span class="badge badge-info">默认0不负载</span></kbd>
                             <div class="offset-md-9" style="position:absolute;margin-top:-25px;">
                                 <button class="btn btn-sm btn-info" type="button" @click="UseHttp(item.ServiceName,!item.UseHttp)">{{item.UseHttp?'禁用HTTP负载':'启用HTTP负载'}}</button>
                                 <button class="btn btn-sm btn-info" type="button" data-toggle="modal" data-target="#WeightModulePercent" @click="OpenModule(item.ServiceName)" v-if="item.UseHttp">负载率设置</button>
@@ -146,12 +146,12 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <h5>
-                                    TCP负载率： <input class="form-control border border-danger" type="number" v-model="Weight.TcpWeight" min="0" max="100" placeholder="0~100区间" />
+                                    TCP负载率： <input class="form-control border border-danger" type="text" v-model="Weight.TcpWeight"/>
                                 </h5>
                             </div>
                             <div class="col-sm-6">
                                 <h5>
-                                    HTTP负载率： <input class="form-control border border-danger" type="number" v-model="Weight.HttpWeight" min="0" max="100" placeholder="0~100区间" />
+                                    HTTP负载率： <input class="form-control border border-danger" type="text" v-model="Weight.HttpWeight"/>
                                 </h5>
                             </div>
                         </div>

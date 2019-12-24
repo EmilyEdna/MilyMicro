@@ -41,10 +41,10 @@ namespace Mily.Service.CenterApi.ViewModel
         /// <summary>
         /// TCP权重
         /// </summary>
-        public int TcpWeight { get; set; }
+        public string TcpWeight { get; set; }
         /// <summary>
         /// HTTP权重
         /// </summary>
-        public int HttpWeight { get; set; }
+        public string HttpWeight { get; set; }
     }
 }
