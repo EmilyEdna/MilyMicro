@@ -1,5 +1,4 @@
 ﻿<!DOCTYPE html>
-
 <html lang="zh-cn" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
@@ -72,7 +71,7 @@
                                     <td v-if="EditRow==item.No"><input type="text" class="form-control" v-model="Param.HttpPort" /></td>
                                     <td v-if="EditRow==item.No"><select class="form-control" v-model="Param.Stutas"><option :value="0">错误</option><option :value="1">正常</option></select></td>
                                     <td>
-                                        <button class="btn btn-sm btn-danger" @click="insert()">{{item.Status?"禁用":"启用"}}</button>
+                                        <button class="btn btn-sm btn-danger" @click="">{{item.Status?"禁用":"启用"}}</button>
                                         <button class="btn btn-sm btn-danger" @click="SaveOrEdit?Edit(item):Save(index)">{{SaveOrEdit?"编辑":"保存"}}</button>
                                     </td>
                                 </tr>
@@ -84,10 +83,16 @@
             <div class="tab-pane fade" id="Server" role="tabpanel" aria-labelledby="profile-tab">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <div class="border alert alert-danger" v-for="(item,index) in ServList" v-if="index===0||item.ServiceName!==ServList[index-1].ServiceName">
-                            <kbd>{{item.ServiceName}}</kbd>
-                            <div class="offset-md-10" style="position:absolute;margin-top:-25px;">
-                                <button class="btn btn-sm btn-info" type="button" data-toggle="modal" data-target="#Module" @click="OpenModule(item.ServiceName)">添加URL负载规则</button>
+                        <div class="border alert alert-danger border-danger" v-for="(item,index) in ServList" v-if="index===0||item.ServiceName!==ServList[index-1].ServiceName">
+                            <kbd>服务名称：<span class="badge badge-primary">{{item.ServiceName}}</span></kbd>
+                            <kbd>当前路由规则： <span class="badge badge-success">{{item.Route}}</span></kbd>
+                            <kbd>HTTP负载是否启用： <span class="badge badge-info">{{item.UseHttp?'是':'否'}}</span></kbd>
+                            <kbd>TCP负载率： <span class="badge badge-warning">{{item.TcpWeight}}%</span><span class="badge badge-info">默认0不负载</span></kbd>
+                            <kbd>HTTP负载率： <span class="badge badge-warning">{{item.HttpWeight}}%</span><span class="badge badge-info">默认0不负载</span></kbd>
+                            <div class="offset-md-9" style="position:absolute;margin-top:-25px;">
+                                <button class="btn btn-sm btn-info" type="button" @click="UseHttp(item.ServiceName,!item.UseHttp)">{{item.UseHttp?'禁用HTTP负载':'启用HTTP负载'}}</button>
+                                <button class="btn btn-sm btn-info" type="button" data-toggle="modal" data-target="#WeightModulePercent" @click="OpenModule(item.ServiceName)" v-if="item.UseHttp">负载率设置</button>
+                                <button class="btn btn-sm btn-info" type="button" data-toggle="modal" data-target="#WeightModule" @click="OpenModule(item.ServiceName)">添加URL负载规则</button>
                             </div>
                         </div>
                     </li>
@@ -104,8 +109,8 @@
                 </ul>
             </div>
         </div>
-        <!-- 模态框 -->
-        <div class="modal fade" id="Module">
+        <!-- 负载模态框 -->
+        <div class="modal fade" id="WeightModule">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <!-- 模态框头部 -->
@@ -115,12 +120,45 @@
                     </div>
                     <!-- 模态框主体 -->
                     <div class="modal-body">
-                        <h5>服务名称： <span class="badge badge-secondary">{{ServiceName}}</span></h5>
+                        <h5>服务名称： <span class="badge badge-dark">{{ServiceName}}</span></h5>
                         <input class="form-control" v-model="Route" />
                     </div>
                     <!-- 模态框底部 -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="AddRouter()">确定</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 负载率模态框 -->
+        <div class="modal fade" id="WeightModulePercent">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">TPC和HTTP负载率</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <h5>服务名称： <span class="badge badge-dark">{{ServiceName}}</span></h5>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h5>
+                                    TCP负载率： <input class="form-control border border-danger" type="number" v-model="Weight.TcpWeight" min="0" max="100" placeholder="0~100区间" />
+                                </h5>
+                            </div>
+                            <div class="col-sm-6">
+                                <h5>
+                                    HTTP负载率： <input class="form-control border border-danger" type="number" v-model="Weight.HttpWeight" min="0" max="100" placeholder="0~100区间" />
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="AddWeight()">确定</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                     </div>
                 </div>
@@ -136,7 +174,11 @@
                 ServList: [],
                 Param: {},
                 ServiceName: null,
-                Route: null
+                Route: null,
+                Weight: {
+                    TcpWeight: null,
+                    HttpWeight: null
+                }
             },
             created() {
                 this.Init();
@@ -161,19 +203,18 @@
                     this.ServList[index] = this.Param;
                     this.EditRow = 0;
                     this.SaveOrEdit = true;
-                },
-                OrderByASCII(Data) {
-                    return Data.sort((A, B) => {
-                        let X = A['ServiceName'].substring(0, 1).charCodeAt();
-                        let Y = B['ServiceName'].substring(0, 1).charCodeAt();
-                        return ((X < Y) ? -1 : (X > Y) ? 1 : 0);
+                    axios({
+                        url: "/Center/SaveHttpServer",
+                        data: this.ServList[index],
+                        method: "post"
+                    }).then(res => {
+                        alert(res.data.Data);
                     });
                 },
                 AddRouter() {
                     this.ServList.forEach(item => {
-                        if (item.ServiceName == this.ServiceName) {
+                        if (item.ServiceName == this.ServiceName)
                             item.Route = this.Route;
-                        }
                     });
                     axios({
                         url: "/Center/InsertRoute",
@@ -184,14 +225,47 @@
                         alert(res.data.Data);
                     });
                 },
+                OrderByASCII(Data) {
+                    return Data.sort((A, B) => {
+                        let X = A['ServiceName'].substring(0, 1).charCodeAt();
+                        let Y = B['ServiceName'].substring(0, 1).charCodeAt();
+                        return ((X < Y) ? -1 : (X > Y) ? 1 : 0);
+                    });
+                },
                 OpenModule(Name) {
                     this.ServiceName = Name;
                 },
-                insert() {
+                UseHttp(Name, UseHttp) {
+                    let Param = null;
+                    this.ServList.forEach(item => {
+                        if (item.ServiceName == Name) {
+                            item.UseHttp = UseHttp;
+                            Param = item;
+                        }
+                    });
                     axios({
-                        url: '/center/insert',
-                        method: 'post',
-                        data: { No: 2, ServiceName: 'Main', Host: '192.168.1.1', TcpPort: '8080', HttpPort: '8081', Stutas: 1 }
+                        url: '/Center/StarUseHttp',
+                        data: Param,
+                        method: "Post",
+                    }).then(res => {
+                        alert(res.data.Data);
+                    });
+                },
+                AddWeight() {
+                    let Param = null;
+                    this.ServList.forEach(item => {
+                        if (item.ServiceName == this.ServiceName) {
+                            item.TcpWeight = this.Weight.TcpWeight;
+                            item.HttpWeight = this.Weight.HttpWeight;
+                            Param = item;
+                        }
+                    });
+                    axios({
+                        url: '/Center/SaveWeightRabin',
+                        data: Param,
+                        method: "post"
+                    }).then(res => {
+                        alert(res.data.Data);
                     });
                 }
             }
