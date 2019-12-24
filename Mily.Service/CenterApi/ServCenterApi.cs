@@ -30,10 +30,17 @@ namespace Mily.Service.CenterApi
         [Get]
         public async Task<Object> GetServer()
         {
-            return await Task.Run(() =>
-           {
-               return Caches.MongoDBCachesGet<ServerCondition>(t => true);
-           });
+            return await Caches.MongoDBCacheGetAsync<ServerCondition>(t => true);
+        }
+        [Post]
+        public async Task<String> InsertRoute(IHttpContext Context)
+        {
+            List<ServerCondition> Conditions = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<List<ServerCondition>>();
+            Conditions.ForEach(Item =>
+            {
+                Caches.MongoDbCacheUpdateAsync<ServerCondition>(t => t.ServiceName == Item.ServiceName, "Route",Item.Route);
+            });
+            return await Task.FromResult("添加成功");
         }
     }
 }

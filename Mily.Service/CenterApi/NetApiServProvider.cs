@@ -1,5 +1,4 @@
-﻿using BeetleX;
-using BeetleX.EventArgs;
+﻿using BeetleX.EventArgs;
 using BeetleX.FastHttpApi;
 using Mily.Service.ViewSetting;
 using System;

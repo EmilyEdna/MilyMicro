@@ -11,7 +11,7 @@ namespace Mily.Service.ReplyApi.ProxyFilter
     {
         public override bool Executing(ActionContext context)
         {
-            Configuration.Heads = (Dictionary<String, Object>)context.HttpContext.Request.Header["Author"].ToLzStringDec().ToModel<HeadConfiger>().ToDic();
+            Configuration.Heads = context.HttpContext.Request.Header["Author"].ToLzStringDec().ToModel<HeadConfiger>();
             return base.Executing(context);
         }
     }

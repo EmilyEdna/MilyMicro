@@ -8,12 +8,12 @@ import lzstring from 'lz-string'
  */
 export const Login = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify({ "Cross": "EdnaEmily", "Method": "Login", "Server": "Main", "DataBase": 1 }));
+    const Author = lzstring.compressToBase64(JSON.stringify({ "Cross": "EdnaEmily", "DataBase": 1 }));
     return servcie({
-        url: 'ProxyServcie',
+        url: 'Main/Login/ProxyMain',
         method: 'post',
         data: target,
-        headers: { Author: Author}
+        headers: { Author: Author }
     })
 }
 
@@ -23,9 +23,9 @@ export const Login = (param) => {
  */
 export const Menu = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify({ "Method": "SearchMenuItem", "Server": "Main", "DataBase": 1 }));
+    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
     return servcie({
-        url: "ProxyServcie",
+        url: "Main/SearchMenuItem/ProxyMain",
         method: 'post',
         data: target,
         headers: { Author: Author }

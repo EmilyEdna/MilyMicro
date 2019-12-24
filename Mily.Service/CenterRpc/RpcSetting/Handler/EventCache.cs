@@ -11,6 +11,9 @@ namespace Mily.Service.CenterRpc.RpcSetting.Handler
 {
     public class EventCache
     {
+        /// <summary>
+        /// 缓存Seesion
+        /// </summary>
         private static Dictionary<String, PacketDecodeCompletedEventArgs> PacketCache = new Dictionary<String, PacketDecodeCompletedEventArgs>();
         public static void SetPacketCache(ResultProvider Provider, PacketDecodeCompletedEventArgs Event)
         {
@@ -21,10 +24,20 @@ namespace Mily.Service.CenterRpc.RpcSetting.Handler
                 SetMongoCache(Key.ServName, Event);
             }
         }
+        /// <summary>
+        /// 获取Session
+        /// </summary>
+        /// <param name="Key"></param>
+        /// <returns></returns>
         public static PacketDecodeCompletedEventArgs GetPacketCache(String Key)
         {
             return PacketCache.ContainsKey(Key) ? PacketCache[Key] : null;
         }
+        /// <summary>
+        /// 缓存客户端
+        /// </summary>
+        /// <param name="ServiceProvider"></param>
+        /// <param name="Event"></param>
         private static void SetMongoCache(String ServiceProvider, PacketDecodeCompletedEventArgs Event)
         {
             ServerCondition Condition = new ServerCondition
@@ -33,7 +46,6 @@ namespace Mily.Service.CenterRpc.RpcSetting.Handler
                 ServiceName = ServiceProvider,
                 Host = Event.Session.Socket.RemoteEndPoint.ToString().Split(":")[0],
                 TcpPort = Event.Session.Socket.RemoteEndPoint.ToString().Split(":")[1],
-                HttpPort = "",
                 Stutas = 1
             };
             Caches.MongoDBCacheSet(Condition);

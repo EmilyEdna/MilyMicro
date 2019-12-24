@@ -11,6 +11,7 @@ namespace Mily.Service.CenterApi.ViewModel
         public string Host { get; set; }
         public string TcpPort { get; set; }
         public string HttpPort { get; set; }
+        public string Route { get; set; }
         /// <summary>
         /// 1 表示正常 0 表示错误
         /// </summary>
