@@ -21,8 +21,13 @@ namespace Mily.DbCore
         {
             IInvocation Invocation = (IInvocation)Dynamic;
             dynamic Result = Invocation.Method.Invoke(Invocation.InvocationTarget, Invocation.Arguments);
-            if (Result.Exception.Count != null)
-                return Result.Exception.FirstOrDefault();
+            if (Result.Exception != null)
+            {
+                if (Result.Exception.Count != null)
+                    return Result.Exception.FirstOrDefault();
+                else
+                    return Result;
+            }
             else
                 return Result;
         }
