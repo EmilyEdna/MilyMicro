@@ -19,21 +19,37 @@ namespace Mily.Service.ReplyApi
     [Options(AllowOrigin = "*", AllowHeaders = "*")]
     [Controller(BaseUrl = "/Proxy")]
     [ProxyApiFilter]
-    public class ProxyApi
+    public class ProxyApi : IController
     {
+        [NotAction]
+        public void Init(HttpApiServer server, string path)
+        {
+            server.HttpRequesting += (Obj, Event) =>
+            {
+                Configuration.FuncArray.ForEach(Item =>
+                {
+                    if (Event.Request.BaseUrl.Contains(Item))
+                    {
+                        List<string> UrlList = Event.Request.BaseUrl.Split("/").ToList();
+                        UrlList.Remove("");
+                        RouteConfiger.Server = UrlList[1];
+                        string Route = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1).Route;
+                        RouteConfiger.Method = UrlList[2];
+                        Event.Request.UrlRewriteTo(Route.IsNullOrEmpty() ? $"/Proxy/{Item}" : Route);
+                    }
+                });
+            };
+        }
+
         [Post]
         [JsonDataConvert]
-        public object ProxyServcie(IHttpContext Context)
+        public object ProxyMain(IHttpContext Context)
         {
-            var Request = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<Dictionary<String, Object>>();
-            if (Request == null)
-                Request = new Dictionary<String, Object>();
-            Configuration.Heads.ToEachs(Item =>
-            {
-                if (Item.Key != "Server")
-                    Request.Add(Item.Key, Item.Value);
-            });
-            ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == Configuration.Heads["Server"].ToString() && t.Stutas == 1);
+            Dictionary<String, Object> Request = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<Dictionary<String, Object>>();
+            Request ??= new Dictionary<String, Object>();
+            Request.Add("Method", RouteConfiger.Method);
+            Request.Add("DataBase", Configuration.Heads.DataBase);
+            ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1);
             var Event = EventCache.GetPacketCache(Condition.ServiceName);
             ServerKey Key = ServerKey.SetValue(NetTypeEnum.Listened, Condition.ServiceName);
             var NewEvent = Event.SetInfo(Event.Session, ResultProvider.SetValue(Key, Request));

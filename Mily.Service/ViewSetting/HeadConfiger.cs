@@ -6,8 +6,7 @@ namespace Mily.Service.ViewSetting
 {
     public class HeadConfiger
     {
-        public Int32 DataBase { get; set; }
-        public String Method { get; set; }
-        public String Server { get; set; }
+        public DBType DataBase { get; set; }
     }
+  
 }

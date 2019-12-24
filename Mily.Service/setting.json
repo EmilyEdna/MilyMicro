@@ -13,5 +13,8 @@
   "MongoDb": {
     "DbName": "configer",
     "MongoConnectionString": "mongodb://127.0.0.1:27017" //MongoDb
+  },
+  "ProxyFunctionAarry": {
+    "FuncArray": "ProxyMain,ProxyOther"
   }
 }
