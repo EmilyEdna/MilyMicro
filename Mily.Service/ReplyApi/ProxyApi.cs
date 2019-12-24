@@ -33,8 +33,9 @@ namespace Mily.Service.ReplyApi
                         List<string> UrlList = Event.Request.BaseUrl.Split("/").ToList();
                         UrlList.Remove("");
                         RouteConfiger.Server = UrlList[1];
+                        string Route = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1).Route;
                         RouteConfiger.Method = UrlList[2];
-                        Event.Request.UrlRewriteTo("/Proxy/" + Item);
+                        Event.Request.UrlRewriteTo(Route.IsNullOrEmpty() ? $"/Proxy/{Item}" : Route);
                     }
                 });
             };
@@ -44,9 +45,8 @@ namespace Mily.Service.ReplyApi
         [JsonDataConvert]
         public object ProxyMain(IHttpContext Context)
         {
-            var Request = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<Dictionary<String, Object>>();
-            if (Request == null)
-                Request = new Dictionary<String, Object>();
+            Dictionary<String, Object> Request = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<Dictionary<String, Object>>();
+            Request ??= new Dictionary<String, Object>();
             Request.Add("Method", RouteConfiger.Method);
             Request.Add("DataBase", Configuration.Heads.DataBase);
             ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1);
