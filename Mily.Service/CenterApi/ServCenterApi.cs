@@ -79,8 +79,8 @@ namespace Mily.Service.CenterApi
         public async Task<String> SaveWeightRabin(IHttpContext Context)
         {
             ServerCondition Condition = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<ServerCondition>();
-            Caches.MongoDbCacheUpdate<ServerCondition>(t => t.Key == Condition.Key, "HttpWeight", Condition.HttpWeight.ToString());
-            Caches.MongoDbCacheUpdate<ServerCondition>(t => t.Key == Condition.Key, "TcpWeight", Condition.TcpWeight.ToString());
+            Caches.MongoDbCacheUpdate<ServerCondition>(t => t.Key == Condition.Key, "HttpWeight", Condition.HttpWeight);
+            Caches.MongoDbCacheUpdate<ServerCondition>(t => t.Key == Condition.Key, "TcpWeight", Condition.TcpWeight);
             return await Task.FromResult("添加成功!");
         }
     }
