@@ -46,6 +46,7 @@ namespace Mily.Service.CenterRpc.RpcSetting.Handler
                 ServiceName = ServiceProvider,
                 Host = Event.Session.Socket.RemoteEndPoint.ToString().Split(":")[0],
                 TcpPort = Event.Session.Socket.RemoteEndPoint.ToString().Split(":")[1],
+                ConnetTime = DateTime.Now,
                 Stutas = 1
             };
             Caches.MongoDBCacheSet(Condition);
