@@ -39,7 +39,7 @@ namespace Mily.Service.ReplyApi.ProxyExtension
             return HttpMultiClient.HttpMulti.Headers("ActionType", Configuration.Heads.DataBase.ToString())
                    .Header("Global", (Request.ContainsKey("Global") ? Request["Request"].ToString() : null))
                    .AddNode(Path, Param, RequestType.POST)
-                   .Build().RunString();
+                   .Build().RunString().FirstOrDefault().ToModel<Object>();
         }
         /// <summary>
         /// 负载均衡
