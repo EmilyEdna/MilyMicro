@@ -30,9 +30,15 @@ namespace Mily.Service.ReplyApi.ProxyExtension
         private static Object Http(Dictionary<String, Object> Request)
         {
             ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1);
+            String Path = $"http://{ Condition.Host}:{Condition.HttpPort}/Api/{RouteConfiger.Controllor}/{RouteConfiger.Method}";
+            List<KeyValuePair<String, String>> Param = new List<KeyValuePair<String, String>>();
+            foreach (var item in Request)
+            {
+                Param.Add(new KeyValuePair<String, String>(item.Key,item.Value.ToString()));
+            }
             return HttpMultiClient.HttpMulti.Headers("ActionType", Configuration.Heads.DataBase.ToString())
                    .Header("Global", (Request.ContainsKey("Global") ? Request["Request"].ToString() : null))
-                   .AddNode($"http://{ Condition.Host}:{Condition.HttpPort}/Api/{RouteConfiger.Controllor}/{RouteConfiger.Method}", Request.ToJson(), RequestType.POST)
+                   .AddNode(Path, Param, RequestType.POST)
                    .Build().RunString();
         }
         /// <summary>
@@ -56,9 +62,9 @@ namespace Mily.Service.ReplyApi.ProxyExtension
                     return Http(Request);
                 else
                 {
-                    if(Condition.TcpWeight.Split(",").ToList().Min(t => Convert.ToInt32(t))<=Seeds&& Condition.TcpWeight.Split(",").ToList().Max(t => Convert.ToInt32(t))>=Seeds)
+                    if (Condition.TcpWeight.Split(",").ToList().Min(t => Convert.ToInt32(t)) <= Seeds && Condition.TcpWeight.Split(",").ToList().Max(t => Convert.ToInt32(t)) >= Seeds)
                         return TCP(Request);
-                  else
+                    else
                         return Http(Request);
                 }
             }
