@@ -19,15 +19,6 @@ namespace Mily.Service.CenterApi
     public class ServCenterApi
     {
         /// <summary>
-        /// 获取服务器
-        /// </summary>
-        /// <returns></returns>
-        [Get]
-        public async Task<Object> GetServer()
-        {
-            return await Caches.MongoDBCachesGetAsync<ServerCondition>(t => true);
-        }
-        /// <summary>
         /// 添加路由
         /// </summary>
         /// <param name="Context"></param>
@@ -35,11 +26,8 @@ namespace Mily.Service.CenterApi
         [Post]
         public async Task<String> InsertRoute(IHttpContext Context)
         {
-            List<ServerCondition> Conditions = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<List<ServerCondition>>();
-            Conditions.ForEach(Item =>
-            {
-                Caches.MongoDbCacheUpdateAsync<ServerCondition>(t => t.ServiceName == Item.ServiceName, "Route", Item.Route);
-            });
+            ServerCondition Conditions = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<ServerCondition>();
+            Caches.MongoDbCacheUpdate<ServerCondition>(t => t.Key == Conditions.Key, "Route", Conditions.Route);
             return await Task.FromResult("添加成功!");
         }
         /// <summary>
@@ -51,11 +39,11 @@ namespace Mily.Service.CenterApi
         public async Task<String> StarUseHttp(IHttpContext Context)
         {
             ServerCondition Conditions = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<ServerCondition>();
-            var Condition = Caches.MongoDBCachesGet<ServerCondition>(t => Conditions.ServiceName == t.ServiceName).Any(t => t.HttpPort.IsNullOrEmpty());
-            if (Condition)
+            var Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.Key == Conditions.Key);
+            if (Condition.HttpPort.IsNullOrEmpty())
                 return await Task.FromResult("请先添加HTTP端口号!");
             else
-                Caches.MongoDbCacheUpdate<ServerCondition>(t => t.ServiceName == Conditions.ServiceName, "UseHttp", Conditions.UseHttp.ToString());
+                Caches.MongoDbCacheUpdate<ServerCondition>(t => t.Key == Conditions.Key, "UseHttp", Conditions.UseHttp.ToString());
             return await Task.FromResult(Conditions.UseHttp ? "启用成功!" : "禁用成功!");
         }
         /// <summary>
@@ -82,6 +70,20 @@ namespace Mily.Service.CenterApi
             Caches.MongoDbCacheUpdate<ServerCondition>(t => t.Key == Condition.Key, "HttpWeight", Condition.HttpWeight);
             Caches.MongoDbCacheUpdate<ServerCondition>(t => t.Key == Condition.Key, "TcpWeight", Condition.TcpWeight);
             return await Task.FromResult("添加成功!");
+        }
+        /// <summary>
+        /// 获取分组服务
+        /// </summary>
+        /// <returns></returns>
+        [Get]
+        public async Task<Object> GetGroupServer()
+        {
+            var data = Caches.MongoDBCachesGet<ServerCondition>(t => true).GroupBy(t => t.ServiceName).Select(t => new ServerGroupCondition
+            {
+                ServiceName = t.Key,
+                Conditions = t.ToList()
+            });
+            return await Task.FromResult(data);
         }
     }
 }

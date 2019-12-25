@@ -83,16 +83,20 @@
             <div class="tab-pane fade" id="Server" role="tabpanel" aria-labelledby="profile-tab">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <div class="border alert alert-danger border-danger" v-for="(item,index) in ServList" v-if="index===0||item.ServiceName!==ServList[index-1].ServiceName">
+                        <div class="border alert alert-danger border-danger" v-for="(item,index) in ServGroupList">
                             <kbd>服务名称：<span class="badge badge-primary">{{item.ServiceName}}</span></kbd>
-                            <kbd>当前路由规则： <span class="badge badge-success">{{item.Route}}</span></kbd>
-                            <kbd>HTTP负载是否启用： <span class="badge badge-info">{{item.UseHttp?'是':'否'}}</span></kbd>
-                            <kbd>TCP负载率： <span class="badge badge-warning">{{item.TcpWeight}}</span><span class="badge badge-info">默认0不负载</span></kbd>
-                            <kbd>HTTP负载率： <span class="badge badge-warning">{{item.HttpWeight}}</span><span class="badge badge-info">默认0不负载</span></kbd>
-                            <div class="offset-md-9" style="position:absolute;margin-top:-25px;">
-                                <button class="btn btn-sm btn-info" type="button" @click="UseHttp(item.ServiceName,!item.UseHttp)">{{item.UseHttp?'禁用HTTP负载':'启用HTTP负载'}}</button>
-                                <button class="btn btn-sm btn-info" type="button" data-toggle="modal" data-target="#WeightModulePercent" @click="OpenModule(item.ServiceName)" v-if="item.UseHttp">负载率设置</button>
-                                <button class="btn btn-sm btn-info" type="button" data-toggle="modal" data-target="#WeightModule" @click="OpenModule(item.ServiceName)">添加URL负载规则</button>
+                            <kbd>多服务负载方式：<span class="badge badge-primary">随机种子负载</span></kbd>
+                            <div class="border alert alert-success border-success" v-for="items in item.Conditions">
+                                <kbd>当前IP： <span class="badge badge-success">{{items.Host}}</span></kbd>
+                                <kbd>路由规则： <span class="badge badge-success">{{items.Route}}</span></kbd>
+                                <kbd>HTTP负载是否启用： <span class="badge badge-info">{{items.UseHttp?'是':'否'}}</span></kbd>
+                                <kbd>TCP负载率： <span class="badge badge-warning">{{items.TcpWeight}}</span><span class="badge badge-info">默认0不负载</span></kbd>
+                                <kbd>HTTP负载率： <span class="badge badge-warning">{{items.HttpWeight}}</span><span class="badge badge-info">默认0不负载</span></kbd>
+                                <div class="offset-md-9" style="position:absolute;margin-top:-25px;">
+                                    <button class="btn btn-sm btn-info" type="button" @click="UseHttp(items.Key,!items.UseHttp)">{{items.UseHttp?'禁用HTTP负载':'启用HTTP负载'}}</button>
+                                    <button class="btn btn-sm btn-info" type="button" data-toggle="modal" data-target="#WeightModulePercent" @click="OpenModule(items.Key)" v-if="items.UseHttp">负载率设置</button>
+                                    <button class="btn btn-sm btn-info" type="button" data-toggle="modal" data-target="#WeightModule" @click="OpenModule(items.Key)">URL负载规则</button>
+                                </div>
                             </div>
                         </div>
                     </li>
@@ -120,7 +124,7 @@
                     </div>
                     <!-- 模态框主体 -->
                     <div class="modal-body">
-                        <h5>服务名称： <span class="badge badge-dark">{{ServiceName}}</span></h5>
+                        <h5>服务名称： <span class="badge badge-dark">{{Key}}</span></h5>
                         <input class="form-control" v-model="Route" />
                     </div>
                     <!-- 模态框底部 -->
@@ -142,16 +146,16 @@
                     </div>
                     <!-- 模态框主体 -->
                     <div class="modal-body">
-                        <h5>服务名称： <span class="badge badge-dark">{{ServiceName}}</span></h5>
+                        <h5>服务名称： <span class="badge badge-dark">{{Key}}</span></h5>
                         <div class="row">
                             <div class="col-sm-6">
                                 <h5>
-                                    TCP负载率： <input class="form-control border border-danger" type="text" v-model="Weight.TcpWeight"/>
+                                    TCP负载率： <input class="form-control border border-danger" type="text" v-model="Weight.TcpWeight" />
                                 </h5>
                             </div>
                             <div class="col-sm-6">
                                 <h5>
-                                    HTTP负载率： <input class="form-control border border-danger" type="text" v-model="Weight.HttpWeight"/>
+                                    HTTP负载率： <input class="form-control border border-danger" type="text" v-model="Weight.HttpWeight" />
                                 </h5>
                             </div>
                         </div>
@@ -172,8 +176,9 @@
                 SaveOrEdit: true,
                 EditRow: 0,
                 ServList: [],
+                ServGroupList:[],
                 Param: {},
-                ServiceName: null,
+                Key: null,
                 Route: null,
                 Weight: {
                     TcpWeight: null,
@@ -188,10 +193,17 @@
             methods: {
                 Init() {
                     axios({
-                        url: '/Center/GetServer',
+                        url: '/Center/GetGroupServer',
                         method: 'get',
                     }).then(res => {
-                        this.ServList = this.OrderByASCII(res.data.Data);
+                        let TempArr = [];
+                        res.data.Data.forEach(item => {
+                            item.Conditions.forEach(items => {
+                                TempArr.push(items);
+                            });
+                        });
+                        this.ServList=this.OrderByASCII(TempArr);
+                        this.ServGroupList = res.data.Data;
                     })
                 },
                 Edit(data) {
@@ -212,14 +224,17 @@
                     });
                 },
                 AddRouter() {
+                     let Param = null;
                     this.ServList.forEach(item => {
-                        if (item.ServiceName == this.ServiceName)
+                        if (item.Key == this.Key) {
                             item.Route = this.Route;
+                            Param = item;
+                        }
                     });
                     axios({
                         url: "/Center/InsertRoute",
                         method: "Post",
-                        data: this.ServList
+                        data: Param
                     }).then(res => {
                         this.Route = null;
                         alert(res.data.Data);
@@ -232,13 +247,13 @@
                         return ((X < Y) ? -1 : (X > Y) ? 1 : 0);
                     });
                 },
-                OpenModule(Name) {
-                    this.ServiceName = Name;
+                OpenModule(Key) {
+                    this.Key = Key;
                 },
-                UseHttp(Name, UseHttp) {
+                UseHttp(Id, UseHttp) {
                     let Param = null;
                     this.ServList.forEach(item => {
-                        if (item.ServiceName == Name) {
+                        if (item.Key == Id) {
                             item.UseHttp = UseHttp;
                             Param = item;
                         }
@@ -254,7 +269,7 @@
                 AddWeight() {
                     let Param = null;
                     this.ServList.forEach(item => {
-                        if (item.ServiceName == this.ServiceName) {
+                        if (item.Key == this.Key) {
                             item.TcpWeight = this.Weight.TcpWeight;
                             item.HttpWeight = this.Weight.HttpWeight;
                             Param = item;
