@@ -10,8 +10,10 @@ namespace Mily.Extension.Infrastructure.Common
         /// <summary>
         /// 开始执行
         /// </summary>
-        public void StarExcute()
+        /// <param name="BeginAction"></param>
+        public void StarExcute(Action BeginAction = null)
         {
+            if (BeginAction != null) BeginAction.Invoke();
             Console.WriteLine("开始执行：" + DateTime.Now);
         }
         /// <summary>
@@ -23,8 +25,10 @@ namespace Mily.Extension.Infrastructure.Common
         /// <summary>
         /// 执行结束
         /// </summary>
-        public void EndExcute()
+        /// <param name="EndAction"></param>
+        public void EndExcute(Action EndAction = null)
         {
+            if (EndAction != null) EndAction.Invoke();
             Console.WriteLine("执行结束" + DateTime.Now);
         }
     }
