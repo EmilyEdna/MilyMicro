@@ -26,7 +26,7 @@ namespace Mily.Extension.InitSystem
             //结果中间件
             app.UseMiddleware<ResultMiddleWare>();
             //注册跨域
-            app.UseCors("EdnaCore");
+            app.UseCors("MilyMicro");
             app.UseSwagger();
             app.UseSwaggerUI(opt =>
             {
