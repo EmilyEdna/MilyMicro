@@ -67,6 +67,16 @@ namespace Mily.Setting
         public static int ServerCenterPort { get; set; }
 
         /// <summary>
+        /// 客服端IP
+        /// </summary>
+        public static string ClientIP { get; set; }
+
+        /// <summary>
+        /// 客服端端口
+        /// </summary>
+        public static int ClientPort { get; set; }
+
+        /// <summary>
         /// 配置SQL语句
         /// </summary>
         public static Dictionary<string, string> XmlSQL { get; set; }

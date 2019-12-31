@@ -6,6 +6,7 @@ using XExten.CacheFactory;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Net;
 
 namespace Mily.Service.CenterRpc
 {

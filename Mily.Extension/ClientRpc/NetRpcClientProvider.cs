@@ -9,19 +9,31 @@ using System;
 using System.Linq;
 using System.Net;
 using XExten.Common;
+using XExten.XCore;
 
 namespace Mily.Extension.ClientRpc
 {
     public class NetRpcClientProvider
     {
+        #region Basic Config
         /// <summary>
-        /// 地址
+        /// 服务器地址
         /// </summary>
-        public string Address { get; set; }
+        public string ServerPath { get; set; }
         /// <summary>
-        /// 端口
+        /// 服务器端口
         /// </summary>
-        public int Port { get; set; }
+        public int ServerPort { get; set; }
+        /// <summary>
+        /// 客服端地址
+        /// </summary>
+        public string ClientPath { get; set; }
+        /// <summary>
+        /// 客服端端口
+        /// </summary>
+        public int? ClientPort { get; set; }
+        #endregion
+
         /// <summary>
         /// 初始化客服端
         /// </summary>
@@ -30,7 +42,7 @@ namespace Mily.Extension.ClientRpc
         {
             NetRpcClientProvider Client = new NetRpcClientProvider();
             Action(Client);
-            Client.InitRpcProviderCustomer(Client.Address, Client.Port);
+            Client.InitRpcProviderCustomer(Client.ServerPath, Client.ServerPort);
         }
         /// <summary>
         /// 初始化Rpc
@@ -40,9 +52,9 @@ namespace Mily.Extension.ClientRpc
         public virtual void InitRpcProviderCustomer(string Ip, int Port)
         {
             AsyncTcpClient ClientAsnyc = SocketFactory.CreateClient<AsyncTcpClient, RcpClientPacket>(Ip, Port);
+            if (!ClientPath.IsNullOrEmpty() && ClientPort.HasValue)
+                ClientAsnyc.LocalEndPoint = new IPEndPoint(IPAddress.Parse(ClientPath), ClientPort.Value);
             ClientAsnyc.Connect();
-            ClientAsnyc.Socket.SendBufferSize = int.MaxValue;
-            ClientAsnyc.Socket.ReceiveBufferSize = int.MaxValue;
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
                 ResultProvider Provider = ProxyHandler.Instance.InitProxy((ResultProvider)Data);

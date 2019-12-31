@@ -41,8 +41,10 @@ namespace Mily.Extension.InitSystem
             //初始化RPC客户端
             NetRpcClientProvider.InitClinet(Option =>
             {
-                Option.Address = MilyConfig.ServerCenterIP;
-                Option.Port = MilyConfig.ServerCenterPort;
+                Option.ServerPath = MilyConfig.ServerCenterIP;
+                Option.ServerPort = MilyConfig.ServerCenterPort;
+                Option.ClientPath = MilyConfig.ClientIP;
+                Option.ClientPort = MilyConfig.ClientPort;
             });
             MilyConfig.XmlSQL = XPlusEx.XReadXml();
             WebPath = env.WebRootPath;
@@ -56,8 +58,10 @@ namespace Mily.Extension.InitSystem
             MilyConfig.ConnectionStringSlave = Builder.GetConnectionString("ConnectionStringSlave");
             MilyConfig.RabbitMQConnectionString = Builder.GetConnectionString("RabbitMQConnectionString");
             MilyConfig.Discovery = Builder["Discovery"];
-            MilyConfig.ServerCenterIP = Builder["ServerCenterIPV4"];
-            MilyConfig.ServerCenterPort =Convert.ToInt32(Builder["ServerCenterIPV4Port"]);
+            MilyConfig.ServerCenterIP = Builder["ServerCenter:ServerCenterIPV4"];
+            MilyConfig.ServerCenterPort = Convert.ToInt32(Builder["ServerCenter:ServerCenterIPV4Port"]);
+            MilyConfig.ClientIP = Builder["ClientConfig:ClientIPV4"];
+            MilyConfig.ClientPort = Convert.ToInt32(Builder["ClientConfig:ClientIPV4Port"]);
             Caches.DbName = Builder["MongoDbName"];
             Caches.RedisConnectionString = Builder.GetConnectionString("RedisConnectionString");
             Caches.MongoDBConnectionString = Builder.GetConnectionString("MongoDBConnectionString");
