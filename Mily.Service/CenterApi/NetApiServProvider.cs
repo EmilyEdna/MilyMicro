@@ -21,7 +21,7 @@ namespace Mily.Service.CenterApi
             ApiServ.ServerLog = (Server, Event) =>
             {
                 if (Event.Type == LogType.Error)
-                    if (Event.Message.Contains("http"))
+                    if (Event.Message.Contains("http") || Event.Message.Contains("https"))
                     {
                         String ExceptionInfomations = $"Service errored with exception：【{Event.Message}】====write time：{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}\n";
                         File.AppendAllText(Path.Combine(AppContext.BaseDirectory, "FastApiError.log"), ExceptionInfomations);
