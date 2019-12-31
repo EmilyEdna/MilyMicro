@@ -17,6 +17,7 @@ namespace Mily.Service.ReplyApi.ProxyExtension
     {
         private static Object TCP(Dictionary<String, Object> Request)
         {
+
             Request ??= new Dictionary<String, Object>();
             Request.Add("Method", RouteConfiger.Method);
             Request.Add("DataBase", Configuration.Heads.DataBase);
@@ -34,7 +35,7 @@ namespace Mily.Service.ReplyApi.ProxyExtension
             List<KeyValuePair<String, String>> Param = new List<KeyValuePair<String, String>>();
             foreach (var item in Request)
             {
-                Param.Add(new KeyValuePair<String, String>(item.Key,item.Value.ToString()));
+                Param.Add(new KeyValuePair<String, String>(item.Key, item.Value.ToString()));
             }
             return HttpMultiClient.HttpMulti.Headers("ActionType", Configuration.Heads.DataBase.ToString())
                    .Header("Global", (Request.ContainsKey("Global") ? Request["Request"].ToString() : null))

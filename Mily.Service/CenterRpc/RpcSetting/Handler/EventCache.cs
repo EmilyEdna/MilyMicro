@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using XExten.Common;
 using XExten.CacheFactory;
+using System.Net;
+using XExten.XExpres;
 
 namespace Mily.Service.CenterRpc.RpcSetting.Handler
 {
@@ -40,16 +42,30 @@ namespace Mily.Service.CenterRpc.RpcSetting.Handler
         /// <param name="Event"></param>
         private static void SetMongoCache(String ServiceProvider, PacketDecodeCompletedEventArgs Event)
         {
+            IPEndPoint Point = (Event.Session.Socket.RemoteEndPoint as IPEndPoint);
             ServerCondition Condition = new ServerCondition
             {
                 No = (int)Event.Session.ID,
                 ServiceName = ServiceProvider,
-                Host = Event.Session.Socket.RemoteEndPoint.ToString().Split(":")[0],
-                TcpPort = Event.Session.Socket.RemoteEndPoint.ToString().Split(":")[1],
+                Host = Point.Address.ToString(),
+                TcpPort = Point.Port.ToString(),
                 ConnetTime = DateTime.Now,
                 Stutas = 1
             };
-            Caches.MongoDBCacheSet(Condition);
+            if (CheckMogodbCache(Condition))
+                Caches.MongoDBCacheSet(Condition);
+        }
+        /// <summary>
+        /// 判断是否已经连接过了
+        /// </summary>
+        /// <param name="Condition"></param>
+        /// <returns></returns>
+        private static bool CheckMogodbCache(ServerCondition Condition)
+        {
+            var Express = XExp.GetExpression<ServerCondition>("ServiceName", Condition.ServiceName, QType.Equals)
+                 .And(XExp.GetExpression<ServerCondition>("TcpPort", Condition.TcpPort, QType.Equals))
+                 .And(XExp.GetExpression<ServerCondition>("Host", Condition.Host, QType.Equals));
+            return Caches.MongoDBCacheGet<ServerCondition>(Express) == null ? true : false;
         }
     }
 }
