@@ -26,6 +26,8 @@ namespace Mily.Service.ReplyApi.ProxyExtension
             ServerKey Key = ServerKey.SetValue(NetTypeEnum.Listened, Condition.ServiceName);
             var NewEvent = Event.SetInfo(Event.Session, ResultProvider.SetValue(Key, Request));
             Event.Session.Server.Handler.SessionPacketDecodeCompleted(Event.Server, NewEvent);
+            if (ResultEvent.StaticResult == null)
+                Thread.Sleep(3000);
             return ResultEvent.StaticResult;
         }
         private static Object Http(Dictionary<String, Object> Request)
@@ -38,7 +40,7 @@ namespace Mily.Service.ReplyApi.ProxyExtension
                 Param.Add(new KeyValuePair<String, String>(item.Key, item.Value.ToString()));
             }
             return HttpMultiClient.HttpMulti.Headers("ActionType", Configuration.Heads.DataBase.ToString())
-                   .Header("Global", (Request.ContainsKey("Global") ? Request["Request"].ToString() : null))
+                   .Header("Global", (Request.ContainsKey("Global") ? Request["Request"].ToString().ToLzStringDec() : null))
                    .AddNode(Path, Param, RequestType.POST)
                    .Build().RunString().FirstOrDefault().ToModel<Object>();
         }

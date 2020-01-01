@@ -8,7 +8,7 @@ import lzstring from 'lz-string'
  */
 export const Login = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify({ "Cross": "EdnaEmily", "DataBase": 1 }));
+    const Author = lzstring.compressToBase64(JSON.stringify({ "Cross": "Mily", "DataBase": 1 }));
     return servcie({
         url: 'Main/System/Login/ProxyMain',
         method: 'post',

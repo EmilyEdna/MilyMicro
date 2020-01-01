@@ -66,7 +66,7 @@
             let first = setTimeout(() => {
                 this.Menus = JSON.parse(localStorage.Menu);
                 this.Count = true
-            }, 2000);
+            }, 2500);
             if (this.Count)
                 clearTimeout(first);
         }
