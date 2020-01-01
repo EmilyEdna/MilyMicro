@@ -65,7 +65,7 @@ namespace Mily.Service.CenterRpc.RpcSetting.Handler
             var Express = XExp.GetExpression<ServerCondition>("ServiceName", Condition.ServiceName, QType.Equals)
                  .And(XExp.GetExpression<ServerCondition>("TcpPort", Condition.TcpPort, QType.Equals))
                  .And(XExp.GetExpression<ServerCondition>("Host", Condition.Host, QType.Equals));
-            return Caches.MongoDBCacheGet<ServerCondition>(Express) == null ? true : false;
+            return Caches.MongoDBCacheGet(Express) == null ? true : false;
         }
     }
 }

@@ -46,9 +46,5 @@ namespace Mily.Service.CenterApi.ViewModel
         /// HTTP权重
         /// </summary>
         public string HttpWeight { get; set; }
-        /// <summary>
-        ///连接时间
-        /// </summary>
-        public DateTime? ConnetTime { get; set; }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Castle.DynamicProxy;
 using Mily.Extension.Infrastructure.Common;
-using Mily.Setting;
-using System;
-using System.Threading.Tasks;
 using Mily.Extension.Retry;
+using Mily.Setting;
+using Newtonsoft.Json;
+using System;
 using System.Linq;
+using XExten.XCore;
 
 namespace Mily.DbCore
 {
@@ -12,10 +13,10 @@ namespace Mily.DbCore
     {
         public void Intercept(IInvocation Invocation)
         {
-            StarExcute();
+            StarExcute(() => Console.Write($"\n执行方法：{Invocation.InvocationTarget.GetType().FullName}，执行参数：{Invocation.Arguments.FirstOrDefault().ToJson()}，"));
             SugerDbContext.TypeAttrbuite = MilyConfig.DbTypeAttribute;
             Invocation.ReturnValue = RetryException.DoRetry(() => OnExcute(Invocation));
-            EndExcute();
+            EndExcute(() => Console.Write($"\n执行结果：{JsonConvert.SerializeObject((Invocation.ReturnValue as dynamic).Result)}，"));
         }
         public override Object OnExcute(dynamic Dynamic)
         {

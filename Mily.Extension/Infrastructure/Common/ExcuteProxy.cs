@@ -13,8 +13,10 @@ namespace Mily.Extension.Infrastructure.Common
         /// <param name="BeginAction"></param>
         public void StarExcute(Action BeginAction = null)
         {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             if (BeginAction != null) BeginAction.Invoke();
-            Console.WriteLine("开始执行：" + DateTime.Now);
+            Console.WriteLine($"开始执行时间：{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff")}\n");
+            Console.ForegroundColor = ConsoleColor.White;
         }
         /// <summary>
         /// 正在执行
@@ -28,8 +30,10 @@ namespace Mily.Extension.Infrastructure.Common
         /// <param name="EndAction"></param>
         public void EndExcute(Action EndAction = null)
         {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
             if (EndAction != null) EndAction.Invoke();
-            Console.WriteLine("执行结束" + DateTime.Now);
+            Console.WriteLine($"执行结束时间：{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff")}\n");
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }

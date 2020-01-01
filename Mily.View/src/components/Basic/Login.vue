@@ -9,7 +9,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="PassWord">
-                    <el-input v-model="param.PassWord" placeholder="请输入密码">
+                    <el-input v-model="param.PassWord" placeholder="请输入密码" type="password">
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>

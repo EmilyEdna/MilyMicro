@@ -4,19 +4,23 @@ import lzstring from 'lz-string'
 
 const service = axios.create({
     baseURL: 'http://127.0.0.1:9091/Proxy/',
-    timeout:15000
+    timeout: 15000
 });
 
 /*
  *处理请求
  */
 service.interceptors.request.use(config => {
-    config.headers["Content-Type"]="application/json"
+    config.headers["Content-Type"] = "application/json"
     if (!config.headers.Cross)
         //if not login push the cookie in this data
         config.data.Global = cookie.get("Global");
     config.data = JSON.stringify(config.data);
-    return config;
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve(config);
+        }, 2000);
+    })
 }, err => {
     return Promise.reject(err);
 })

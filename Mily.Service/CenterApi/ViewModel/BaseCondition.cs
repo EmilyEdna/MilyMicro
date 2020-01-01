@@ -11,5 +11,10 @@ namespace Mily.Service.CenterApi.ViewModel
     {
         [BsonId(IdGenerator = typeof(GuidGenerator)), BsonRepresentation(BsonType.String)]
         public Guid Key { get; set; } = Guid.NewGuid();
+        /// <summary>
+        ///连接时间
+        /// </summary>
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime? ConnetTime { get; set; }
     }
 }

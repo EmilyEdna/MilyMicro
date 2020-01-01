@@ -10,6 +10,7 @@ using XExten.Common;
 using XExten.HttpFactory;
 using XExten.XCore;
 using System.Linq;
+using System.Threading;
 
 namespace Mily.Service.ReplyApi.ProxyExtension
 {
@@ -17,7 +18,6 @@ namespace Mily.Service.ReplyApi.ProxyExtension
     {
         private static Object TCP(Dictionary<String, Object> Request)
         {
-
             Request ??= new Dictionary<String, Object>();
             Request.Add("Method", RouteConfiger.Method);
             Request.Add("DataBase", Configuration.Heads.DataBase);
