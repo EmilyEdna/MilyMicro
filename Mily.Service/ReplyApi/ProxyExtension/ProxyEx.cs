@@ -11,6 +11,7 @@ using XExten.HttpFactory;
 using XExten.XCore;
 using System.Linq;
 using System.Threading;
+using XExten.XPlus;
 
 namespace Mily.Service.ReplyApi.ProxyExtension
 {
@@ -18,31 +19,36 @@ namespace Mily.Service.ReplyApi.ProxyExtension
     {
         private static Object TCP(Dictionary<String, Object> Request)
         {
-            Request ??= new Dictionary<String, Object>();
-            Request.Add("Method", RouteConfiger.Method);
-            Request.Add("DataBase", Configuration.Heads.DataBase);
-            ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1);
-            var Event = EventCache.GetPacketCache(Condition.ServiceName);
-            ServerKey Key = ServerKey.SetValue(NetTypeEnum.Listened, Condition.ServiceName);
-            var NewEvent = Event.SetInfo(Event.Session, ResultProvider.SetValue(Key, Request));
-            Event.Session.Server.Handler.SessionPacketDecodeCompleted(Event.Server, NewEvent);
-            if (ResultEvent.StaticResult == null)
-                Thread.Sleep(3000);
-            return ResultEvent.StaticResult;
+            return XPlusEx.XTry<Object>(() =>
+             {
+                 Request ??= new Dictionary<String, Object>();
+                 Request.Add("Method", RouteConfiger.Method);
+                 Request.Add("DataBase", Configuration.Heads.DataBase);
+                 ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1);
+                 var Event = EventCache.GetPacketCache(Condition.ServiceName);
+                 ServerKey Key = ServerKey.SetValue(NetTypeEnum.Listened, Condition.ServiceName);
+                 var NewEvent = Event.SetInfo(Event.Session, ResultProvider.SetValue(Key, Request));
+                 Event.Session.Server.Handler.SessionPacketDecodeCompleted(Event.Server, NewEvent);
+                 if (ResultEvent.StaticResult == null) Thread.Sleep(3000);
+                 return ResultEvent.StaticResult;
+             }, (Ex) => { return Http(Request); });
         }
         private static Object Http(Dictionary<String, Object> Request)
         {
-            ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1);
-            String Path = $"http://{ Condition.Host}:{Condition.HttpPort}/Api/{RouteConfiger.Controllor}/{RouteConfiger.Method}";
-            List<KeyValuePair<String, String>> Param = new List<KeyValuePair<String, String>>();
-            foreach (var item in Request)
+            return XPlusEx.XTry<Object>(() =>
             {
-                Param.Add(new KeyValuePair<String, String>(item.Key, item.Value.ToString()));
-            }
-            return HttpMultiClient.HttpMulti.Headers("ActionType", Configuration.Heads.DataBase.ToString())
-                   .Header("Global", (Request.ContainsKey("Global") ? Request["Request"].ToString().ToLzStringDec() : null))
-                   .AddNode(Path, Param, RequestType.POST)
-                   .Build().RunString().FirstOrDefault().ToModel<Object>();
+                ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1);
+                String Path = $"http://{ Condition.Host}:{Condition.HttpPort}/Api/{RouteConfiger.Controllor}/{RouteConfiger.Method}";
+                List<KeyValuePair<String, String>> Param = new List<KeyValuePair<String, String>>();
+                foreach (var item in Request)
+                {
+                    Param.Add(new KeyValuePair<String, String>(item.Key, item.Value.ToString()));
+                }
+                return HttpMultiClient.HttpMulti.Headers("ActionType", Configuration.Heads.DataBase.ToString())
+                       .Header("Global", (Request.ContainsKey("Global") ? Request["Request"].ToString().ToLzStringDec() : null))
+                       .AddNode(Path, Param, RequestType.POST)
+                       .Build().RunString().FirstOrDefault().ToModel<Object>();
+            }, (Ex) => { return TCP(Request); });
         }
         /// <summary>
         /// 负载均衡

@@ -19,8 +19,6 @@ namespace Mily.Extension.InitSystem
         {
             //Nlog
             LogManager.LoadConfiguration("Nlog.config");
-            //注册权限
-            app.UseAuthentication();
             //注册异常中间件
             app.UseMiddleware<ExceptionMiddleWare>();
             //结果中间件
@@ -33,6 +31,8 @@ namespace Mily.Extension.InitSystem
                 opt.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
             });
             app.UseRouting();
+            //注册权限
+            app.UseAuthentication();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

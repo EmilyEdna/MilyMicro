@@ -18,16 +18,21 @@ namespace Mily.Extension.Attributes.PermissionHandler
                     context.Succeed(requirement);
                 else
                 {
-                    var UserIdClaim = context.User.FindFirst(t => t.Type == ClaimTypes.NameIdentifier);
-                    if (UserIdClaim != null)
+                    var UserIdClaim = context.User.Claims.ToList();
+                    if (UserIdClaim.Count > 0)
                     {
-                        AdminRoleViewModel AdminRole = await RedisCaches.StringGetAsync<AdminRoleViewModel>(typeof(AdminRoleViewModel).FullName);
-                        if (AdminRole.RolePermissionId == Guid.Parse(UserIdClaim.Value))
+                        String PrimaryKey = UserIdClaim.Where(t => t.Type == ClaimTypes.Authentication).FirstOrDefault().Value;
+                        Guid RolePromise = Guid.Parse(UserIdClaim.Where(t => t.Type == ClaimTypes.Role).FirstOrDefault().Value);
+                        String UserName = UserIdClaim.Where(t => t.Type == ClaimTypes.Name).FirstOrDefault().Value;
+                        AdminRoleViewModel AdminRole = await RedisCaches.StringGetAsync<AdminRoleViewModel>(PrimaryKey);
+                        if (AdminRole.RolePermissionId == RolePromise && AdminRole.AdminName == UserName) 
+                        {
                             AdminRole.HandlerRole.Split('|').ToList().ForEach(t =>
                             {
                                 if (requirement.Names.Contains(t))
                                     context.Succeed(requirement);
                             });
+                        }
                     }
                 }
             }

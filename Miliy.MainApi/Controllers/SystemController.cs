@@ -43,9 +43,9 @@ namespace Miliy.MainApi.Controllers
                 return new { Data = "登录失败，请检查用户名和密码是否正确!", Target = false };
             if (HttpContext != null)
             {
-                claimIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, RoleAdmin.RolePermissionId.ToString()));
+                claimIdentity.AddClaim(new Claim(ClaimTypes.Authentication, RoleAdmin.KeyId.ToString()));
+                claimIdentity.AddClaim(new Claim(ClaimTypes.Role, RoleAdmin.RolePermissionId.ToString()));
                 claimIdentity.AddClaim(new Claim(ClaimTypes.Name, RoleAdmin.AdminName));
-                claimIdentity.AddClaim(new Claim(ClaimTypes.Role, RoleAdmin.HandlerRole));
                 await HttpContext.SignInAsync(new ClaimsPrincipal(claimIdentity), new AuthenticationProperties { IsPersistent = true });
             }
             return new { Data = RoleAdmin, Target = true };
