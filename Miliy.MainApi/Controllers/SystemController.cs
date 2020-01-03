@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.Attributes;
 using Mily.Extension.Attributes.RoleHandler;
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using XExten.Common;
 using XExten.XCore;
+using XExten.XPlus;
 
 namespace Miliy.MainApi.Controllers
 {
@@ -37,18 +36,13 @@ namespace Miliy.MainApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<Object>> Login(ResultProvider Provider)
         {
-            var claimIdentity = new ClaimsIdentity("Cookie");
             var RoleAdmin = await SysService.Login(Provider);
+            String AuthorToken = null;
             if (RoleAdmin == null)
-                return new { Data = "登录失败，请检查用户名和密码是否正确!", Target = false };
-            if (HttpContext != null)
-            {
-                claimIdentity.AddClaim(new Claim(ClaimTypes.Authentication, RoleAdmin.KeyId.ToString()));
-                claimIdentity.AddClaim(new Claim(ClaimTypes.Role, RoleAdmin.RolePermissionId.ToString()));
-                claimIdentity.AddClaim(new Claim(ClaimTypes.Name, RoleAdmin.AdminName));
-                await HttpContext.SignInAsync(new ClaimsPrincipal(claimIdentity), new AuthenticationProperties { IsPersistent = true });
-            }
-            return new { Data = RoleAdmin, Target = true };
+                return new { Data = "登录失败，请检查用户名和密码是否正确!", AuthorToken };
+            else
+                AuthorToken = XPlusEx.XCompressToEncodedURIComponent((new { RoleAdmin.KeyId, RoleAdmin.RolePermissionId, RoleAdmin.AdminName }).ToJson().ToLzStringEnc());
+            return new { Data = RoleAdmin, AuthorToken };
         }
 
         #endregion

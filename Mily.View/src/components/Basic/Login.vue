@@ -42,7 +42,7 @@
             submit() {
                 this.$refs.login.validate(v => {
                     Login(this.param).then(res => {
-                        if (res.ResultData.Target) {
+                        if (res.ResultData.AuthorToken != null) {
                             this.$store.commit('changeToken', JSON.stringify(res.ResultData.Data));
                             this.$router.push('/');
                         }
