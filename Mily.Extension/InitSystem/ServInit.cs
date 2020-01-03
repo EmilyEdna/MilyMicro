@@ -1,14 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Mily.Extension.Attributes.PermissionHandler;
+using Mily.Extension.Authentication;
 using Mily.Extension.AutofacIoc;
 using Mily.Extension.Filters;
 using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
 using Polly;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Mily.Extension.InitSystem
 {
@@ -25,7 +31,21 @@ namespace Mily.Extension.InitSystem
                 opt.SuppressConsumesConstraintForFormFileParameters = true;
             });
             //启用权限认证
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            services.AddAuthentication(options=> {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options => {
+                options.SecurityTokenValidators.Clear();
+                options.SecurityTokenValidators.Add(new VerifyToken());
+                options.Events = new JwtBearerEvents() {
+                    OnMessageReceived = Context => 
+                    {
+                        var token = Context.Request.Headers["Authorization"];//修改默认的http headers
+                        Context.Token = token.FirstOrDefault();
+                        return Task.CompletedTask;
+                    }
+                };
+            });
             //设置数据格式
             services.AddControllers(opt =>
             {

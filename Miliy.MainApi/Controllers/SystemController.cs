@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.Attributes;
 using Mily.Extension.Attributes.RoleHandler;
+using Mily.Extension.Authentication;
 using System;
 using System.Threading.Tasks;
 using XExten.Common;
@@ -41,7 +42,13 @@ namespace Miliy.MainApi.Controllers
             if (RoleAdmin == null)
                 return new { Data = "登录失败，请检查用户名和密码是否正确!", AuthorToken };
             else
-                AuthorToken = XPlusEx.XCompressToEncodedURIComponent((new { RoleAdmin.KeyId, RoleAdmin.RolePermissionId, RoleAdmin.AdminName }).ToJson().ToLzStringEnc());
+                AuthorToken = JsonWebToken.InitToken(option =>
+                 {
+                     option.KeyId = RoleAdmin.KeyId;
+                     option.RoleId = RoleAdmin.RolePermissionId.Value;
+                     option.UserName = RoleAdmin.AdminName;
+                     option.UserRole = RoleAdmin.RoleName;
+                 });
             return new { Data = RoleAdmin, AuthorToken };
         }
 
@@ -57,6 +64,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Read)]
+        [Authorize]
         public async Task<ActionResult<Object>> SearchAdminPage(PageQuery Page) => await SysService.SearchAdminPage(Page);
 
         /// <summary>
@@ -65,6 +73,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Delete)]
+        [Authorize]
         public async Task<ActionResult<Object>> DeleteAdmin(ResultProvider Provider) => await SysService.DeleteAdmin(Provider);
 
         /// <summary>
@@ -74,6 +83,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Delete)]
+        [Authorize]
         public async Task<ActionResult<Object>> RemoveAdmin(ResultProvider Provider) => await SysService.RemoveAdmin(Provider);
 
         /// <summary>
@@ -83,6 +93,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Update)]
+        [Authorize]
         public async Task<ActionResult<Object>> EditAdmin(ResultProvider Provider) => await SysService.EditAdmin(Provider);
 
         /// <summary>
@@ -91,6 +102,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Update)]
+        [Authorize]
         public async Task<ActionResult<Object>> RecoveryAdminData(ResultProvider Provider) => await SysService.RecoveryAdminData(Provider);
 
         #endregion
@@ -102,6 +114,7 @@ namespace Miliy.MainApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Read)]
+        [Authorize]
         public async Task<ActionResult<Object>> SearchMenuItem(ResultProvider Provider) => await SysService.SearchMenuItem(Provider);
         #endregion
     }

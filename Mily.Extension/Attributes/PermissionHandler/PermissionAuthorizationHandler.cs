@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Mily.ViewModels;
 using System;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using XExten.CacheFactory.RedisCache;
 
 namespace Mily.Extension.Attributes.PermissionHandler
 {
@@ -12,27 +9,26 @@ namespace Mily.Extension.Attributes.PermissionHandler
     {
         protected async override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionAuthorizationRequirement requirement)
         {
+
             if (context.User != null)
             {
                 if (context.User.IsInRole("Admin"))
                     context.Succeed(requirement);
                 else
                 {
-                    var UserIdClaim = context.User.Claims.ToList();
-                    if (UserIdClaim.Count > 0)
+                    var UserClaim = context.User.Claims.ToList();
+                    if (UserClaim.Count > 0)
                     {
-                        String PrimaryKey = UserIdClaim.Where(t => t.Type == ClaimTypes.Authentication).FirstOrDefault().Value;
-                        Guid RolePromise = Guid.Parse(UserIdClaim.Where(t => t.Type == ClaimTypes.Role).FirstOrDefault().Value);
-                        String UserName = UserIdClaim.Where(t => t.Type == ClaimTypes.Name).FirstOrDefault().Value;
-                        AdminRoleViewModel AdminRole = await RedisCaches.StringGetAsync<AdminRoleViewModel>(PrimaryKey);
-                        if (AdminRole.RolePermissionId == RolePromise && AdminRole.AdminName == UserName) 
+                        String PrimaryKey = UserClaim.Where(t => t.Type == "KeyId").FirstOrDefault().Value;
+                        String RolePromise = UserClaim.Where(t => t.Type == "RoleId").FirstOrDefault().Value;
+                        String UserName = UserClaim.Where(t => t.Type == "UserName").FirstOrDefault().Value;
+                        String UserRole = UserClaim.Where(t => t.Type == "UserRole").FirstOrDefault().Value;
+                        UserRole.Split("|").ToList().ForEach(Item =>
                         {
-                            AdminRole.HandlerRole.Split('|').ToList().ForEach(t =>
-                            {
-                                if (requirement.Names.Contains(t))
-                                    context.Succeed(requirement);
-                            });
-                        }
+                            if (requirement.Names.Contains(Item))
+                                context.Succeed(requirement);
+                        });
+                        await Task.CompletedTask;
                     }
                 }
             }

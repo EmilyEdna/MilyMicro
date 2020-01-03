@@ -33,6 +33,7 @@ namespace Mily.Extension.InitSystem
             app.UseCors("MilyMicro");
             //注册权限
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
