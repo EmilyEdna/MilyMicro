@@ -1,4 +1,5 @@
-﻿using Mily.Extension.ClientRpc.RpcSetting.View;
+﻿using Mily.Extension.ClientRpc.RpcSetting.Event;
+using Mily.Extension.ClientRpc.RpcSetting.View;
 using System;
 using XExten.Common;
 using XExten.XCore;
@@ -31,7 +32,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Handler
             return Key.NetType switch
             {
                 NetTypeEnum.Connect => null,
-                NetTypeEnum.Listened => ClientHandler.Instance.Invoke(Provider),
+                NetTypeEnum.Listened => ClientEvnet.Instance.Invoke(Provider),
                 NetTypeEnum.DisConnect => ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.DisConnect, Key.ServName),
                 ClientValue.SetStrValue(ClientValue.ListenedFailed, "FAIL")),
                 _ => ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.Listened, Key.ServName),

@@ -11,7 +11,10 @@ namespace Mily.Service.ReplyApi.ProxyFilter
     {
         public override bool Executing(ActionContext context)
         {
-            Configuration.Heads = context.HttpContext.Request.Header["Author"].IsNullOrEmpty() ? new HeadConfiger() : context.HttpContext.Request.Header["Author"].ToLzStringDec().ToModel<HeadConfiger>();
+            var Author = context.HttpContext.Request.Header["Author"];
+            var Authorization = context.HttpContext.Request.Header["Authorization"];
+            Configuration.Heads = Author.IsNullOrEmpty() ? new HeadConfiger() : Author.ToLzStringDec().ToModel<HeadConfiger>();
+            Configuration.Authorization = Authorization.IsNullOrEmpty() ? "" : Authorization;
             return base.Executing(context);
         }
     }

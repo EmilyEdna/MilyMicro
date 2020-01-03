@@ -1,7 +1,9 @@
 ﻿using BeetleX;
 using BeetleX.Clients;
 using Mily.Extension.ClientRpc.RpcSetting;
+using Mily.Extension.ClientRpc.RpcSetting.Event;
 using Mily.Extension.ClientRpc.RpcSetting.Handler;
+using Mily.Extension.ClientRpc.RpcSetting.Send;
 using Mily.Extension.ClientRpc.RpcSetting.View;
 using Mily.Extension.LoggerFactory;
 using Mily.Setting;
@@ -59,7 +61,7 @@ namespace Mily.Extension.ClientRpc
             {
                 ResultProvider Provider = ProxyHandler.Instance.InitProxy((ResultProvider)Data);
                 if (Client.IsConnected && Provider != null)
-                    ClientHandler.Instance.SendInvoke(ClientAsnyc, Provider);
+                    ClientSend.Instance.SendInvoke(ClientAsnyc, Provider);
             };
             ClientAsnyc.ClientError = (Client, Error) =>
             {

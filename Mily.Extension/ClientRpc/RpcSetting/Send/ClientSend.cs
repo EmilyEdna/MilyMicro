@@ -1,64 +1,22 @@
 ﻿using BeetleX.Clients;
 using Microsoft.AspNetCore.Mvc;
-using Mily.Extension.ClientRpc.RpcSetting.Handler;
+using Mily.Extension.ClientRpc.RpcSetting.View;
 using Mily.Extension.Infrastructure.Common;
 using Mily.Setting;
-using Mily.Setting.DbTypes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using XExten.Common;
 using XExten.XCore;
 
-namespace Mily.Extension.ClientRpc.RpcSetting.View
+namespace Mily.Extension.ClientRpc.RpcSetting.Send
 {
-    public class ClientHandler
+    public class ClientSend
     {
-        public static ClientHandler Instance => new ClientHandler();
-        /// <summary>
-        /// 查询方法
-        /// </summary>
-        /// <param name="Provider"></param>
-        /// <returns></returns>
-        public virtual ResultProvider Invoke(ResultProvider Provider)
-        {
-            GetCacheKeyInvoke(Provider);
-            String Method = Provider.DictionaryStringProvider["Method"].ToString();
-            MilyConfig.DbTypeAttribute = InvokeDyType(Provider.DictionaryStringProvider["DataBase"]);
-            Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IClientService))))
-                .Where(t => t.GetMethods().Any(x => x.Name.ToLower() == Method.ToLower())).FirstOrDefault();
-            MethodInfo CtrlMehtod = Control.GetMethod(Method);
-            ParameterInfo ParamInfo = CtrlMehtod.GetParameters().FirstOrDefault();
-            return InvokeMthond(Provider, Control, CtrlMehtod, ParamInfo);
-        }
-        /// <summary>
-        /// 接收数据后回传
-        /// </summary>
-        /// <param name="ClientAsync"></param>
-        /// <param name="Provider"></param>
-        /// <returns></returns>
-        public virtual AsyncTcpClient SendInvoke(AsyncTcpClient ClientAsync, ResultProvider Provider)
-        {
-            NetTypeEnum TypeEnum = Provider.ObjectProvider.ToJson().ToModel<ClientKey>().NetType;
-            if (TypeEnum == NetTypeEnum.Listened)
-                return ClientAsync.Send(ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.CallBack, MilyConfig.Discovery), Provider.DictionaryStringProvider));
-            return null;
-        }
-        /// <summary>
-        /// 转化动态DB
-        /// </summary>
-        /// <param name="DbType"></param>
-        /// <returns></returns>
-        internal DBType InvokeDyType(Object DbType)
-        {
-            int.TryParse(DbType?.ToString(), out int Target);
-            if (Target > 5 && Target < 0)
-                return DBType.Default;
-            else
-                return (DBType)Target;
-        }
+        public static ClientSend Instance => new ClientSend();
+
         /// <summary>
         /// 失败
         /// </summary>
@@ -134,16 +92,17 @@ namespace Mily.Extension.ClientRpc.RpcSetting.View
             Provider.DictionaryStringProvider.Remove("DataBase");
         }
         /// <summary>
-        /// 获取缓存的Key
+        /// 接收数据后回传
         /// </summary>
+        /// <param name="ClientAsync"></param>
         /// <param name="Provider"></param>
-        internal void GetCacheKeyInvoke(ResultProvider Provider)
+        /// <returns></returns>
+        public virtual AsyncTcpClient SendInvoke(AsyncTcpClient ClientAsync, ResultProvider Provider)
         {
-            if (Provider.DictionaryStringProvider.ContainsKey("Global"))
-            {
-                MilyConfig.CacheKey = Provider.DictionaryStringProvider["Global"].ToString().ToLzStringDec();
-                Provider.DictionaryStringProvider.Remove("Global");
-            }
+            NetTypeEnum TypeEnum = Provider.ObjectProvider.ToJson().ToModel<ClientKey>().NetType;
+            if (TypeEnum == NetTypeEnum.Listened)
+                return ClientAsync.Send(ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.CallBack, MilyConfig.Discovery), Provider.DictionaryStringProvider));
+            return null;
         }
     }
 }

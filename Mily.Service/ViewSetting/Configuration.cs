@@ -16,6 +16,7 @@ namespace Mily.Service.ViewSetting
         public static int SOCKET_Port { get; set; } = Convert.ToInt32(Builder["Socket:SocketPort"] ?? "9091");
         public static List<string> FuncArray { get; set; } = Builder["ProxyFunctionAarry:FuncArray"].Split(",").ToList();
         public static HeadConfiger Heads { get; set; }
+        public static string Authorization { get; set; }
         public static void InitConnection()
         {
             try

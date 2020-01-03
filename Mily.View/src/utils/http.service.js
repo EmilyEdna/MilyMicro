@@ -13,9 +13,11 @@ const service = axios.create({
 service.interceptors.request.use(config => {
     config.headers["Content-Type"] = "application/json"
     let Head = JSON.parse(lzstring.decompressFromBase64(config.headers.Author));
-    if (!Head.Cross)
+    if (!Head.Cross) {
         //if not login push the cookie in this data
         config.data.Global = cookie.get("Global");
+        config.headers["Authorization"] = cookie.get("Authorization");
+    }
     config.data = JSON.stringify(config.data);
     return new Promise(resolve => {
         setTimeout(() => {
@@ -32,6 +34,7 @@ service.interceptors.response.use(response => {
     let Head = JSON.parse(lzstring.decompressFromBase64(response.config.headers.Author));
     if (Head.Cross) {
         cookie.set("Global", lzstring.compressToBase64(response.data.Data.ResultData.Data.KeyId));
+        cookie.set("Authorization", response.data.Data.ResultData.AuthorToken);
     }
     return response.data.Data;
 }, err => {

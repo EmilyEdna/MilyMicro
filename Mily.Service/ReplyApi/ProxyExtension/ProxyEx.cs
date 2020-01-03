@@ -24,6 +24,7 @@ namespace Mily.Service.ReplyApi.ProxyExtension
                  Request ??= new Dictionary<String, Object>();
                  Request.Add("Method", RouteConfiger.Method);
                  Request.Add("DataBase", Configuration.Heads.DataBase);
+                 Request.Add("Authorization", Configuration.Authorization);
                  ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1);
                  var Event = EventCache.GetPacketCache(Condition.ServiceName);
                  ServerKey Key = ServerKey.SetValue(NetTypeEnum.Listened, Condition.ServiceName);
@@ -46,6 +47,7 @@ namespace Mily.Service.ReplyApi.ProxyExtension
                 }
                 return HttpMultiClient.HttpMulti.Headers("ActionType", Configuration.Heads.DataBase.ToString())
                        .Header("Global", (Request.ContainsKey("Global") ? Request["Request"].ToString().ToLzStringDec() : null))
+                       .Header("Authorization", Configuration.Authorization)
                        .AddNode(Path, Param, RequestType.POST)
                        .Build().RunString().FirstOrDefault().ToModel<Object>();
             }, (Ex) => { return TCP(Request); });
