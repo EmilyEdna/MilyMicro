@@ -23,14 +23,14 @@ namespace Mily.Extension.InitSystem
             app.UseMiddleware<ExceptionMiddleWare>();
             //结果中间件
             app.UseMiddleware<ResultMiddleWare>();
-            //注册跨域
-            app.UseCors("MilyMicro");
             app.UseSwagger();
             app.UseSwaggerUI(opt =>
             {
                 opt.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
             });
             app.UseRouting();
+            //注册跨域
+            app.UseCors("MilyMicro");
             //注册权限
             app.UseAuthentication();
             app.UseEndpoints(endpoints =>
