@@ -24,7 +24,7 @@ namespace Mily.Service.CenterRpc.RpcSetting.Result
         /// <param name="UseRedis"></param>
         public virtual void CacheResult(String KeyPress, Dictionary<String, Object> StringCache, bool UseRedis = false)
         {
-            StringCache["ResultData"] = StringCache["ResultData"].ToString().ToModel<Object>();
+            StringCache["ResultData"] = StringCache["ResultData"]?.ToString().ToModel<Object>();
             if (UseRedis)
                 Caches.RedisCacheSet(KeyPress, StringCache, 10, true);
             else

@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.Attributes;
-using Mily.Extension.Attributes.RoleHandler;
-using Mily.Extension.Authentication;
+using Mily.Extension.Authentication.JwtAuthentication;
+using Mily.Extension.Constant;
 using System;
 using System.Threading.Tasks;
 using XExten.Common;
-using XExten.XCore;
-using XExten.XPlus;
 
 namespace Miliy.MainApi.Controllers
 {
@@ -47,7 +45,7 @@ namespace Miliy.MainApi.Controllers
                      option.KeyId = RoleAdmin.KeyId;
                      option.RoleId = RoleAdmin.RolePermissionId.Value;
                      option.UserName = RoleAdmin.AdminName;
-                     option.UserRole = RoleAdmin.RoleName;
+                     option.UserRole = RoleAdmin.HandlerRole;
                  });
             return new { Data = RoleAdmin, AuthorToken };
         }

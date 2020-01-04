@@ -7,7 +7,7 @@ using System.Text;
 using System.Linq;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
-namespace Mily.Extension.Authentication
+namespace Mily.Extension.Authentication.JwtAuthentication
 {
     /// <summary>
     /// 自定义验证Token

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using Mily.Extension.Attributes.PermissionHandler;
+using Mily.Extension.Authentication.CookieAuthentication;
 using Mily.Extension.Infrastructure.Common;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace Mily.Extension.Attributes
 {
+    /// <summary>
+    /// 权限切入点
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public class AuthorAttribute : Attribute, IAsyncAuthorizationFilter
     {

@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Mily.Extension.Attributes.PermissionHandler
+namespace Mily.Extension.Authentication.CookieAuthentication
 {
+    /// <summary>
+    /// 验证操作权限
+    /// </summary>
     public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionAuthorizationRequirement>
     {
         protected async override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionAuthorizationRequirement requirement)

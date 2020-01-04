@@ -6,15 +6,22 @@ using System.Security.Claims;
 using System.Text;
 using XExten.XPlus;
 
-namespace Mily.Extension.Authentication
+namespace Mily.Extension.Authentication.JwtAuthentication
 {
+    /// <summary>
+    /// JWT Token
+    /// </summary>
     public class JsonWebToken
     {
         public Guid KeyId { get; set; }
         public Guid RoleId { get; set; }
         public string UserName { get; set; }
         public string UserRole { get; set; }
-
+        /// <summary>
+        /// 初始化JWT
+        /// </summary>
+        /// <param name="Action"></param>
+        /// <returns></returns>
         public static string InitToken(Action<JsonWebToken> Action)
         {
             JsonWebToken Author = new JsonWebToken();
@@ -32,7 +39,7 @@ namespace Mily.Extension.Authentication
             };
             SymmetricSecurityKey Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("EmilyEdnaMilyMicro"));
             SigningCredentials Credentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
-            JwtSecurityToken Token = new JwtSecurityToken(null, null, Claims, DateTime.UtcNow.AddHours(8), DateTime.UtcNow.AddHours(11), Credentials);
+            JwtSecurityToken Token = new JwtSecurityToken(null, null, Claims, DateTime.Now, DateTime.Now.AddHours(2), Credentials);
            return new JwtSecurityTokenHandler().WriteToken(Token);
         }
     }

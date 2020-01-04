@@ -1,19 +1,15 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Mily.Extension.Attributes.PermissionHandler;
-using Mily.Extension.Authentication;
+using Mily.Extension.Authentication.CookieAuthentication;
+using Mily.Extension.Authentication.JwtAuthentication;
 using Mily.Extension.AutofacIoc;
 using Mily.Extension.Filters;
 using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
-using Polly;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Mily.Extension.InitSystem

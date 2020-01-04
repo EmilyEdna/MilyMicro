@@ -16,7 +16,19 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
     public class ClientSend
     {
         public static ClientSend Instance => new ClientSend();
-
+        /// <summary>
+        /// 无权访问
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <returns></returns>
+        internal ResultProvider InvokeNoAuthor(ResultProvider Provider)
+        {
+            String Method = Provider.DictionaryStringProvider["Method"].ToString();
+            Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
+            Provider.DictionaryStringProvider = ResultCondition.Instance(true, 401, null, "无权访问").ToJson().ToModel<Dictionary<String, Object>>();
+            RemoveInvoke(Provider);
+            return Provider;
+        }
         /// <summary>
         /// 失败
         /// </summary>
