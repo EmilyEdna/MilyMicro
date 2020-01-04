@@ -174,7 +174,7 @@ namespace Mily.DbCore
         /// <param name="Exception"></param>
         /// <param name="Finally"></param>
         /// <returns></returns>
-        internal async Task<T> ExecuteTry<T>(Func<Task<T>> Executer, Func<Exception, Task<T>> Exception, Action Finally = null)
+        public async Task<T> ExecuteTry<T>(Func<Task<T>> Executer, Func<Exception, Task<T>> Exception, Action Finally = null)
         {
             try
             {
