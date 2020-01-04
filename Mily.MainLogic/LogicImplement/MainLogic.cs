@@ -72,7 +72,7 @@ namespace Mily.MainLogic.LogicImplement
         }
 
         /// <summary>
-        /// 软删除管理员
+        /// 逻辑删除管理员
         /// </summary>
         /// <param name="Key"></param>
         /// <returns></returns>
@@ -80,8 +80,7 @@ namespace Mily.MainLogic.LogicImplement
         {
             string Key = Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString();
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
-           .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
-           .Where(t => t.Deleted == false).ToList();
+                .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString())).Where(t => t.Deleted == false).ToList();
             return await base.LogicDeleteOrRecovery<Administrator>(administrator, true);
         }
 
@@ -119,7 +118,7 @@ namespace Mily.MainLogic.LogicImplement
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
                 .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
                 .Where(t => t.Deleted == true).ToList();
-            return await base.LogicDeleteOrRecovery<Administrator>(administrator,false);
+            return await base.LogicDeleteOrRecovery<Administrator>(administrator, false);
         }
 
         #endregion
@@ -166,6 +165,19 @@ namespace Mily.MainLogic.LogicImplement
         {
             MenuItems Menu = Provider.DictionaryStringProvider.ToJson().ToModel<MenuItems>();
             return await base.InsertData<MenuItems>(Menu);
+        }
+
+        /// <summary>
+        /// 逻辑删除菜单
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <returns></returns>
+        public async Task<Object> DeleteMenuItem(ResultProvider Provider)
+        {
+            string Key = Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString();
+            List<MenuItems> Items = DbContext().Queryable<MenuItems>().WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
+                  .Where(t => t.Deleted == false).ToList();
+            return await base.LogicDeleteOrRecovery(Items, true);
         }
         #endregion
     }

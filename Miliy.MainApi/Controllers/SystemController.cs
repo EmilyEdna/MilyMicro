@@ -55,7 +55,7 @@ namespace Miliy.MainApi.Controllers
         #region 管理员
 
         /// <summary>
-        /// 管理员分页API
+        /// 管理员分页
         /// </summary>
         /// <param name="PageIndex"></param>
         /// <param name="PageSize"></param>
@@ -66,7 +66,7 @@ namespace Miliy.MainApi.Controllers
         public async Task<ActionResult<Object>> SearchAdminPage(PageQuery Page) => await SysService.SearchAdminPage(Page);
 
         /// <summary>
-        /// 软删除管理员API
+        /// 逻辑删除管理员
         /// </summary>
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
@@ -75,7 +75,7 @@ namespace Miliy.MainApi.Controllers
         public async Task<ActionResult<Object>> DeleteAdmin(ResultProvider Provider) => await SysService.DeleteAdmin(Provider);
 
         /// <summary>
-        /// 真删除管理员API
+        /// 删除管理员
         /// </summary>
         /// <param name="Key"></param>
         /// <returns></returns>
@@ -85,7 +85,7 @@ namespace Miliy.MainApi.Controllers
         public async Task<ActionResult<Object>> RemoveAdmin(ResultProvider Provider) => await SysService.RemoveAdmin(Provider);
 
         /// <summary>
-        /// 编辑管理员API
+        /// 编辑管理员
         /// </summary>
         /// <param name="ViewModel"></param>
         /// <returns></returns>
@@ -95,7 +95,7 @@ namespace Miliy.MainApi.Controllers
         public async Task<ActionResult<Object>> EditAdmin(ResultProvider Provider) => await SysService.EditAdmin(Provider);
 
         /// <summary>
-        /// 恢复管理员数据API
+        /// 恢复管理员数据
         /// </summary>
         /// <returns></returns>
         [AcceptVerbs("GET", "POST")]
@@ -124,6 +124,16 @@ namespace Miliy.MainApi.Controllers
         [Author(Roles.Admin, Roles.Create)]
         [Authorize]
         public async Task<Object> InsertMenuItem(ResultProvider Provider) => await SysService.InsertMenuItem(Provider);
+
+        /// <summary>
+        /// 逻辑删除菜单
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <returns></returns>
+        [AcceptVerbs("GET", "POST")]
+        [Author(Roles.Admin, Roles.Delete)]
+        [Authorize]
+        public async Task<Object> DeleteMenuItem(ResultProvider Provider) => await SysService.DeleteMenuItem(Provider);
         #endregion
     }
 }
