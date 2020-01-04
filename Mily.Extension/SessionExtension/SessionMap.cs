@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
+using XExten.XCore;
 
 namespace Mily.Extension.SessionExtension
 {
@@ -12,7 +13,7 @@ namespace Mily.Extension.SessionExtension
         /// <param name="value"></param>
         public static void SetSession<T>(this ISession session, String key, T value)
         {
-            session.SetString(key, JsonConvert.SerializeObject(value));
+            session.SetString(key, value.ToJson());
         }
 
         /// <summary>
@@ -21,7 +22,7 @@ namespace Mily.Extension.SessionExtension
         /// <returns></returns>
         public static T GetSession<T>(this ISession session, String key)
         {
-            return session.GetString(key) == null ? default(T) : JsonConvert.DeserializeObject<T>(session.GetString(key));
+            return session.GetString(key) == null ? default : session.GetString(key).ToModel<T>();
         }
 
         /// <summary>
