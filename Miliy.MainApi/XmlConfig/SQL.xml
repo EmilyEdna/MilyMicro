@@ -1,6 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-
-<Item>
-  <Key><![CDATA[Key]]></Key>
-  <Value><![CDATA[Value]]></Value>
-</Item>
+<T-SQL>
+  <Item>
+    <Key><![CDATA[查询人员]]></Key>
+    <Value><![CDATA[Value]]></Value>
+  </Item>
+  <Item>
+    <Key><![CDATA[查询菜单]]></Key>
+    <Value><![CDATA[Value]]></Value>
+  </Item>
+</T-SQL>
