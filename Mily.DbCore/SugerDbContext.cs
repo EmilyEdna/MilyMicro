@@ -25,7 +25,7 @@ namespace Mily.DbCore
     /// <summary>
     /// 获取SQLDB上下文
     /// </summary>
-    public class SugerDbContext
+    public class SugerDbContext : BasicEvent
     {
         public static readonly IDictionary<string, string> AdoSQL = MilyConfig.XmlSQL;
 
@@ -188,152 +188,237 @@ namespace Mily.DbCore
         }
 
         /// <summary>
-        /// 新增数据通用
+        /// 单条数据插入
         /// </summary>
         /// <typeparam name="Entity"></typeparam>
         /// <param name="entity">实体</param>
-        /// <param name="DbName">数据库名称</param>
-        /// <param name="entities">多实体</param>
-        /// <param name="type">执行类型</param>
+        /// <param name="DbName"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
-        public virtual async Task<Object> InsertData<Entity>(Entity entity, String DbName = null, List<Entity> entities = null, DbReturnTypes type = DbReturnTypes.InsertDefault) where Entity : class, new()
+        public virtual async Task<Object> InsertData<Entity>(Entity entity, String DbName = null, DbReturnTypes type = DbReturnTypes.InsertDefault) where Entity : class, new()
         {
+            base.InsertDataEvent(entity);
             IInsertable<Entity> Insert;
             SqlSugarClient Client = DbContext(DbName);
-            if (entities != null)
-            {
-                entities.ForEach(t =>
-                {
-                    Dictionary<String, Object> DataValue = new Dictionary<String, Object>
-                    {
-                         { "KeyId", Guid.NewGuid() },
-                         { "Created",DateTime.Now },
-                         { "Deleted", false }
-                    };
-                    XExp.SetProptertiesValue(DataValue, t);
-                });
-                Insert = Client.Insertable(entities);
-                await AddSystemLog(Client, entities.FirstOrDefault().GetType().Name, HandleEnum.Add); ;
-            }
-            else
-            {
-                Dictionary<String, Object> DataValue = new Dictionary<String, Object>
-                 {
-                       { "KeyId", Guid.NewGuid() },
-                       { "Created",DateTime.Now },
-                       { "Deleted", false }
-                 };
-                XExp.SetProptertiesValue(DataValue, entity);
-                Insert = Client.Insertable(entity);
-                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Add);
-            }
-            return type switch
-            {
-                DbReturnTypes.Rowspan => await Insert.ExecuteCommandAsync(),
-                DbReturnTypes.Integer => await Insert.ExecuteReturnIdentityAsync(),
-                DbReturnTypes.BigInteger => await Insert.ExecuteReturnBigIdentityAsync(),
-                DbReturnTypes.Model => await Insert.ExecuteReturnEntityAsync(),
-                _ => await Insert.ExecuteCommandIdentityIntoEntityAsync(),
-            };
+            Insert = Client.Insertable(entity);
+            return await ExecuteTry<Object>(async () =>
+             {
+                 Client.BeginTran();
+                 await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Add);
+                 Task<Object> ExecuteResult = base.ExecuteInsert(Insert, type);
+                 Client.CommitTran();
+                 return ExecuteResult;
+             }, async Ex =>
+             {
+                 Client.RollbackTran();
+                 return await Task.FromResult(false);
+             });
         }
 
         /// <summary>
-        /// 更新数据通用
+        /// 批量数据插入
         /// </summary>
         /// <typeparam name="Entity"></typeparam>
-        /// <param name="entity">实体</param>
-        /// <param name="DbName">数据库名称</param>
         /// <param name="entities">多实体</param>
+        /// <param name="DbName">数据库名称</param>
         /// <param name="type">执行类型</param>
-        /// <param name="Del">是否逻辑删除</param>
-        /// <param name="ObjExp">对象表达式</param>
-        /// <param name="BoolExp">条件表达式</param>
         /// <returns></returns>
-        public virtual async Task<Object> AlterData<Entity>(Entity entity, String DbName = null, List<Entity> entities = null, DbReturnTypes type = DbReturnTypes.AlterDefault,
-            Boolean? Del = true, Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
+        public virtual async Task<Object> InsertData<Entity>(List<Entity> entities, String DbName = null, DbReturnTypes type = DbReturnTypes.InsertDefault) where Entity : class, new()
         {
-            IUpdateable<Entity> Update = null;
+            base.InsertDataEvent(entities);
+            IInsertable<Entity> Insert;
             SqlSugarClient Client = DbContext(DbName);
-            if (entities != null)
+            Insert = Client.Insertable(entities);
+            return await ExecuteTry<Object>(async () =>
             {
-                entities.ForEach(t =>
-                {
-                    if (type == DbReturnTypes.AlterSoft)
-                    {
-                        Dictionary<String, Object> DataValue = new Dictionary<String, Object>
-                        {
-                         { "Deleted", Del }
-                        };
-                        XExp.SetProptertiesValue(DataValue, t);
-                    }
-                });
-                await AddSystemLog(Client, entities.FirstOrDefault().GetType().Name, HandleEnum.Edit);
-                Update = Client.Updateable(entities);
-            }
-            else
+                Client.BeginTran();
+                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Add);
+                Task<Object> ExecuteResult = base.ExecuteInsert(Insert, type);
+                Client.CommitTran();
+                return ExecuteResult;
+            }, async Ex =>
             {
-                if (type == DbReturnTypes.AlterSoft)
-                {
-                    Dictionary<String, Object> DataValue = new Dictionary<String, Object>
-                    {
-                         { "Deleted", Del }
-                    };
-                    XExp.SetProptertiesValue(DataValue, entity);
-                }
-                Update = Client.Updateable(entity);
-                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Edit); ;
-            }
-            return type switch
-            {
-                DbReturnTypes.AlterEntity => await Update.Where(BoolExp).ExecuteCommandAsync(),
-                DbReturnTypes.AlterCols => await Update.UpdateColumns(ObjExp).Where(BoolExp).ExecuteCommandAsync(),
-                DbReturnTypes.AlterSoft => await Update.UpdateColumns(ObjExp).Where(BoolExp).ExecuteCommandAsync(),
-                _ => await Update.Where(BoolExp).ExecuteCommandAsync(),
-            };
+                Client.RollbackTran();
+                return await Task.FromResult(false);
+            });
         }
 
         /// <summary>
-        /// 删除数据通用
+        /// 单条数据更新
+        /// </summary>
+        /// <typeparam name="Entity"></typeparam>
+        /// <param name="entity"></param>
+        /// <param name="DbName">数据库名称</param>
+        /// <param name="type">执行类型</param>
+        /// <param name="ObjExp">对象表达式</param>
+        /// <param name="BoolExp">条件表达式</param>
+        /// <returns></returns>
+        public virtual async Task<Object> AlterData<Entity>(Entity entity, String DbName = null, DbReturnTypes type = DbReturnTypes.AlterDefault,
+            Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
+        {
+            SqlSugarClient Client = DbContext(DbName);
+            IUpdateable<Entity> Update = Client.Updateable(entity);
+            return await ExecuteTry<Object>(async () =>
+            {
+                Client.BeginTran();
+                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Edit);
+                Task<Object> ExecuteResult = base.ExecuteAlter(Update, type, ObjExp, BoolExp);
+                Client.CommitTran();
+                return ExecuteResult;
+            }, async Ex =>
+            {
+                Client.RollbackTran();
+                return await Task.FromResult(false);
+            });
+        }
+
+        /// <summary>
+        /// 批量更新
+        /// </summary>
+        /// <typeparam name="Entity"></typeparam>
+        /// <param name="entities"></param>
+        /// <param name="DbName">数据库名称</param>
+        /// <param name="type">执行类型</param>
+        /// <param name="ObjExp">对象表达式</param>
+        /// <param name="BoolExp">条件表达式</param>
+        /// <returns></returns>
+        public virtual async Task<Object> AlterData<Entity>(List<Entity> entities, String DbName = null, DbReturnTypes type = DbReturnTypes.AlterDefault,
+            Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
+        {
+            SqlSugarClient Client = DbContext(DbName);
+            IUpdateable<Entity> Update = Client.Updateable(entities);
+            return await ExecuteTry<Object>(async () =>
+            {
+                Client.BeginTran();
+                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Edit);
+                Task<Object> ExecuteResult = base.ExecuteAlter(Update, type, ObjExp, BoolExp);
+                Client.CommitTran();
+                return ExecuteResult;
+            }, async Ex =>
+            {
+                Client.RollbackTran();
+                return await Task.FromResult(false);
+            });
+        }
+
+        /// <summary>
+        /// 逻辑删除或逻辑恢复
+        /// </summary>
+        /// <typeparam name="Entity"></typeparam>
+        /// <param name="entity"></param>
+        /// <param name="DbName">数据库名称</param>
+        /// <param name="ObjExp">对象表达式</param>
+        /// <param name="BoolExp">条件表达式</param>
+        /// <returns></returns>
+        public virtual async Task<Object> LogicDeleteOrRecovery<Entity>(Entity entity, bool Delete, String DbName = null,
+            Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
+        {
+            base.LogicDeleteOrRecoveryEvent(Delete, entity);
+            SqlSugarClient Client = DbContext(DbName);
+            IUpdateable<Entity> Update = Client.Updateable(entity);
+            return await ExecuteTry<Object>(async () =>
+            {
+                Client.BeginTran();
+                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);
+                Task<Object> ExecuteResult = base.ExecuteLogicDeleteOrRecovery(Update, ObjExp, BoolExp);
+                Client.CommitTran();
+                return ExecuteResult;
+            }, async Ex =>
+            {
+                Client.RollbackTran();
+                return await Task.FromResult(false);
+            });
+        }
+
+        /// <summary>
+        /// 批量逻辑删除或逻辑恢复
+        /// </summary>
+        /// <typeparam name="Entity"></typeparam>
+        /// <param name="entity"></param>
+        /// <param name="DbName">数据库名称</param>
+        /// <param name="ObjExp">对象表达式</param>
+        /// <param name="BoolExp">条件表达式</param>
+        /// <returns></returns>
+        public virtual async Task<Object> LogicDeleteOrRecovery<Entity>(List<Entity> entities, bool Delete, String DbName = null,
+            Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
+        {
+            base.LogicDeleteOrRecoveryEvent(Delete, entities);
+            SqlSugarClient Client = DbContext(DbName);
+            IUpdateable<Entity> Update = Client.Updateable(entities);
+            return await ExecuteTry<Object>(async () =>
+            {
+                Client.BeginTran();
+                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);
+                Task<Object> ExecuteResult = base.ExecuteLogicDeleteOrRecovery(Update, ObjExp, BoolExp);
+                Client.CommitTran();
+                return ExecuteResult;
+            }, async Ex =>
+            {
+                Client.RollbackTran();
+                return await Task.FromResult(false);
+            });
+        }
+
+        /// <summary>
+        /// 单条删除
         /// </summary>
         /// <typeparam name="Entity"></typeparam>
         /// <param name="entity">实体</param>
         /// <param name="DbName">数据库名称</param>
-        /// <param name="entities">多实体</param>
         /// <param name="type">执行类型</param>
         /// <param name="BoolExp">条件表达式</param>
         /// <param name="ObjExp">对象表达式</param>
         /// <returns></returns>
-        public virtual async Task<Object> RemoveData<Entity>(Entity entity, String DbName = null, List<Entity> entities = null, DbReturnTypes type = DbReturnTypes.RemoveDefault,
+        public virtual async Task<Object> RemoveData<Entity>(Entity entity, String DbName = null, DbReturnTypes type = DbReturnTypes.RemoveDefault,
             Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()
         {
-            IDeleteable<Entity> Delete = null;
-            List<Guid> Ids = new List<Guid>();
+            if (type == DbReturnTypes.RemoveEntities) return await Task.FromResult(false);
+            List<Guid> Ids = base.RemoveDataEvent(entity);
             SqlSugarClient Client = DbContext(DbName);
-            if (entities != null)
+            IDeleteable<Entity> Delete = Client.Deleteable(entity);
+            return await ExecuteTry<Object>(async () =>
             {
-                entities.ForEach(t =>
-                {
-                    var Map = t.ToDic();
-                    Ids.Add(Guid.Parse(Map["KeyId"].ToString()));
-                });
-                Delete = Client.Deleteable(entities);
-                await AddSystemLog(Client, entities.FirstOrDefault().GetType().Name, HandleEnum.Remove);
-            }
-            else
-            {
-                Delete = Client.Deleteable(entity);
-                Ids.Add(Guid.Parse(entity.ToDic()["KeyId"].ToString()));
+                Client.BeginTran();
                 await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);
-            }
-
-            return type switch
+                Task<Object> ExecuteResult = base.ExecuteRemove(Delete, Ids, entity, type, BoolExp, ObjExp);
+                Client.CommitTran();
+                return ExecuteResult;
+            }, async Ex =>
             {
-                DbReturnTypes.RemoveEntity => await Delete.Where(entity).ExecuteCommandAsync(),
-                DbReturnTypes.RemoveEntities => await Delete.Where(entities).ExecuteCommandAsync(),
-                DbReturnTypes.WithNoId => await Delete.In(ObjExp, Ids).ExecuteCommandAsync(),
-                DbReturnTypes.WithWhere => await Delete.Where(BoolExp).ExecuteCommandAsync(),
-                _ => await Delete.In(Ids).ExecuteCommandAsync(),
-            };
+                Client.RollbackTran();
+                return await Task.FromResult(false);
+            });
+        }
+
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <typeparam name="Entity"></typeparam>
+        /// <param name="entities">实体</param>
+        /// <param name="DbName">数据库名称</param>
+        /// <param name="type">执行类型</param>
+        /// <param name="BoolExp">条件表达式</param>
+        /// <param name="ObjExp">对象表达式</param>
+        /// <returns></returns>
+        public virtual async Task<Object> RemoveData<Entity>(List<Entity> entities, String DbName = null, DbReturnTypes type = DbReturnTypes.RemoveDefault,
+            Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()
+        {
+            if (type == DbReturnTypes.RemoveEntity) return await Task.FromResult(false);
+            List<Guid> Ids = base.RemoveDataEvent(entities);
+            SqlSugarClient Client = DbContext(DbName);
+            IDeleteable<Entity> Delete = Client.Deleteable(entities);
+            return await ExecuteTry<Object>(async () =>
+            {
+                Client.BeginTran();
+                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);
+                Task<Object> ExecuteResult = base.ExecuteRemove(Delete, Ids, entities, type, BoolExp, ObjExp);
+                Client.CommitTran();
+                return ExecuteResult;
+            }, async Ex =>
+            {
+                Client.RollbackTran();
+                return await Task.FromResult(false);
+            });
         }
 
         /// <summary>

@@ -82,7 +82,7 @@ namespace Mily.MainLogic.LogicImplement
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
            .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
            .Where(t => t.Deleted == false).ToList();
-            return await base.AlterData<Administrator>(null, null, administrator, DbReturnTypes.AlterSoft);
+            return await base.LogicDeleteOrRecovery<Administrator>(administrator, true);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Mily.MainLogic.LogicImplement
             string Key = Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString();
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
                 .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString())).ToList();
-            return await base.RemoveData<Administrator>(null, null, administrator);
+            return await base.RemoveData<Administrator>(administrator);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<Object> EditAdmin(ResultProvider Provider)
         {
             Administrator Admin = Provider.DictionaryStringProvider.ToJson().ToModel<AdminRoleViewModel>().ToAutoMapper<Administrator>();
-            return await base.AlterData(Admin, null, null, DbReturnTypes.AlterDefault, null, t => t.KeyId == Admin.KeyId);
+            return await base.AlterData(Admin, null, DbReturnTypes.AlterDefault, null, t => t.KeyId == Admin.KeyId);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Mily.MainLogic.LogicImplement
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
                 .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
                 .Where(t => t.Deleted == true).ToList();
-            return await base.AlterData<Administrator>(null, null, administrator, DbReturnTypes.AlterSoft, false);
+            return await base.LogicDeleteOrRecovery<Administrator>(administrator,false);
         }
 
         #endregion
@@ -155,6 +155,17 @@ namespace Mily.MainLogic.LogicImplement
                        Menus.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Menus.KeyId).Where(t => t.Lv == MenuItemEnum.Lv3).ToList();
                    });
                }).ToListAsync();
+        }
+
+        /// <summary>
+        /// 新增菜单
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <returns></returns>
+        public async Task<Object> InsertMenuItem(ResultProvider Provider)
+        {
+            MenuItems Menu = Provider.DictionaryStringProvider.ToJson().ToModel<MenuItems>();
+            return await base.InsertData<MenuItems>(Menu);
         }
         #endregion
     }

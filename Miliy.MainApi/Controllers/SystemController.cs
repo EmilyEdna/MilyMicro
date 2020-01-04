@@ -114,6 +114,16 @@ namespace Miliy.MainApi.Controllers
         [Author(Roles.Admin, Roles.Read)]
         [Authorize]
         public async Task<ActionResult<Object>> SearchMenuItem(ResultProvider Provider) => await SysService.SearchMenuItem(Provider);
+
+        /// <summary>
+        /// 新增菜单
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <returns></returns>
+        [AcceptVerbs("GET", "POST")]
+        [Author(Roles.Admin, Roles.Create)]
+        [Authorize]
+        public async Task<Object> InsertMenuItem(ResultProvider Provider) => await SysService.InsertMenuItem(Provider);
         #endregion
     }
 }

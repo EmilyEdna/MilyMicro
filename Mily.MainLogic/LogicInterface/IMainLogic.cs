@@ -33,6 +33,7 @@ namespace Mily.MainLogic.LogicInterface
 
         #region 获取菜单
         Task<Object> SearchMenuItem(ResultProvider Provider);
+        Task<Object> InsertMenuItem(ResultProvider Provider);
         #endregion
     }
 }

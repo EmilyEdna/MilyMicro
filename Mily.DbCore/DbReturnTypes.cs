@@ -52,11 +52,6 @@ namespace Mily.DbCore
         /// </summary>
         AlterCols = 7,
 
-        /// <summary>
-        ///  软删除
-        /// </summary>
-        AlterSoft = 8,
-
         #endregion EnumOfAlter
 
         #region EnumOfRemove
@@ -64,27 +59,27 @@ namespace Mily.DbCore
         /// <summary>
         ///  通过Id删除
         /// </summary>
-        RemoveDefault = 9,
+        RemoveDefault = 8,
 
         /// <summary>
         ///  删除实体
         /// </summary>
-        RemoveEntity = 10,
+        RemoveEntity = 9,
 
         /// <summary>
         /// 批量删除实体
         /// </summary>
-        RemoveEntities = 11,
+        RemoveEntities = 10,
 
         /// <summary>
         ///  不通过Id删除
         /// </summary>
-        WithNoId = 12,
+        WithNoId = 11,
 
         /// <summary>
         ///  条件删除
         /// </summary>
-        WithWhere = 13,
+        WithWhere = 12,
 
         #endregion EnumOfRemove
     }
