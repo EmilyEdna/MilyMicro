@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.ClientRpc.RpcSetting.View;
 using Mily.Extension.Infrastructure.Common;
 using Mily.Setting;
+using Mily.Setting.ModelEnum;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -17,28 +18,17 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
     {
         public static ClientSend Instance => new ClientSend();
         /// <summary>
-        /// 无权访问
+        /// 执行方法
         /// </summary>
         /// <param name="Provider"></param>
+        /// <param name="Response"></param>
+        /// <param name="Result"></param>
         /// <returns></returns>
-        internal ResultProvider InvokeNoAuthor(ResultProvider Provider)
+        internal ResultProvider Invoke(ResultProvider Provider, ResponseEnum Response, Object Result = null)
         {
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
             Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
-            Provider.DictionaryStringProvider = ResultCondition.Instance(true, 401, null, "无权访问").ToJson().ToModel<Dictionary<String, Object>>();
-            RemoveInvoke(Provider);
-            return Provider;
-        }
-        /// <summary>
-        /// 失败
-        /// </summary>
-        /// <param name="Provider"></param>
-        /// <returns></returns>
-        internal ResultProvider InvokeFail(ResultProvider Provider)
-        {
-            String Method = Provider.DictionaryStringProvider["Method"].ToString();
-            Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
-            Provider.DictionaryStringProvider = ResultCondition.Instance(true, 500, null, "执行失败").ToJson().ToModel<Dictionary<String, Object>>();
+            Provider.DictionaryStringProvider = ResultCondition.Instance(true, (int)Response, Result?.ToJson(), Response.ToString()).ToJson().ToModel<Dictionary<String, Object>>();
             RemoveInvoke(Provider);
             return Provider;
         }
@@ -58,41 +48,21 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
             {
                 PageQuery TargetParamerter = Provider.DictionaryStringProvider.ToJson().ToModel<PageQuery>();
                 Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { TargetParamerter })).Result.Value;
-                if (Result != null)
-                    return InvokeSuccess(Provider, Result);
-                else
-                    return InvokeFail(Provider);
+                if (Result != null) return Invoke(Provider,ResponseEnum.请求成功, Result);
+                else return Invoke(Provider, ResponseEnum.内部服务器错误);
             }
             else if (ParamInfo?.ParameterType == typeof(ResultProvider))
             {
                 Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { Provider })).Result.Value;
-                if (Result != null)
-                    return InvokeSuccess(Provider, Result);
-                else
-                    return InvokeFail(Provider);
+                if (Result != null) return Invoke(Provider, ResponseEnum.请求成功, Result);
+                else return Invoke(Provider, ResponseEnum.内部服务器错误);
             }
             else
             {
                 Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, null)).Result.Value;
-                if (Result != null)
-                    return InvokeSuccess(Provider, Result);
-                else
-                    return InvokeFail(Provider);
+                if (Result != null) return Invoke(Provider, ResponseEnum.请求成功, Result);
+                else return Invoke(Provider, ResponseEnum.内部服务器错误);
             }
-        }
-        /// <summary>
-        /// 成功
-        /// </summary>
-        /// <param name="Provider"></param>
-        /// <param name="Result"></param>
-        /// <returns></returns>
-        internal ResultProvider InvokeSuccess(ResultProvider Provider, Object Result)
-        {
-            String Method = Provider.DictionaryStringProvider["Method"].ToString();
-            Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
-            Provider.DictionaryStringProvider = ResultCondition.Instance(true, 200, Result.ToJson(), "执行成功").ToJson().ToModel<Dictionary<String, Object>>();
-            RemoveInvoke(Provider);
-            return Provider;
         }
         /// <summary>
         /// 删除Header数据

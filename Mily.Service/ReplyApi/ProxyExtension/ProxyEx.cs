@@ -61,16 +61,13 @@ namespace Mily.Service.ReplyApi.ProxyExtension
         {
             ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1);
             int Seeds = (new Random(Guid.NewGuid().GetHashCode())).Next(1, 10);
-            if (!Condition.UseHttp)
-                return TCP(Request);
+            if (Condition == null) return Http(Request);
+            if (!Condition.UseHttp) return TCP(Request);
             else
             {
-                if (Condition.HttpWeight.IsNullOrEmpty() && Condition.TcpWeight.IsNullOrEmpty())
-                    return TCP(Request);
-                else if (Condition.HttpWeight.IsNullOrEmpty() && !Condition.TcpWeight.IsNullOrEmpty())
-                    return TCP(Request);
-                else if (!Condition.HttpWeight.IsNullOrEmpty() && Condition.TcpWeight.IsNullOrEmpty())
-                    return Http(Request);
+                if (Condition.HttpWeight.IsNullOrEmpty() && Condition.TcpWeight.IsNullOrEmpty()) return TCP(Request);
+                else if (Condition.HttpWeight.IsNullOrEmpty() && !Condition.TcpWeight.IsNullOrEmpty()) return TCP(Request);
+                else if (!Condition.HttpWeight.IsNullOrEmpty() && Condition.TcpWeight.IsNullOrEmpty()) return Http(Request);
                 else
                 {
                     if (Condition.TcpWeight.Split(",").ToList().Min(t => Convert.ToInt32(t)) <= Seeds && Condition.TcpWeight.Split(",").ToList().Max(t => Convert.ToInt32(t)) >= Seeds)

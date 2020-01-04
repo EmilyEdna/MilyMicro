@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Mily.Extension.Authentication.CookieAuthentication;
 using Mily.Extension.Infrastructure.Common;
+using Mily.Setting.ModelEnum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace Mily.Extension.Attributes
             var authorizationResult = await authorizationService.AuthorizeAsync(context.HttpContext.User, null, new PermissionAuthorizationRequirement(Names));
             if (!authorizationResult.Succeeded)
             {
-                context.Result = new ObjectResult(ResultCondition.Instance(false, StatusCodes.Status401Unauthorized, null, "无权访问!"));
+                context.Result = new ObjectResult(ResultCondition.Instance(false, StatusCodes.Status401Unauthorized, null, ResponseEnum.未授权请求.ToString()));
             }
         }
     }
