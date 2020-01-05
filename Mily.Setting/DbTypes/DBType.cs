@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Mily.Setting.DbTypes
 {
+    /// <summary>
+    /// 数据库类型
+    /// </summary>
     public enum DBType
     {
         #region DBType
