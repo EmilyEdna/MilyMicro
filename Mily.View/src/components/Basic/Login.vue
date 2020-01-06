@@ -43,7 +43,7 @@
                 this.$refs.login.validate(v => {
                     Login(this.param).then(res => {
                         if (res.ResultData.AuthorToken != null) {
-                            this.$store.commit('changeToken', JSON.stringify(res.ResultData.Data));
+                            this.$store.commit('ChangeUserLocalStorage', res.ResultData.Data);
                             this.$router.push('/');
                         }
                         else

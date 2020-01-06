@@ -2,16 +2,20 @@ import axios from 'axios';
 import cookie from 'js-cookie';
 import lzstring from 'lz-string'
 
+
+axios.defaults.retry
+
 const service = axios.create({
     baseURL: 'http://127.0.0.1:9091/Proxy/',
-    timeout: 15000
+    timeout: 3000,
+    headers: { "Content-Type": "application/json" },
+    withCredentials: false,
 });
 
 /*
  *处理请求
  */
 service.interceptors.request.use(config => {
-    config.headers["Content-Type"] = "application/json"
     let Head = JSON.parse(lzstring.decompressFromBase64(config.headers.Author));
     if (!Head.Cross) {
         //if not login push the cookie in this data
@@ -36,6 +40,7 @@ service.interceptors.response.use(response => {
         cookie.set("Global", lzstring.compressToBase64(response.data.Data.ResultData.Data.KeyId));
         cookie.set("Authorization", response.data.Data.ResultData.AuthorToken);
     }
+
     return response.data.Data;
 }, err => {
     if (err && err.response) {

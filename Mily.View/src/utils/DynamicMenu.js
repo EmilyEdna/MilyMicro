@@ -1,25 +1,19 @@
-import store from '../store/index';
-import { Menu } from './ApiFactory';
+import store from '../store/store';
 import router from '../router/router';
 import dynamic from '../router/dynamic'
+import { Menu } from './ApiFactory';
 
 let Path = [];
-let Paths = [];
 
 /**
  * 初始化菜单
  * */
 const InitMenu = () => {
-    if (store.getters.login) {
-        let Params = { "Key": JSON.parse(store.state.token).RolePermissionId };
+    if (store.getters.IsLogin) {
+        let Params = { "Key": store.state.USER.RolePermissionId };
         Menu(Params).then(res => {
             InitRouter(res.ResultData);
-            let TempData = {
-                loadmenus: true,
-                routerdata: Paths,
-                menudata: res.ResultData
-            }
-            store.commit('changeMenuState', TempData);
+            store.commit('ChangeUserRoleMenu', res.ResultData);
         });
     }
 }
@@ -50,11 +44,6 @@ const InitChild = (data) => {
         else
             if (item.RouterPath != null) {
                 Path.push({
-                    "path": "/" + item.Path,
-                    "component": item.RouterPath,
-                    "meta": { "title": item.Title }
-                });
-                Paths.push({
                     "path": "/" + item.Path,
                     "component": item.RouterPath,
                     "meta": { "title": item.Title }

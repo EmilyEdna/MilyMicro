@@ -64,7 +64,7 @@
         },
         mounted() {
             let first = setTimeout(() => {
-                this.Menus = JSON.parse(localStorage.Menu);
+                this.Menus = this.$store.state.RoleMenu;
                 this.Count = true
             }, 2500);
             if (this.Count)

@@ -2,8 +2,10 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router/router';
 import ElementUI from 'element-ui';
-import store from './store/index'
+import store from './store/store'
 import cookie from 'js-cookie';
+import { Session } from './extension/session'
+import { Local } from './extension/local'
 import dynamic from './utils/DynamicMenu';
 import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 import './assets/css/icon.css';
@@ -15,6 +17,9 @@ Vue.use(ElementUI, {
     size: 'small'
 });
 
+if (Session.IsLogin && !store.getters.IsLogin) store.commit("ChangeUserLocalStorage", Local.USER);
+if (Session.IsLoadMenu && !store.getters.IsLoadMenu) store.commit("ChangeUserRoleMenu", Local.RoleMenu);
+
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title}|后台管理系统`;
     const global = cookie.get("Global");
@@ -22,11 +27,9 @@ router.beforeEach((to, from, next) => {
     if (!global && to.path !== '/login') {
         next("/login");
     } else {
-        //if (!store.getters.loadmenus) {
-        //    dynamic();
-        //}
-        if (localStorage.Menu == undefined)
+        if (!store.getters.IsLoadMenu) {
             dynamic();
+        }
         next();
     }
 })

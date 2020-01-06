@@ -1,22 +1,36 @@
-export default {
-    changeToken(state, token) {
-        //登录或者注册时，存储token的方法
-        state.token = token
-        try {
-            localStorage.token = token
-        } catch (e) { }
+﻿import cookie from 'js-cookie';
+
+const mutations = {
+    /**
+     * 设置用户本地存储
+     * @param {any} State
+     * @param {any} Object
+     */
+    ChangeUserLocalStorage(State, Object) {
+        State.USER = Object;
+        localStorage.USER = JSON.stringify(Object);
+        sessionStorage.IsLogin = Object ? true : false;
     },
-    clearToken(state) {
-        //退出登录时清除token的方法
-        localStorage.token = ''
-        state.token = ''
+    /**
+     * 设置用户的权限菜单
+     * @param {any} State
+     * @param {any} Object
+     */
+    ChangeUserRoleMenu(State, Object) {
+        State.RoleMenu = Object;
+        localStorage.RoleMenu = JSON.stringify(Object);
+        sessionStorage.IsLoadMenu = Object ? true : false;
     },
-    changeMenuState(state, params) {
-        if (params.routerdata)
-            localStorage.Router = JSON.stringify(params.routerdata);
-        if (params.menudata)
-            localStorage.Menu = JSON.stringify(params.menudata);
-        //切换menus加载状态
-        state.loadmenus = params.loadmenus
-    },
+    /**
+     * 退出登录
+     * @param {any} State
+     */
+    ChangeUserLogOut(State) {
+        localStorage.clear();
+        sessionStorage.clear();
+        cookie.remove("Authorization");
+        cookie.remove("Global");
+    }
 }
+
+export default mutations;
