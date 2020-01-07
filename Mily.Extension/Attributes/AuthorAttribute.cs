@@ -32,7 +32,7 @@ namespace Mily.Extension.Attributes
             var authorizationResult = await authorizationService.AuthorizeAsync(context.HttpContext.User, null, new PermissionAuthorizationRequirement(Names));
             if (!authorizationResult.Succeeded)
             {
-                context.Result = new ObjectResult(ResultCondition.Instance(false, StatusCodes.Status401Unauthorized, null, ResponseEnum.未授权请求.ToString()));
+                context.Result = new ObjectResult(ResultCondition.Instance(false, StatusCodes.Status401Unauthorized, null, ResponseEnum.Unauthorized.GetDescriptionValue()));
             }
         }
     }

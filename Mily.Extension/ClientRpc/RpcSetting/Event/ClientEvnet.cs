@@ -27,9 +27,9 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Event
             Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IClientService))))
                 .Where(t => t.GetMethods().Any(x => x.Name.ToLower() == Method.ToLower())).FirstOrDefault();
             MethodInfo CtrlMehtod = Control.GetMethod(Method);
-            if (CtrlMehtod == null) return ClientSend.Instance.Invoke(Provider, ResponseEnum.页面丢失);
+            if (CtrlMehtod == null) return ClientSend.Instance.Invoke(Provider, ResponseEnum.NotFound);
             if (!VerifyAuthor.Verify(CtrlMehtod, Provider.DictionaryStringProvider["Authorization"].ToString()))
-                return ClientSend.Instance.Invoke(Provider, ResponseEnum.未授权请求);
+                return ClientSend.Instance.Invoke(Provider, ResponseEnum.Unauthorized);
             ParameterInfo ParamInfo = CtrlMehtod.GetParameters().FirstOrDefault();
             return ClientSend.Instance.InvokeMthond(Provider, Control, CtrlMehtod, ParamInfo);
         }

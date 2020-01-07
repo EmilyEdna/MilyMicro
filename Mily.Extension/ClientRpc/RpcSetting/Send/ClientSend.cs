@@ -28,7 +28,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
         {
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
             Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
-            Provider.DictionaryStringProvider = ResultCondition.Instance(true, (int)Response, Result?.ToJson(), Response.ToString()).ToJson().ToModel<Dictionary<String, Object>>();
+            Provider.DictionaryStringProvider = ResultCondition.Instance(true, (int)Response, Result?.ToJson(), Response.GetDescriptionValue()).ToJson().ToModel<Dictionary<String, Object>>();
             RemoveInvoke(Provider);
             return Provider;
         }
@@ -48,20 +48,20 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
             {
                 PageQuery TargetParamerter = Provider.DictionaryStringProvider.ToJson().ToModel<PageQuery>();
                 Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { TargetParamerter })).Result.Value;
-                if (Result != null) return Invoke(Provider,ResponseEnum.请求成功, Result);
-                else return Invoke(Provider, ResponseEnum.内部服务器错误);
+                if (Result != null) return Invoke(Provider,ResponseEnum.OK, Result);
+                else return Invoke(Provider, ResponseEnum.InternalServerError);
             }
             else if (ParamInfo?.ParameterType == typeof(ResultProvider))
             {
                 Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { Provider })).Result.Value;
-                if (Result != null) return Invoke(Provider, ResponseEnum.请求成功, Result);
-                else return Invoke(Provider, ResponseEnum.内部服务器错误);
+                if (Result != null) return Invoke(Provider, ResponseEnum.OK, Result);
+                else return Invoke(Provider, ResponseEnum.InternalServerError);
             }
             else
             {
                 Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, null)).Result.Value;
-                if (Result != null) return Invoke(Provider, ResponseEnum.请求成功, Result);
-                else return Invoke(Provider, ResponseEnum.内部服务器错误);
+                if (Result != null) return Invoke(Provider, ResponseEnum.OK, Result);
+                else return Invoke(Provider, ResponseEnum.InternalServerError);
             }
         }
         /// <summary>
