@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +21,16 @@ namespace Mily.Forms.TreeViewTest
         public Treeview()
         {
             InitializeComponent();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in Directory.GetLogicalDrives())
+            {
+                var view = new TreeViewItem();
+                view.Header = item;
+                this.views.Items.Add(view);
+            } 
         }
     }
 }

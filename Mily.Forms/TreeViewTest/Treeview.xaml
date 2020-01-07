@@ -4,14 +4,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mily.Forms.TreeViewTest"
+        Loaded="Window_Loaded"
         mc:Ignorable="d"
         Title="Treeview" Height="450" Width="800">
     <Grid>
         <TreeView x:Name="views">
             <TreeView.Resources>
                 <Style TargetType="{x:Type TreeViewItem}">
-                    
-                </Style>                
+                    <Setter Property="HeaderTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="http://pics.sc.chinaz.com/Files/pic/icons128/7568/c14.png" Margin="3" Width="20"/>
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
             </TreeView.Resources>
         </TreeView>
     </Grid>
