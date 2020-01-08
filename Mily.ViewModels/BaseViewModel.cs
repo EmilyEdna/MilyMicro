@@ -1,4 +1,4 @@
-﻿using Mily.Setting.DbTypes;
+﻿using Mily.Setting.ModelEnum;
 using System;
 
 namespace Mily.ViewModels
@@ -18,6 +18,6 @@ namespace Mily.ViewModels
         /// <summary>
         /// 数据库类型
         /// </summary>
-        public DBType? DbTypeAttribute { get; set; }
+        public DBTypeEnum? DbTypeAttribute { get; set; }
     }
 }

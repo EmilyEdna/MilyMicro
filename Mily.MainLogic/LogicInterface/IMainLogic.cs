@@ -3,7 +3,6 @@ using Mily.Setting;
 using System;
 using System.Threading.Tasks;
 using XExten.Common;
-using Mily.Setting.DbTypes;
 
 namespace Mily.MainLogic.LogicInterface
 {

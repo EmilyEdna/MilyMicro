@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Mily.Service.ViewSetting
 {
-    public enum DBType
+    public enum DBTypeEnum
     {
         #region DBType
 

@@ -6,7 +6,7 @@ namespace Mily.Service.ViewSetting
 {
     public class HeadConfiger
     {
-        public DBType DataBase { get; set; }
+        public DBTypeEnum DataBase { get; set; }
     }
   
 }

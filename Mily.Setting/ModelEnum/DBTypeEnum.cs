@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mily.Setting.DbTypes
+namespace Mily.Setting.ModelEnum
 {
-    /// <summary>
-    /// 数据库类型
-    /// </summary>
-    public enum DBType
+    public enum DBTypeEnum
     {
-        #region DBType
+        #region DBTypeEnum
 
         /// <summary>
         /// 默认值SQLSERVER
@@ -41,6 +38,6 @@ namespace Mily.Setting.DbTypes
         /// </summary>
         POSTGRESQL = 5
 
-        #endregion DBType
+        #endregion DBTypeEnum
     }
 }

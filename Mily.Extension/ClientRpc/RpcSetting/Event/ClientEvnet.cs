@@ -1,7 +1,6 @@
 ﻿using Mily.Extension.ClientRpc.RpcSetting.Handler;
 using Mily.Extension.ClientRpc.RpcSetting.Send;
 using Mily.Setting;
-using Mily.Setting.DbTypes;
 using Mily.Setting.ModelEnum;
 using System;
 using System.Linq;
@@ -38,13 +37,13 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Event
         /// </summary>
         /// <param name="DbType"></param>
         /// <returns></returns>
-        internal DBType InvokeDyType(Object DbType)
+        internal DBTypeEnum InvokeDyType(Object DbType)
         {
             int.TryParse(DbType?.ToString(), out int Target);
             if (Target > 5 && Target < 0)
-                return DBType.Default;
+                return DBTypeEnum.Default;
             else
-                return (DBType)Target;
+                return (DBTypeEnum)Target;
         }
         /// <summary>
         /// 获取缓存的Key

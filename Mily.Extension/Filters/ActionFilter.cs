@@ -7,9 +7,8 @@ using XExten.Common;
 using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-using Mily.Setting.DbTypes;
 using Mily.Extension.Infrastructure.Common;
+using Mily.Setting.ModelEnum;
 
 namespace Mily.Extension.Filters
 {
@@ -105,9 +104,9 @@ namespace Mily.Extension.Filters
         {
             int.TryParse(Request.Headers["ActionType"].ToString(), out int Target);
             if (Target > 5 && Target <= 0)
-                MilyConfig.DbTypeAttribute = DBType.Default;
+                MilyConfig.DbTypeAttribute = DBTypeEnum.Default;
             else
-                MilyConfig.DbTypeAttribute = (DBType)Target;
+                MilyConfig.DbTypeAttribute = (DBTypeEnum)Target;
         }
     }
 }

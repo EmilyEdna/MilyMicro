@@ -5,7 +5,6 @@ using Mily.Extension.LoggerFactory;
 #endif
 using Mily.DbCore.Model;
 using Mily.Setting;
-using Mily.Setting.DbTypes;
 using Mily.Setting.ModelEnum;
 using Newtonsoft.Json.Linq;
 using SqlSugar;
@@ -74,7 +73,7 @@ namespace Mily.DbCore
         /// <summary>
         /// 数据库类型切换
         /// </summary>
-        public static DBType TypeAttrbuite { get; set; }
+        public static DBTypeEnum TypeAttrbuite { get; set; }
 
         /// <summary>
         /// 数据库类型上下文
@@ -89,8 +88,8 @@ namespace Mily.DbCore
                 TargetDbName = MilyConfig.DbName.Where(Name => Name.Equals(DbName)).FirstOrDefault().IsNullOrEmpty() ? MilyConfig.Default : MilyConfig.DbName.Where(Name => Name.Equals(DbName)).FirstOrDefault();
             return TypeAttrbuite switch
             {
-                DBType.MSSQL => DB_MSSQL(InitDbTable),
-                DBType.MYSQL => DB_MYSQL(InitDbTable),
+                DBTypeEnum.MSSQL => DB_MSSQL(InitDbTable),
+                DBTypeEnum.MYSQL => DB_MYSQL(InitDbTable),
                 _ => DB_MSSQL(InitDbTable)
             };
         }

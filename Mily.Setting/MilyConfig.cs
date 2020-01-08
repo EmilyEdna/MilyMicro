@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyModel;
-using Mily.Setting.DbTypes;
+using Mily.Setting.ModelEnum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace Mily.Setting
         /// <summary>
         /// 数据库类型(动态切换)
         /// </summary>
-        public static DBType DbTypeAttribute { get; set; }
+        public static DBTypeEnum DbTypeAttribute { get; set; }
 
         /// <summary>
         /// 连接字符串-DataBase1
