@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using Mily.Setting.ModelEnum;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -37,14 +38,14 @@ namespace Mily.DbCore
         /// <param name="Insert"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        internal virtual async Task<Object> ExecuteInsert<Entity>(IInsertable<Entity> Insert, DbReturnTypes type) where Entity : class, new()
+        internal virtual async Task<Object> ExecuteInsert<Entity>(IInsertable<Entity> Insert, DbReturnEnum type) where Entity : class, new()
         {
             return type switch
             {
-                DbReturnTypes.Rowspan => await Insert.ExecuteCommandAsync(),
-                DbReturnTypes.Integer => await Insert.ExecuteReturnIdentityAsync(),
-                DbReturnTypes.BigInteger => await Insert.ExecuteReturnBigIdentityAsync(),
-                DbReturnTypes.Model => await Insert.ExecuteReturnEntityAsync(),
+                DbReturnEnum.Rowspan => await Insert.ExecuteCommandAsync(),
+                DbReturnEnum.Integer => await Insert.ExecuteReturnIdentityAsync(),
+                DbReturnEnum.BigInteger => await Insert.ExecuteReturnBigIdentityAsync(),
+                DbReturnEnum.Model => await Insert.ExecuteReturnEntityAsync(),
                 _ => await Insert.ExecuteCommandIdentityIntoEntityAsync(),
             };
         }
@@ -60,12 +61,12 @@ namespace Mily.DbCore
         /// <param name="ObjExp"></param>
         /// <param name="BoolExp"></param>
         /// <returns></returns>
-        internal virtual async Task<Object> ExecuteAlter<Entity>(IUpdateable<Entity> Update, DbReturnTypes type, Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
+        internal virtual async Task<Object> ExecuteAlter<Entity>(IUpdateable<Entity> Update, DbReturnEnum type, Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
         {
             return type switch
             {
-                DbReturnTypes.AlterEntity => await Update.Where(BoolExp).ExecuteCommandAsync(),
-                DbReturnTypes.AlterCols => await Update.UpdateColumns(ObjExp).Where(BoolExp).ExecuteCommandAsync(),
+                DbReturnEnum.AlterEntity => await Update.Where(BoolExp).ExecuteCommandAsync(),
+                DbReturnEnum.AlterCols => await Update.UpdateColumns(ObjExp).Where(BoolExp).ExecuteCommandAsync(),
                 _ => await Update.Where(BoolExp).ExecuteCommandAsync(),
             };
         }
@@ -131,14 +132,14 @@ namespace Mily.DbCore
         /// <param name="BoolExp"></param>
         /// <param name="ObjExp"></param>
         /// <returns></returns>
-        internal virtual async Task<Object> ExecuteRemove<Entity>(IDeleteable<Entity> Delete,List<Guid> Keys, Entity entity, DbReturnTypes type,
+        internal virtual async Task<Object> ExecuteRemove<Entity>(IDeleteable<Entity> Delete,List<Guid> Keys, Entity entity, DbReturnEnum type,
             Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()
         {
             return type switch
             {
-                DbReturnTypes.RemoveEntity => await Delete.Where(entity).ExecuteCommandAsync(),
-                DbReturnTypes.WithNoId => await Delete.In(ObjExp, Keys).ExecuteCommandAsync(),
-                DbReturnTypes.WithWhere => await Delete.Where(BoolExp).ExecuteCommandAsync(),
+                DbReturnEnum.RemoveEntity => await Delete.Where(entity).ExecuteCommandAsync(),
+                DbReturnEnum.WithNoId => await Delete.In(ObjExp, Keys).ExecuteCommandAsync(),
+                DbReturnEnum.WithWhere => await Delete.Where(BoolExp).ExecuteCommandAsync(),
                 _ => await Delete.In(Keys).ExecuteCommandAsync(),
             };
         }
@@ -153,14 +154,14 @@ namespace Mily.DbCore
         /// <param name="BoolExp"></param>
         /// <param name="ObjExp"></param>
         /// <returns></returns>
-        internal virtual async Task<Object> ExecuteRemove<Entity>(IDeleteable<Entity> Delete, List<Guid> Keys, List<Entity> entities, DbReturnTypes type,
+        internal virtual async Task<Object> ExecuteRemove<Entity>(IDeleteable<Entity> Delete, List<Guid> Keys, List<Entity> entities, DbReturnEnum type,
             Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()
         {
             return type switch
             {
-                DbReturnTypes.RemoveEntities => await Delete.Where(entities).ExecuteCommandAsync(),
-                DbReturnTypes.WithNoId => await Delete.In(ObjExp, Keys).ExecuteCommandAsync(),
-                DbReturnTypes.WithWhere => await Delete.Where(BoolExp).ExecuteCommandAsync(),
+                DbReturnEnum.RemoveEntities => await Delete.Where(entities).ExecuteCommandAsync(),
+                DbReturnEnum.WithNoId => await Delete.In(ObjExp, Keys).ExecuteCommandAsync(),
+                DbReturnEnum.WithWhere => await Delete.Where(BoolExp).ExecuteCommandAsync(),
                 _ => await Delete.In(Keys).ExecuteCommandAsync(),
             };
         }

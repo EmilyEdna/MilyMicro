@@ -195,7 +195,7 @@ namespace Mily.DbCore
         /// <param name="DbName"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public virtual async Task<Object> InsertData<Entity>(Entity entity, String DbName = null, DbReturnTypes type = DbReturnTypes.InsertDefault) where Entity : class, new()
+        public virtual async Task<Object> InsertData<Entity>(Entity entity, String DbName = null, DbReturnEnum type = DbReturnEnum.InsertDefault) where Entity : class, new()
         {
             base.InsertDataEvent(entity);
             IInsertable<Entity> Insert;
@@ -223,7 +223,7 @@ namespace Mily.DbCore
         /// <param name="DbName">数据库名称</param>
         /// <param name="type">执行类型</param>
         /// <returns></returns>
-        public virtual async Task<Object> InsertData<Entity>(List<Entity> entities, String DbName = null, DbReturnTypes type = DbReturnTypes.InsertDefault) where Entity : class, new()
+        public virtual async Task<Object> InsertData<Entity>(List<Entity> entities, String DbName = null, DbReturnEnum type = DbReturnEnum.InsertDefault) where Entity : class, new()
         {
             base.InsertDataEvent(entities);
             IInsertable<Entity> Insert;
@@ -253,7 +253,7 @@ namespace Mily.DbCore
         /// <param name="ObjExp">对象表达式</param>
         /// <param name="BoolExp">条件表达式</param>
         /// <returns></returns>
-        public virtual async Task<Object> AlterData<Entity>(Entity entity, String DbName = null, DbReturnTypes type = DbReturnTypes.AlterDefault,
+        public virtual async Task<Object> AlterData<Entity>(Entity entity, String DbName = null, DbReturnEnum type = DbReturnEnum.AlterDefault,
             Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
         {
             SqlSugarClient Client = DbContext(DbName);
@@ -282,7 +282,7 @@ namespace Mily.DbCore
         /// <param name="ObjExp">对象表达式</param>
         /// <param name="BoolExp">条件表达式</param>
         /// <returns></returns>
-        public virtual async Task<Object> AlterData<Entity>(List<Entity> entities, String DbName = null, DbReturnTypes type = DbReturnTypes.AlterDefault,
+        public virtual async Task<Object> AlterData<Entity>(List<Entity> entities, String DbName = null, DbReturnEnum type = DbReturnEnum.AlterDefault,
             Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
         {
             SqlSugarClient Client = DbContext(DbName);
@@ -369,10 +369,10 @@ namespace Mily.DbCore
         /// <param name="BoolExp">条件表达式</param>
         /// <param name="ObjExp">对象表达式</param>
         /// <returns></returns>
-        public virtual async Task<Object> RemoveData<Entity>(Entity entity, String DbName = null, DbReturnTypes type = DbReturnTypes.RemoveDefault,
+        public virtual async Task<Object> RemoveData<Entity>(Entity entity, String DbName = null, DbReturnEnum type = DbReturnEnum.RemoveDefault,
             Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()
         {
-            if (type == DbReturnTypes.RemoveEntities) return await Task.FromResult(false);
+            if (type == DbReturnEnum.RemoveEntities) return await Task.FromResult(false);
             List<Guid> Ids = base.RemoveDataEvent(entity);
             SqlSugarClient Client = DbContext(DbName);
             IDeleteable<Entity> Delete = Client.Deleteable(entity);
@@ -400,10 +400,10 @@ namespace Mily.DbCore
         /// <param name="BoolExp">条件表达式</param>
         /// <param name="ObjExp">对象表达式</param>
         /// <returns></returns>
-        public virtual async Task<Object> RemoveData<Entity>(List<Entity> entities, String DbName = null, DbReturnTypes type = DbReturnTypes.RemoveDefault,
+        public virtual async Task<Object> RemoveData<Entity>(List<Entity> entities, String DbName = null, DbReturnEnum type = DbReturnEnum.RemoveDefault,
             Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()
         {
-            if (type == DbReturnTypes.RemoveEntity) return await Task.FromResult(false);
+            if (type == DbReturnEnum.RemoveEntity) return await Task.FromResult(false);
             List<Guid> Ids = base.RemoveDataEvent(entities);
             SqlSugarClient Client = DbContext(DbName);
             IDeleteable<Entity> Delete = Client.Deleteable(entities);

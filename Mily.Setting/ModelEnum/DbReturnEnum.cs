@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mily.DbCore
+namespace Mily.Setting.ModelEnum
 {
-    public enum DbReturnTypes
+    public enum DbReturnEnum
     {
         #region EnumOfInsert
 

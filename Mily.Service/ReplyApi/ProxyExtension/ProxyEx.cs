@@ -12,6 +12,7 @@ using XExten.XCore;
 using System.Linq;
 using System.Threading;
 using XExten.XPlus;
+using Mily.Service.CenterRpc.RpcSetting.DelegateEvent;
 
 namespace Mily.Service.ReplyApi.ProxyExtension
 {
@@ -30,8 +31,7 @@ namespace Mily.Service.ReplyApi.ProxyExtension
                  ServerKey Key = ServerKey.SetValue(NetTypeEnum.Listened, Condition.ServiceName);
                  var NewEvent = Event.SetInfo(Event.Session, ResultProvider.SetValue(Key, Request));
                  Event.Session.Server.Handler.SessionPacketDecodeCompleted(Event.Server, NewEvent);
-                 if (ResultEvent.StaticResult == null) Thread.Sleep(3000);
-                 return ResultEvent.StaticResult;
+                 return DelegateAction.DelegateResult;
              }, (Ex) => { return Http(Request); });
         }
         private static Object Http(Dictionary<String, Object> Request)

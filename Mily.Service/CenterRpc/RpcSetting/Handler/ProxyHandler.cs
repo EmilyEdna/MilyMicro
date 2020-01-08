@@ -1,4 +1,5 @@
-﻿using Mily.Service.CenterRpc.RpcSetting.Result;
+﻿using Mily.Service.CenterRpc.RpcSetting.DelegateEvent;
+using Mily.Service.CenterRpc.RpcSetting.Result;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,9 +39,8 @@ namespace Mily.Service.CenterRpc.RpcSetting.Handler
                 case NetTypeEnum.DisConnect:
                     return ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.DisConnect, Key.ServName), ServerValue.SetStrValue(ServerValue.ListenedFailed, "FAIL"));
                 case NetTypeEnum.CallBack:
-                    if (ResultEvent.StaticResult != null) ResultEvent.StaticResult.Clear();
-                    ResultEvent.StaticResult = Provider.DictionaryStringProvider;
-                    ResultEvent.Event.CacheResult(Key.ServName, Provider.DictionaryStringProvider);
+                     ListenResult.Instance().Response = Provider.DictionaryStringProvider;
+                    ResultProcess.Event.CacheProcess(Key.ServName, Provider.DictionaryStringProvider);
                     return ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.CallBack, Key.ServName), ServerValue.SetStrValue(ServerValue.CallBackSuccessful, "CALL"));
                 default:
                     return ResultProvider.SetValue(ServerKey.SetValue(NetTypeEnum.Listened, Key.ServName), ServerValue.SetStrValue(ServerValue.ListenedSuccessful, "OK"));

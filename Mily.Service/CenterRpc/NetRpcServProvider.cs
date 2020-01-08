@@ -1,4 +1,5 @@
 ﻿using BeetleX;
+using Mily.Service.CenterRpc.RpcSetting.DelegateEvent;
 using Mily.Service.RcpSetting.CenterRpc;
 using Mily.Service.ViewSetting;
 using System;
@@ -16,6 +17,7 @@ namespace Mily.Service.CenterRpc
         public static void InitRpcProvider()
         {
             IServer Serv = SocketFactory.CreateTcpServer<RpcServBase, RcpServerPacket>();
+            ListenResult.Instance().Changed += new ListenResult.ResultEventHandler(DelegateAction.OnResponse);
             Serv.Setting(option =>
             {
                 option.DefaultListen.Host = Configuration.TCP_Host;

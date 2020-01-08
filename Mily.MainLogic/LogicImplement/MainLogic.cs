@@ -105,7 +105,7 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<Object> EditAdmin(ResultProvider Provider)
         {
             Administrator Admin = Provider.DictionaryStringProvider.ToJson().ToModel<AdminRoleViewModel>().ToAutoMapper<Administrator>();
-            return await base.AlterData(Admin, null, DbReturnTypes.AlterDefault, null, t => t.KeyId == Admin.KeyId);
+            return await base.AlterData(Admin, null, DbReturnEnum.AlterDefault, null, t => t.KeyId == Admin.KeyId);
         }
 
         /// <summary>
