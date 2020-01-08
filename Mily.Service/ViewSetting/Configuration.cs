@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using XExten.XPlus;
 
 namespace Mily.Service.ViewSetting
 {
@@ -19,16 +20,12 @@ namespace Mily.Service.ViewSetting
         public static string Authorization { get; set; }
         public static void InitConnection()
         {
-            try
+            XPlusEx.XTry(() =>
             {
                 Caches.DbName = Builder["MongoDb:DbName"] == null ? "MilyConfiger" : Builder["MongoDb:DbName"].ToString();
                 Caches.MongoDBConnectionString = Builder["MongoDb:MongoConnectionString"] == null ? "mongodb://127.0.0.1:27017" : Builder["MongoDb:MongoConnectionString"].ToString();
                 Caches.RedisConnectionString = Builder["Redis:RedisConnectionString"] == null ? "127.0.0.1:6379" : Builder["Redis:RedisConnectionString"].ToString();
-            }
-            catch (Exception)
-            {
-                throw new Exception("请配置Redis和Mongodb链接字符串");
-            }
+            }, Ex => throw new Exception("请配置Redis和Mongodb链接字符串"));
         }
         private static IConfiguration GetSetting()
         {
