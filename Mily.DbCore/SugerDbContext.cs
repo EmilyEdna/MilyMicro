@@ -201,7 +201,7 @@ namespace Mily.DbCore
             IInsertable<Entity> Insert;
             SqlSugarClient Client = DbContext(DbName);
             Insert = Client.Insertable(entity);
-            return await ExecuteTry<Object>(async () =>
+            return await XPlusEx.XTry<Object>(async () =>
              {
                  Client.BeginTran();
                  await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Add);
@@ -229,7 +229,7 @@ namespace Mily.DbCore
             IInsertable<Entity> Insert;
             SqlSugarClient Client = DbContext(DbName);
             Insert = Client.Insertable(entities);
-            return await ExecuteTry<Object>(async () =>
+            return await  XPlusEx.XTry<Object>(async () =>
             {
                 Client.BeginTran();
                 await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Add);
@@ -258,7 +258,7 @@ namespace Mily.DbCore
         {
             SqlSugarClient Client = DbContext(DbName);
             IUpdateable<Entity> Update = Client.Updateable(entity);
-            return await ExecuteTry<Object>(async () =>
+            return await  XPlusEx.XTry<Object>(async () =>
             {
                 Client.BeginTran();
                 await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Edit);
@@ -287,7 +287,7 @@ namespace Mily.DbCore
         {
             SqlSugarClient Client = DbContext(DbName);
             IUpdateable<Entity> Update = Client.Updateable(entities);
-            return await ExecuteTry<Object>(async () =>
+            return await  XPlusEx.XTry<Object>(async () =>
             {
                 Client.BeginTran();
                 await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Edit);
@@ -316,7 +316,7 @@ namespace Mily.DbCore
             base.LogicDeleteOrRecoveryEvent(Delete, entity);
             SqlSugarClient Client = DbContext(DbName);
             IUpdateable<Entity> Update = Client.Updateable(entity);
-            return await ExecuteTry<Object>(async () =>
+            return await  XPlusEx.XTry<Object>(async () =>
             {
                 Client.BeginTran();
                 await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);
@@ -345,7 +345,7 @@ namespace Mily.DbCore
             base.LogicDeleteOrRecoveryEvent(Delete, entities);
             SqlSugarClient Client = DbContext(DbName);
             IUpdateable<Entity> Update = Client.Updateable(entities);
-            return await ExecuteTry<Object>(async () =>
+            return await  XPlusEx.XTry<Object>(async () =>
             {
                 Client.BeginTran();
                 await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);
@@ -376,7 +376,7 @@ namespace Mily.DbCore
             List<Guid> Ids = base.RemoveDataEvent(entity);
             SqlSugarClient Client = DbContext(DbName);
             IDeleteable<Entity> Delete = Client.Deleteable(entity);
-            return await ExecuteTry<Object>(async () =>
+            return await  XPlusEx.XTry<Object>(async () =>
             {
                 Client.BeginTran();
                 await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);
@@ -407,7 +407,7 @@ namespace Mily.DbCore
             List<Guid> Ids = base.RemoveDataEvent(entities);
             SqlSugarClient Client = DbContext(DbName);
             IDeleteable<Entity> Delete = Client.Deleteable(entities);
-            return await ExecuteTry<Object>(async () =>
+            return await  XPlusEx.XTry<Object>(async () =>
             {
                 Client.BeginTran();
                 await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);

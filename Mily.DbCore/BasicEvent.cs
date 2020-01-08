@@ -165,29 +165,5 @@ namespace Mily.DbCore
             };
         }
         #endregion
-
-        /// <summary>
-        /// 尝试执行
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="Executer"></param>
-        /// <param name="Exception"></param>
-        /// <param name="Finally"></param>
-        /// <returns></returns>
-        public async Task<T> ExecuteTry<T>(Func<Task<T>> Executer, Func<Exception, Task<T>> Exception, Action Finally = null)
-        {
-            try
-            {
-                return await Executer();
-            }
-            catch (Exception Ex)
-            {
-                return await Exception(Ex);
-            }
-            finally
-            {
-                Finally?.Invoke();
-            }
-        }
     }
 }
