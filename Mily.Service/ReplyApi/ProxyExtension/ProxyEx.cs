@@ -31,7 +31,7 @@ namespace Mily.Service.ReplyApi.ProxyExtension
                  ServerKey Key = ServerKey.SetValue(NetTypeEnum.Listened, Condition.ServiceName);
                  var NewEvent = Event.SetInfo(Event.Session, ResultProvider.SetValue(Key, Request));
                  Event.Session.Server.Handler.SessionPacketDecodeCompleted(Event.Server, NewEvent);
-                 return DelegateAction.DelegateResult;
+                 return DelegateAction.Instance().DelegateResult;
              }, (Ex) => { return Http(Request); });
         }
         private static Object Http(Dictionary<String, Object> Request)

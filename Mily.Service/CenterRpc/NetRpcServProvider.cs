@@ -17,7 +17,7 @@ namespace Mily.Service.CenterRpc
         public static void InitRpcProvider()
         {
             IServer Serv = SocketFactory.CreateTcpServer<RpcServBase, RcpServerPacket>();
-            ListenResult.Instance().Changed += new ListenResult.ResultEventHandler(DelegateAction.OnResponse);
+            ListenResult.Instance().Changed += new ListenResult.ResultEventHandler(DelegateAction.Instance().OnResponse);
             Serv.Setting(option =>
             {
                 option.DefaultListen.Host = Configuration.TCP_Host;
