@@ -11,6 +11,7 @@ namespace Mily.Service.CenterRpc.RpcSetting.DelegateEvent
     /// </summary>
     public class DelegateAction
     {
+        private Dictionary<String, Object> ResponseResult;
         private static readonly Dictionary<String, DelegateAction> Cache = new Dictionary<string, DelegateAction>();
         /// <summary>
         /// 实例
@@ -31,7 +32,6 @@ namespace Mily.Service.CenterRpc.RpcSetting.DelegateEvent
                 return Instance;
             }
         }
-        private Dictionary<String, Object> ResponseResult;
         /// <summary>
         /// 返回结果
         /// </summary>
