@@ -439,7 +439,7 @@ namespace Mily.DbCore
                 Hnadler = SearchCache(),
                 HandleObject = entity,
                 HandleType = handle,
-                HandleName = handle.ToSelectDes()
+                HandleName = handle.ToDescription()
             };
             Log.HandleObvious = $"【{Log.Hnadler}】对【{entity}】表进行了【{Log.HandleName}】，操作时间为：【{Log.HandleTime}】";
             return await Client.Insertable(Log).ExecuteCommandAsync();

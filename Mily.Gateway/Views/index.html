@@ -1,0 +1,290 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>服务中心</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div id="app" class="container-fluid">
+        <h2>Mily服务中心</h2>
+        <p>https://github.com/EmilyEdna</p>
+        <p>————————————————————————</p>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#Center" role="tab" aria-controls="home"
+                   aria-selected="true">
+                    <h6>服务中心</h6>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#Server" role="tab" aria-controls="profile"
+                   aria-selected="false">
+                    <h6>服务负载</h6>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#Helthy" role="tab" aria-controls="contact"
+                   aria-selected="false">
+                    <h6>健康检查</h6>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#Plugin" role="tab" aria-controls="contact"
+                   aria-selected="false">
+                    <h6>插件中心</h6>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content border border-top-0" id="myTabContent">
+            <div class="tab-pane fade show active" id="Center" role="tabpanel" aria-labelledby="home-tab">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>服务编号</th>
+                                    <th>服务名称</th>
+                                    <th>服务地址</th>
+                                    <th>TCP端口</th>
+                                    <th>HTTP端口</th>
+                                    <th>服务状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item,index) in ServList" class="text-center">
+                                    <td v-if="EditRow!=item.No">{{item.No}}</td>
+                                    <td v-if="EditRow!=item.No">{{item.ServiceName}}</td>
+                                    <td v-if="EditRow!=item.No">{{item.Host}}</td>
+                                    <td v-if="EditRow!=item.No">{{item.TcpPort}}</td>
+                                    <td v-if="EditRow!=item.No">{{item.HttpPort}}</td>
+                                    <td v-if="EditRow!=item.No">{{item.Stutas?"正常":"错误"}}</td>
+                                    <td v-if="EditRow==item.No"><input type="text" class="form-control text-center" v-model="Param.No" disabled style="width:50px;" /></td>
+                                    <td v-if="EditRow==item.No"><input type="text" class="form-control" v-model="Param.ServiceName" /></td>
+                                    <td v-if="EditRow==item.No"><input type="text" class="form-control" v-model="Param.Host" /></td>
+                                    <td v-if="EditRow==item.No"><input type="text" class="form-control" v-model="Param.TcpPort" /></td>
+                                    <td v-if="EditRow==item.No"><input type="text" class="form-control" v-model="Param.HttpPort" /></td>
+                                    <td v-if="EditRow==item.No"><select class="form-control" v-model="Param.Stutas"><option :value="0">错误</option><option :value="1">正常</option></select></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger" @click="">{{item.Status?"禁用":"启用"}}</button>
+                                        <button class="btn btn-sm btn-danger" @click="SaveOrEdit?Edit(item):Save(index)">{{SaveOrEdit?"编辑":"保存"}}</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="Server" role="tabpanel" aria-labelledby="profile-tab">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="border alert alert-danger border-danger" v-for="(item,index) in ServGroupList">
+                            <kbd>服务名称：<span class="badge badge-primary">{{item.ServiceName}}</span></kbd>
+                            <kbd>多服务负载方式：<span class="badge badge-primary">随机种子负载</span></kbd>
+                            <div class="border alert alert-success border-success" v-for="items in item.Conditions">
+                                <kbd>当前IP： <span class="badge badge-success">{{items.Host}}</span></kbd>
+                                <kbd>路由规则： <span class="badge badge-success">{{items.Route}}</span></kbd>
+                                <kbd>HTTP负载是否启用： <span class="badge badge-info">{{items.UseHttp?'是':'否'}}</span></kbd>
+                                <kbd>TCP负载率： <span class="badge badge-warning">{{items.TcpWeight}}</span><span class="badge badge-info">默认0不负载</span></kbd>
+                                <kbd>HTTP负载率： <span class="badge badge-warning">{{items.HttpWeight}}</span><span class="badge badge-info">默认0不负载</span></kbd>
+                                <div class="offset-md-9" style="position:absolute;margin-top:-25px;">
+                                    <button class="btn btn-sm btn-info" type="button" @click="UseHttp(items.Key,!items.UseHttp)">{{items.UseHttp?'禁用HTTP负载':'启用HTTP负载'}}</button>
+                                    <button class="btn btn-sm btn-info" type="button" data-toggle="modal" data-target="#WeightModulePercent" @click="OpenModule(items.Key)" v-if="items.UseHttp">负载率设置</button>
+                                    <button class="btn btn-sm btn-info" type="button" data-toggle="modal" data-target="#WeightModule" @click="OpenModule(items.Key)">URL负载规则</button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="Helthy" role="tabpanel" aria-labelledby="contact-tab">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">健康检查</li>
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="Plugin" role="tabpanel" aria-labelledby="contact-tab">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">插件中心</li>
+                </ul>
+            </div>
+        </div>
+        <!-- 负载模态框 -->
+        <div class="modal fade" id="WeightModule">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">新增URL负载规则</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <h5>服务标识： <span class="badge badge-dark">{{Key}}</span></h5>
+                        <input class="form-control" v-model="Route" />
+                    </div>
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="AddRouter()">确定</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 负载率模态框 -->
+        <div class="modal fade" id="WeightModulePercent">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">TCP和HTTP负载率</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <h5>服务标识： <span class="badge badge-dark">{{Key}}</span></h5>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h5>
+                                    TCP负载率： <input class="form-control border border-danger" type="text" v-model="Weight.TcpWeight" />
+                                </h5>
+                            </div>
+                            <div class="col-sm-6">
+                                <h5>
+                                    HTTP负载率： <input class="form-control border border-danger" type="text" v-model="Weight.HttpWeight" />
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="AddWeight()">确定</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                SaveOrEdit: true,
+                EditRow: 0,
+                ServList: [],
+                ServGroupList:[],
+                Param: {},
+                Key: null,
+                Route: null,
+                Weight: {
+                    TcpWeight: null,
+                    HttpWeight: null
+                }
+            },
+            created() {
+                this.Init();
+            },
+            computed: {
+            },
+            methods: {
+                Init() {
+                    axios({
+                        url: '/Center/GetGroupServer',
+                        method: 'get',
+                    }).then(res => {
+                        let TempArr = [];
+                        res.data.Data.forEach(item => {
+                            item.Conditions.forEach(items => {
+                                TempArr.push(items);
+                            });
+                        });
+                        this.ServList=this.OrderByASCII(TempArr);
+                        this.ServGroupList = res.data.Data;
+                    })
+                },
+                Edit(data) {
+                    this.Param = data;
+                    this.EditRow = data.No;
+                    this.SaveOrEdit = false;
+                },
+                Save(index) {
+                    this.ServList[index] = this.Param;
+                    this.EditRow = 0;
+                    this.SaveOrEdit = true;
+                    axios({
+                        url: "/Center/SaveHttpServer",
+                        data: this.ServList[index],
+                        method: "post"
+                    }).then(res => {
+                        alert(res.data.Data);
+                    });
+                },
+                AddRouter() {
+                     let Param = null;
+                    this.ServList.forEach(item => {
+                        if (item.Key == this.Key) {
+                            item.Route = this.Route;
+                            Param = item;
+                        }
+                    });
+                    axios({
+                        url: "/Center/InsertRoute",
+                        method: "Post",
+                        data: Param
+                    }).then(res => {
+                        this.Route = null;
+                        alert(res.data.Data);
+                    });
+                },
+                OrderByASCII(Data) {
+                    return Data.sort((A, B) => {
+                        let X = A['ServiceName'].substring(0, 1).charCodeAt();
+                        let Y = B['ServiceName'].substring(0, 1).charCodeAt();
+                        return ((X < Y) ? -1 : (X > Y) ? 1 : 0);
+                    });
+                },
+                OpenModule(Key) {
+                    this.Key = Key;
+                },
+                UseHttp(Id, UseHttp) {
+                    let Param = null;
+                    this.ServList.forEach(item => {
+                        if (item.Key == Id) {
+                            item.UseHttp = UseHttp;
+                            Param = item;
+                        }
+                    });
+                    axios({
+                        url: '/Center/StarUseHttp',
+                        data: Param,
+                        method: "Post",
+                    }).then(res => {
+                        alert(res.data.Data);
+                    });
+                },
+                AddWeight() {
+                    let Param = null;
+                    this.ServList.forEach(item => {
+                        if (item.Key == this.Key) {
+                            item.TcpWeight = this.Weight.TcpWeight;
+                            item.HttpWeight = this.Weight.HttpWeight;
+                            Param = item;
+                        }
+                    });
+                    axios({
+                        url: '/Center/SaveWeightRabin',
+                        data: Param,
+                        method: "post"
+                    }).then(res => {
+                        alert(res.data.Data);
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
