@@ -1,5 +1,4 @@
-﻿using Mily.Service.EventServ;
-using System;
+﻿using System;
 
 namespace Mily.Service
 {
@@ -7,7 +6,7 @@ namespace Mily.Service
     {
         private static void Main(string[] args)
         {
-            StarServ.MicroServ();
+
         }
     }
 }

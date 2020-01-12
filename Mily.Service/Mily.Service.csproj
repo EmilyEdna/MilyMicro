@@ -6,19 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BeetleX.FastHttpApi" Version="1.7.7.5" />
-    <PackageReference Include="PeterKottas.DotNetCore.WindowsService" Version="2.0.11" />
-    <PackageReference Include="XExten" Version="2.2.1.8" />
-  </ItemGroup>
-  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" Version="3.1.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="setting.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Views\index.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>

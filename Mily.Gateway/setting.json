@@ -15,6 +15,6 @@
     "MongoConnectionString": "mongodb://127.0.0.1:27017" //MongoDb
   },
   "ProxyFunctionAarry": {
-    "FuncArray": "ProxyMain,ProxyOther"
+    "FuncArray": "ProxyMain,ProxyOther" //服务自定义地址
   }
 }
