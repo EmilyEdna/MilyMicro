@@ -2,14 +2,14 @@
 using SqlSugar;
 using System;
 
-namespace Mily.DbCore.Model.SystemModel
+namespace Mily.DbEntity.SystemView
 {
     /// <summary>
     /// 系统用户表
     /// </summary>
     [SugarTable("System_Administrator", "系统用户表")]
-    [DataBaseName("Test")]
-    public class Administrator : BaseModel
+    [DataSlice("Test")]
+    public class Administrator : BaseEntity
     {
         /// <summary>
         /// 管理员

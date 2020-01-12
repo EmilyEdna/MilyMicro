@@ -9,12 +9,12 @@ namespace Mily.Extension.Attributes
     /// 指定数据库
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
-    public class DataBaseNameAttribute : Attribute
+    public class DataSliceAttribute : Attribute
     {
-        public List<String> DbHostAttr { get; set; }
-        public DataBaseNameAttribute(params String[] HostAttr)
+        public List<String> DBName { get; set; }
+        public DataSliceAttribute(params String[] DBNames)
         {
-            DbHostAttr = HostAttr.ToList();
+            DBName = DBNames.ToList();
         }
     }
 }

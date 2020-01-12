@@ -3,14 +3,14 @@ using Mily.Setting.ModelEnum;
 using SqlSugar;
 using System;
 
-namespace Mily.DbCore.Model.SystemModel
+namespace Mily.DbEntity.SystemView
 {
     /// <summary>
     ///操作日志表
     /// </summary>
     [SugarTable("System_HandleLog", "操作日志表")]
-    [DataBaseName("Test")]
-    public class SystemhandleLog : BaseModel
+    [DataSlice("Test")]
+    public class SystemhandleLog : BaseEntity
     {
         /// <summary>
         /// 操作人

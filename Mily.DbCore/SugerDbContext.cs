@@ -1,9 +1,9 @@
 ﻿using Mily.DbCore.Caches;
-using Mily.DbCore.Model.SystemModel;
+
 #if RELEASE
 using Mily.Extension.LoggerFactory;
 #endif
-using Mily.DbCore.Model;
+
 using Mily.Setting;
 using Mily.Setting.ModelEnum;
 using Newtonsoft.Json.Linq;
@@ -18,6 +18,8 @@ using XExten.XExpres;
 using XExten.XPlus;
 using XCache = XExten.CacheFactory;
 using Mily.Extension.Attributes;
+using Mily.DbEntity.SystemView;
+using Mily.DbEntity;
 
 namespace Mily.DbCore
 {
@@ -101,8 +103,8 @@ namespace Mily.DbCore
         /// <returns></returns>
         private static SqlSugarClient DB_MYSQL(bool InitDbTable)
         {
-            Emily.ChangeDatabase("MYSQL");
-            Emily.DbMaintenance.CreateDatabase();
+            Emily.ChangeDatabase("MYSQL");//切换数据库
+            Emily.DbMaintenance.CreateDatabase();//执行迁移
             Emily.CurrentConnectionConfig.ConfigureExternalServices = new ConfigureExternalServices
             {
                 DataInfoCacheService = new DbCache()
@@ -127,13 +129,13 @@ namespace Mily.DbCore
             #endif
             if (InitDbTable)
             {
-                Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
+                Type[] ModelTypes = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.BaseType == typeof(BaseEntity))).ToArray();
                 if (TargetDbName.Equals(MilyConfig.Default))
                     Emily.CodeFirst.InitTables(ModelTypes);
                 else
                 {
-                    List<Type> Condition = ModelTypes.Where(Item => Item.CustomAttributes.Any(Attr => Attr.AttributeType == typeof(DataBaseNameAttribute))).ToList();
-                    Type[] Complete = Condition.Where(Item => (Item.GetCustomAttributes(typeof(DataBaseNameAttribute), false).FirstOrDefault() as DataBaseNameAttribute).DbHostAttr.Contains(TargetDbName)).ToArray();
+                    List<Type> Condition = ModelTypes.Where(Item => Item.CustomAttributes.Any(Attr => Attr.AttributeType == typeof(DataSliceAttribute))).ToList();
+                    Type[] Complete = Condition.Where(Item => (Item.GetCustomAttributes(typeof(DataSliceAttribute), false).FirstOrDefault() as DataSliceAttribute).DBName.Contains(TargetDbName)).ToArray();
                     Emily.CodeFirst.InitTables(Complete);
                 }
             }
@@ -147,8 +149,8 @@ namespace Mily.DbCore
         /// <returns></returns>
         private static SqlSugarClient DB_MSSQL(bool InitDbTable)
         {
-            Emily.ChangeDatabase("MSSQL");
-            Emily.DbMaintenance.CreateDatabase();
+            Emily.ChangeDatabase("MSSQL");//切换数据库
+            Emily.DbMaintenance.CreateDatabase();//执行迁移
             Emily.CurrentConnectionConfig.ConfigureExternalServices = new ConfigureExternalServices
             {
                 DataInfoCacheService = new DbCache()
@@ -173,13 +175,13 @@ namespace Mily.DbCore
             #endif
             if (InitDbTable)
             {
-                Type[] ModelTypes = typeof(SugerDbContext).GetTypeInfo().Assembly.GetTypes().Where(t => t.BaseType == typeof(BaseModel)).ToArray();
+                Type[] ModelTypes = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.BaseType == typeof(BaseEntity))).ToArray();
                 if (TargetDbName.Equals(MilyConfig.Default))
                     Emily.CodeFirst.InitTables(ModelTypes);
                 else
                 {
-                    List<Type> Condition = ModelTypes.Where(Item => Item.CustomAttributes.Any(Attr => Attr.AttributeType == typeof(DataBaseNameAttribute))).ToList();
-                    Type[] Complete = Condition.Where(Item => (Item.GetCustomAttributes(typeof(DataBaseNameAttribute), false).FirstOrDefault() as DataBaseNameAttribute).DbHostAttr.Contains(TargetDbName)).ToArray();
+                    List<Type> Condition = ModelTypes.Where(Item => Item.CustomAttributes.Any(Attr => Attr.AttributeType == typeof(DataSliceAttribute))).ToList();
+                    Type[] Complete = Condition.Where(Item => (Item.GetCustomAttributes(typeof(DataSliceAttribute), false).FirstOrDefault() as DataSliceAttribute).DBName.Contains(TargetDbName)).ToArray();
                     Emily.CodeFirst.InitTables(Complete);
                 }
             }

@@ -1,13 +1,12 @@
-﻿using Mily.Setting.ModelEnum;
-using SqlSugar;
+﻿using SqlSugar;
 using System;
 
-namespace Mily.DbCore.Model
+namespace Mily.DbEntity
 {
     /// <summary>
     /// 所有实体的父类
     /// </summary>
-    public class BaseModel
+    public class BaseEntity
     {
         /// <summary>
         /// 主键
@@ -24,7 +23,7 @@ namespace Mily.DbCore.Model
         /// <summary>
         /// 创建时间
         /// </summary>
-        [SugarColumn(IsNullable = true, ColumnDataType="DATETIME",ColumnDescription = "逻辑删除")]
+        [SugarColumn(IsNullable = true, ColumnDataType = "DATETIME", ColumnDescription = "逻辑删除")]
         public DateTime? Created { get; set; }
     }
 }

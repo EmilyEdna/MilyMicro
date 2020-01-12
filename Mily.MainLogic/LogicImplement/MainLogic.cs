@@ -1,5 +1,4 @@
 ﻿using Mily.DbCore;
-using Mily.DbCore.Model.SystemModel;
 using Mily.MainLogic.LogicInterface;
 using Mily.Setting.ModelEnum;
 using Mily.ViewModels;
@@ -11,6 +10,7 @@ using XExten.CacheFactory;
 using XExten.Common;
 using XExten.XCore;
 using System.Linq;
+using Mily.DbEntity.SystemView;
 
 namespace Mily.MainLogic.LogicImplement
 {

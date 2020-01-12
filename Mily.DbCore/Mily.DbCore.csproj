@@ -4,13 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="sqlSugarCore" Version="5.0.0.11" />
-  </ItemGroup>
-  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mily.Extension\Mily.Extension.csproj" />
-    <ProjectReference Include="..\Mily.Setting\Mily.Setting.csproj" />
+    <ProjectReference Include="..\Mily.DbEntity\Mily.DbEntity.csproj" />
   </ItemGroup>
 </Project>

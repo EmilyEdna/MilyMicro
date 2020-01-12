@@ -4,14 +4,14 @@ using SqlSugar;
 using System;
 using System.Collections.Generic;
 
-namespace Mily.DbCore.Model.SystemModel
+namespace Mily.DbEntity.SystemView
 {
     /// <summary>
     /// 菜单表
     /// </summary>
     [SugarTable("System_MenuItems", "系统菜单表")]
-    [DataBaseName("Test")]
-    public class MenuItems : BaseModel
+    [DataSlice("Test")]
+    public class MenuItems : BaseEntity
     {
         /// <summary>
         /// 图标

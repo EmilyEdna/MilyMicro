@@ -4,14 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mily.DbCore.Model.SystemModel
+namespace Mily.DbEntity.SystemView
 {
     /// <summary>
     /// 权限菜单表
     /// </summary>
     [SugarTable("System_RoleMenuItems", "权限菜单表")]
-    [DataBaseName("Test")]
-    public class RoleMenuItems : BaseModel
+    [DataSlice("Test")]
+    public class RoleMenuItems : BaseEntity
     {
         /// <summary>
         /// 权限许可ID

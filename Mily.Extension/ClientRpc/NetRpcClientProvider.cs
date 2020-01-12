@@ -56,7 +56,7 @@ namespace Mily.Extension.ClientRpc
             AsyncTcpClient ClientAsnyc = SocketFactory.CreateClient<AsyncTcpClient, RcpClientPacket>(Ip, Port);
             if (!ClientPath.IsNullOrEmpty() && ClientPort.HasValue)
                 ClientAsnyc.LocalEndPoint = new IPEndPoint(IPAddress.Parse(ClientPath), ClientPort.Value);
-            ClientAsnyc.Connect();
+            ClientAsnyc.Connect(out bool  Connect);
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
                 ResultProvider Provider = ProxyHandler.Instance.InitProxy((ResultProvider)Data);
