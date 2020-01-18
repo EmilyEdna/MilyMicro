@@ -2,11 +2,15 @@
 using BeetleX.Clients;
 using Mily.Socket.SocketConfig;
 using Mily.Socket.SocketDependency;
+using Mily.Socket.SocketEnum;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Linq;
 using System.Text;
 using XExten.XCore;
+using System.IO;
+using Mily.Socket.SocketEvent;
 
 namespace Mily.Socket
 {
@@ -40,31 +44,35 @@ namespace Mily.Socket
             SocketBasic Client = new SocketBasic();
             Action(Client);
             if (UseServer)
-            {
-                DependencyExecute.FindLibrary();
-                Client.InitRpcProviderCustomer(Client.ServerPath, Client.ServerPort);
-            }
+                Client.InitInternalSocket(Client.ServerPath, Client.ServerPort, DependencyExecute.Instance.FindLibrary());
+
         }
         /// <summary>
-        /// 初始化Rpc
+        /// 初始化内部通信
         /// </summary>
         /// <param name="Ip"></param>
         /// <param name="Port"></param>
-        protected virtual void InitRpcProviderCustomer(string Ip, int Port)
+        protected virtual void InitInternalSocket(string Ip, int Port, SocketMiddleData MiddleData)
         {
             AsyncTcpClient ClientAsnyc = SocketFactory.CreateClient<AsyncTcpClient, SocketPacket>(Ip, Port);
             if (!ClientPath.IsNullOrEmpty() && ClientPort.HasValue)
                 ClientAsnyc.LocalEndPoint = new IPEndPoint(IPAddress.Parse(ClientPath), ClientPort.Value);
             ClientAsnyc.Connect(out bool Connect);
+            CallEvent.SocketClient = ClientAsnyc;
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
-
+                var Provider = (SocketMiddleData)Data;
+                if (Client.IsConnected && Provider.MiddleResult != null)
+                    CallEvent.CallBackHandler(Provider);
             };
             ClientAsnyc.ClientError = (Client, Error) =>
             {
-
+                String ExceptionInfomations = $"Service errored with exception：【{Error.Message}】====write time：{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}\n";
+                File.AppendAllText(Path.Combine(Path.Combine(AppContext.BaseDirectory, @"SocketLogger\"), "SocketError.log"), ExceptionInfomations);
+                Console.WriteLine(ExceptionInfomations);
             };
-
+            if (MiddleData.MiddleResult.FirstOrDefault().Key == SendTypeEnum.Init)
+                ClientAsnyc.Send(MiddleData);
         }
     }
 }

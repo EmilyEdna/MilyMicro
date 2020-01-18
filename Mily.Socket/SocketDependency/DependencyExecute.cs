@@ -7,17 +7,21 @@ using Mily.Socket.SocketRoute;
 using XExten.XCore;
 using XExten.XPlus;
 using System.IO;
+using Mily.Socket.SocketEnum;
+using Mily.Socket.SocketConfig;
 
 namespace Mily.Socket.SocketDependency
 {
     public class DependencyExecute
     {
-        private static IEnumerable<Type> Ctrl => DependencyLibrary.Assembly.SelectMany(item => item.ExportedTypes.Where(t => t.GetInterfaces().Contains(typeof(ISocketDependency))));
-        private static Dictionary<string, List<string>> SocketJson = new Dictionary<string, List<string>>();
+        public static DependencyExecute Instance => new DependencyExecute();
+        private IEnumerable<Type> Ctrl => DependencyLibrary.Assembly.SelectMany(item => item.ExportedTypes.Where(t => t.GetInterfaces().Contains(typeof(ISocketDependency))));
+        private Dictionary<string, List<string>> SocketJson = new Dictionary<string, List<string>>();
+       
         /// <summary>
         /// 查询需要生成APIJson的接口
         /// </summary>
-        public static void FindLibrary()
+        public SocketMiddleData FindLibrary()
         {
             List<Type> SourceType = Ctrl.Where(item => item.GetCustomAttribute(typeof(SocketRouteAttribute)) != null).ToList();
             foreach (var Items in SourceType)
@@ -45,11 +49,12 @@ namespace Mily.Socket.SocketDependency
                 XPlusEx.XTry(() => SocketJson.Add(ControllerName, Route), Ex => throw Ex);
             }
             CreateSocketApiJsonScript();
+            return SocketMiddleData.Middle(SendTypeEnum.Init, SocketJson.ToJson());
         }
         /// <summary>
         /// 创建API文件
         /// </summary>
-        private static void CreateSocketApiJsonScript()
+        private void CreateSocketApiJsonScript()
         {
             if (SocketJson.Count > 0)
             {
@@ -69,7 +74,7 @@ namespace Mily.Socket.SocketDependency
         /// 添加文件内容
         /// </summary>
         /// <param name="FilePath"></param>
-        private static void CreateSocketFileContent(string FilePath)
+        private void CreateSocketFileContent(string FilePath)
         {
             using FileStream Fs = new FileStream(FilePath, FileMode.Create, FileAccess.ReadWrite);
             using StreamWriter Sw = new StreamWriter(Fs);
