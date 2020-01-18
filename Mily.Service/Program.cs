@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Mily.Service.MiddleSocket;
+using System;
 
 namespace Mily.Service
 {
     public class Program
     {
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
-
+            SocketBasic.Bootstrap();
         }
     }
 }

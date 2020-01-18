@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Mily.Extension.ClientRpc;
 using Mily.Extension.Infrastructure.GeneralMiddleWare;
 using Mily.Setting;
+using Mily.Socket;
 using NLog;
 using System;
 using XExten.CacheFactory;
@@ -39,14 +40,22 @@ namespace Mily.Extension.InitSystem
                 endpoints.MapControllers();
             });
             SetConfig(builder);
-            //初始化RPC客户端
-            NetRpcClientProvider.InitClinet(Option =>
+            //初始化客户端
+            NetClientProvider.InitClinet(option =>
             {
-                Option.ServerPath = MilyConfig.ServerCenterIP;
-                Option.ServerPort = MilyConfig.ServerCenterPort;
-                Option.ClientPath = MilyConfig.ClientIP;
-                Option.ClientPort = MilyConfig.ClientPort;
+                option.ServerPath = MilyConfig.ServerCenterIP;
+                option.ServerPort = MilyConfig.ServerCenterPort;
+                option.ClientPath = MilyConfig.ClientIP;
+                option.ClientPort = MilyConfig.ClientPort;
             });
+            //初始化Socket
+            SocketBasic.InitSocket(option =>
+            {
+                option.ServerPath = MilyConfig.ServerCenterIP;
+                option.ServerPort = MilyConfig.ServerCenterPort;
+                option.ClientPath = MilyConfig.ClientIP;
+                option.ClientPort = MilyConfig.ClientPort;
+            }, true);
             MilyConfig.XmlSQL = XPlusEx.XReadXml();
             WebPath = env.WebRootPath;
         }

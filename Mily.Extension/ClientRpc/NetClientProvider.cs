@@ -15,7 +15,7 @@ using XExten.XCore;
 
 namespace Mily.Extension.ClientRpc
 {
-    public class NetRpcClientProvider
+    public class NetClientProvider
     {
         #region Basic Config
         /// <summary>
@@ -40,9 +40,9 @@ namespace Mily.Extension.ClientRpc
         /// 初始化客服端
         /// </summary>
         /// <param name="Action"></param>
-        public static void InitClinet(Action<NetRpcClientProvider> Action)
+        public static void InitClinet(Action<NetClientProvider> Action)
         {
-            NetRpcClientProvider Client = new NetRpcClientProvider();
+            NetClientProvider Client = new NetClientProvider();
             Action(Client);
             Client.InitRpcProviderCustomer(Client.ServerPath, Client.ServerPort);
         }
@@ -53,7 +53,7 @@ namespace Mily.Extension.ClientRpc
         /// <param name="Port"></param>
         public virtual void InitRpcProviderCustomer(string Ip, int Port)
         {
-            AsyncTcpClient ClientAsnyc = SocketFactory.CreateClient<AsyncTcpClient, RcpClientPacket>(Ip, Port);
+            AsyncTcpClient ClientAsnyc = SocketFactory.CreateClient<AsyncTcpClient, SocketPacket>(Ip, Port);
             if (!ClientPath.IsNullOrEmpty() && ClientPort.HasValue)
                 ClientAsnyc.LocalEndPoint = new IPEndPoint(IPAddress.Parse(ClientPath), ClientPort.Value);
             ClientAsnyc.Connect(out bool  Connect);

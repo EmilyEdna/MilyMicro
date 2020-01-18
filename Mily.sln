@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroServ", "MicroServ", "{8B5085BC-7C2C-4D96-969A-167ED2F4A83A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroApi", "MicroApi", "{8B5085BC-7C2C-4D96-969A-167ED2F4A83A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroPlugins", "MicroPlugins", "{C8C39DFA-467E-4A51-9AF9-5A5D27AA02CC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroBases", "MicroBases", "{CEBD8675-B582-4ECB-A73A-5FED881715CE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroDb", "MicroDb", "{CEBD8675-B582-4ECB-A73A-5FED881715CE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroSetting", "MicroSetting", "{1617F6CF-C2F4-433C-946E-6EE6936D7ADA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroLogic", "MicroLogic", "{2F0321B3-479B-4945-BB59-894A85C1A35E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroWinServ", "MicroWinServ", "{B5B819EB-4B9A-4FA7-B4A5-30E7EC5B47E8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroCenter", "MicroCenter", "{B5B819EB-4B9A-4FA7-B4A5-30E7EC5B47E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroView", "MicroView", "{A4035BAB-C7DC-4D4D-A768-3D4F7CA7F887}"
 EndProject
@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Miliy.MainApi", "Miliy.Main
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.OtherApi", "Mily.OtherApi\Mily.OtherApi.csproj", "{831D810C-0F33-40BE-928D-5D67F0F7DD1B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroClient", "MicroClient", "{41695496-97EE-489B-AB64-324FBD4B4A1E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroForm", "MicroForm", "{41695496-97EE-489B-AB64-324FBD4B4A1E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroApp", "MicroApp", "{C3F2361F-DD68-4403-8BE3-9F7DABD9CBDB}"
 EndProject
@@ -49,9 +49,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.Forms", "Mily.Forms\Mi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.DbEntity", "Mily.DbEntity\Mily.DbEntity.csproj", "{DA4ED908-88DD-47D6-9433-355575DC918A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.Gateway", "Mily.Gateway\Mily.Gateway.csproj", "{2C8A9907-B852-4AE4-916B-27FB44CBCDD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.Gateway", "Mily.Gateway\Mily.Gateway.csproj", "{2C8A9907-B852-4AE4-916B-27FB44CBCDD0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.Service", "Mily.Service\Mily.Service.csproj", "{0DD62912-EDE4-4C67-B932-B5F98C0533D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mily.Socket", "Mily.Socket\Mily.Socket.csproj", "{4AE3330F-12C7-44F6-AE03-8410754D04F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -123,6 +125,10 @@ Global
 		{0DD62912-EDE4-4C67-B932-B5F98C0533D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DD62912-EDE4-4C67-B932-B5F98C0533D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DD62912-EDE4-4C67-B932-B5F98C0533D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AE3330F-12C7-44F6-AE03-8410754D04F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AE3330F-12C7-44F6-AE03-8410754D04F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AE3330F-12C7-44F6-AE03-8410754D04F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AE3330F-12C7-44F6-AE03-8410754D04F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -144,6 +150,7 @@ Global
 		{DA4ED908-88DD-47D6-9433-355575DC918A} = {CEBD8675-B582-4ECB-A73A-5FED881715CE}
 		{2C8A9907-B852-4AE4-916B-27FB44CBCDD0} = {B5B819EB-4B9A-4FA7-B4A5-30E7EC5B47E8}
 		{0DD62912-EDE4-4C67-B932-B5F98C0533D2} = {B5B819EB-4B9A-4FA7-B4A5-30E7EC5B47E8}
+		{4AE3330F-12C7-44F6-AE03-8410754D04F7} = {C8C39DFA-467E-4A51-9AF9-5A5D27AA02CC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A20B8E09-4285-41C8-95A6-F6C4BEBED20C}
