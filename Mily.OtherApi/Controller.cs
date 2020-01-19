@@ -2,7 +2,7 @@
 using Mily.Extension.AutofacIoc;
 using Mily.Extension.ClientRpc.RpcSetting.Handler;
 using Mily.OhterLogic.LogicInterface;
-using Mily.Socket.SocketDependency;
+using Mily.Socket.SocketInterface;
 
 namespace Mily.OtherApi
 {

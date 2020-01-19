@@ -61,9 +61,8 @@ namespace Mily.Socket
             CallEvent.SocketClient = ClientAsnyc;
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
-                var Provider = (SocketMiddleData)Data;
-                if (Client.IsConnected && Provider.MiddleResult != null)
-                    CallEvent.CallBackHandler(Provider);
+                if (Client.IsConnected && ((SocketMiddleData)Data).MiddleResult != null)
+                    CallEvent.CallBackHandler((SocketMiddleData)Data);
             };
             ClientAsnyc.ClientError = (Client, Error) =>
             {
@@ -71,7 +70,7 @@ namespace Mily.Socket
                 File.AppendAllText(Path.Combine(Path.Combine(AppContext.BaseDirectory, @"SocketLogger\"), "SocketError.log"), ExceptionInfomations);
                 Console.WriteLine(ExceptionInfomations);
             };
-            if (MiddleData.MiddleResult.FirstOrDefault().Key == SendTypeEnum.Init)
+            if (MiddleData.SendType == SendTypeEnum.Init)
                 ClientAsnyc.Send(MiddleData);
         }
     }

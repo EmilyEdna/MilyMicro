@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyModel;
+using Mily.Socket.SocketInterface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,14 @@ namespace Mily.Socket.SocketDependency
         /// 所有程序集
         /// </summary>
         public static IList<Assembly> Assembly { get; set; } = GetAssembly();
-
+        /// <summary>
+        /// 获取SocketApi
+        /// </summary>
+        public static IEnumerable<Type> Dependency => Assembly.SelectMany(item => item.ExportedTypes.Where(t => t.GetInterfaces().Contains(typeof(ISocketDependency))));
+        /// <summary>
+        /// 自定义Session处理
+        /// </summary>
+        public static IEnumerable<Type> SessionDependency=> Assembly.SelectMany(item => item.ExportedTypes.Where(t => t.GetInterfaces().Contains(typeof(ISocketSessionHandler))));
         private static IList<Assembly> GetAssembly()
         {
             IList<Assembly> ass = new List<Assembly>();

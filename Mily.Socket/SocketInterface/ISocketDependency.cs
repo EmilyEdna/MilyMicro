@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mily.Socket.SocketDependency
+namespace Mily.Socket.SocketInterface
 {
     public interface ISocketDependency
     {

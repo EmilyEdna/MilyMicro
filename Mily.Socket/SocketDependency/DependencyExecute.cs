@@ -9,13 +9,15 @@ using XExten.XPlus;
 using System.IO;
 using Mily.Socket.SocketEnum;
 using Mily.Socket.SocketConfig;
+using Mily.Socket.SocketInterface;
+using Mily.Socket.SocketInterface.DefaultImpl;
 
 namespace Mily.Socket.SocketDependency
 {
     public class DependencyExecute
     {
         public static DependencyExecute Instance => new DependencyExecute();
-        private IEnumerable<Type> Ctrl => DependencyLibrary.Assembly.SelectMany(item => item.ExportedTypes.Where(t => t.GetInterfaces().Contains(typeof(ISocketDependency))));
+       
         private Dictionary<string, List<string>> SocketJson = new Dictionary<string, List<string>>();
        
         /// <summary>
@@ -23,7 +25,7 @@ namespace Mily.Socket.SocketDependency
         /// </summary>
         public SocketMiddleData FindLibrary()
         {
-            List<Type> SourceType = Ctrl.Where(item => item.GetCustomAttribute(typeof(SocketRouteAttribute)) != null).ToList();
+            List<Type> SourceType = DependencyLibrary.Dependency.Where(item => item.GetCustomAttribute(typeof(SocketRouteAttribute)) != null).ToList();
             foreach (var Items in SourceType)
             {
                 StringBuilder sb = new StringBuilder();
@@ -44,12 +46,12 @@ namespace Mily.Socket.SocketDependency
                         SocketUrl = $"{SocketRoute.InternalServer}/{ControllerName}/{SocketMethod.MethodName}";
                     if (!SocketMethod.MethodVersion.IsNullOrEmpty())
                         SocketUrl = SocketUrl + "/" + SocketMethod.MethodVersion;
-                    Route.Add(sb.Append(SocketUrl).ToString());
+                    Route.Add(sb.Append(SocketUrl).ToString().ToLower());
                 });
-                XPlusEx.XTry(() => SocketJson.Add(ControllerName, Route), Ex => throw Ex);
+                XPlusEx.XTry(() => SocketJson.Add(ControllerName.ToLower(), Route), Ex => throw Ex);
             }
             CreateSocketApiJsonScript();
-            return SocketMiddleData.Middle(SendTypeEnum.Init, SocketJson.ToJson());
+            return SocketMiddleData.Middle(SendTypeEnum.Init, SocketResult.SetValue(null, SocketJson.ToJson()));
         }
         /// <summary>
         /// 创建API文件

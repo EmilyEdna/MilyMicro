@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Mily.Socket.SocketInterface;
 
 namespace Mily.Socket.SocketEvent
 {
@@ -15,9 +16,10 @@ namespace Mily.Socket.SocketEvent
         /// 发送内部通信
         /// </summary>
         /// <param name="Param"></param>
-        public static void SendInternalInfo(object Param)
+        /// <param name="Session"></param>
+        public static void SendInternalInfo(ISocketResult Param, ISocketSession Session = null)
         {
-            SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.InternalInfo, Param));
+            SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.InternalInfo, Param, Session));
         }
         /// <summary>
         /// 处理数据然后回发数据
@@ -25,16 +27,17 @@ namespace Mily.Socket.SocketEvent
         /// <param name="Param"></param>
         public static void CallBackHandler(SocketMiddleData Param)
         {
-            if (Param.MiddleResult.Keys.FirstOrDefault() == SendTypeEnum.RequestInfo)
+            if (Param.SendType == SendTypeEnum.RequestInfo)
             {
-                CallBackInternalInfo(null);
+                var ResultData = CallHandlerEvent.ExecuteCallHandler(Param);
+                CallBackInternalInfo(ResultData);
             }
         }
         /// <summary>
         /// 回调数据
         /// </summary>
         /// <param name="Param"></param>
-        private static void CallBackInternalInfo(object Param)
+        private static void CallBackInternalInfo(ISocketResult Param)
         {
             SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.CallBack, Param));
         }
