@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Mily.Socket.SocketInterface;
+using Mily.Socket.SocketInterface.DefaultImpl;
+using XExten.XCore;
 
 namespace Mily.Socket.SocketEvent
 {
@@ -17,9 +19,10 @@ namespace Mily.Socket.SocketEvent
         /// </summary>
         /// <param name="Param"></param>
         /// <param name="Session"></param>
-        public static void SendInternalInfo(ISocketResult Param, ISocketSession Session = null)
+        public static void SendInternalInfo(SocketSerializeData SerializeData,ISocketSession Session = null)
         {
-            SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.InternalInfo, Param, Session));
+            ISocketResult Param = new SocketResult() { Router = SerializeData.Route, SocketJsonData=SerializeData.Providor.ToJson() };
+           SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.InternalInfo, Param, Session));
         }
         /// <summary>
         /// 处理数据然后回发数据

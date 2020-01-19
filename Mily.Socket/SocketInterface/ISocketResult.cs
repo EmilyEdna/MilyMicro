@@ -7,6 +7,6 @@ namespace Mily.Socket.SocketInterface
     public interface ISocketResult
     {
         string Router { get; set; }
-        string SocketData { get; set; }
+        string SocketJsonData { get; set; }
     }
 }

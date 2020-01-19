@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Mily.Socket.SocketRoute
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class SocketAuthorAttribute : Attribute
     {
         public bool UseAuthor { get; set; }

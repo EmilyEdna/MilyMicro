@@ -8,6 +8,10 @@ using System.Linq;
 using System.Reflection;
 using XExten.XCore;
 using System.Text;
+using XExten.Common;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Mily.Socket.SocketInterface.DefaultImpl;
 
 namespace Mily.Socket.SocketEvent
 {
@@ -44,17 +48,18 @@ namespace Mily.Socket.SocketEvent
                             {
                                 //1.如果启用了Session需要用户实现ISocketSessionHandler处理
                                 //2.Invoke方法
-                                if (ExecuteCallSessionHandler(Items, Item))
+                                if (!ExecuteCallSessionHandler(Item, Param.Session))
                                     return null;
-                                return null;
+                                return ExecuteCallDataHandler(Items, Item, Param.MiddleResult);
                             }
-                            else {
+                            else
+                            {
                                 //1.如果启用了Session需要用户实现ISocketSessionHandler处理
                                 //2.Invoke方法
-                                if (ExecuteCallSessionHandler(Items, Item))
+                                if (!ExecuteCallSessionHandler(Item, Param.Session))
                                     return null;
                                 else
-                                    return null;
+                                    return ExecuteCallDataHandler(Items, Item, Param.MiddleResult);
                             }
                         }
                     }
@@ -62,31 +67,55 @@ namespace Mily.Socket.SocketEvent
             }
             return null;
         }
-
         /// <summary>
         /// 处理Session
         /// </summary>
         /// <param name="Controller"></param>
         /// <param name="Method"></param>
-        private static bool ExecuteCallSessionHandler(Type Controller, MethodInfo Method)
+        private static bool ExecuteCallSessionHandler(MethodInfo Method, ISocketSession Session)
         {
-            SocketAuthorAttribute CtrlAuthor = (Controller.GetCustomAttribute(typeof(SocketAuthorAttribute)) as SocketAuthorAttribute);
             SocketAuthorAttribute MethodAuthor = (Method.GetCustomAttribute(typeof(SocketAuthorAttribute)) as SocketAuthorAttribute);
-            if (CtrlAuthor != null)
-            {
-                if (CtrlAuthor.UseAuthor)
-                {
-                    return DependencyLibrary.SessionDependency.Count() == 0 ? true : false;
-                }
-            }
             if (MethodAuthor != null)
             {
                 if (MethodAuthor.UseAuthor)
                 {
-                    return DependencyLibrary.SessionDependency.Count() == 0 ? true : false;
+                    if (DependencyLibrary.SessionDependency.Count() == 0) return false;
+                    var SocketSessionHandler = (ISocketSessionHandler)Activator.CreateInstance(DependencyLibrary.SessionDependency.FirstOrDefault());
+                    return SocketSessionHandler.Executing(Session);
                 }
             }
             return false;
+        }
+        /// <summary>
+        /// 处理数据
+        /// </summary>
+        /// <param name="Controller"></param>
+        /// <param name="Method"></param>
+        /// <returns></returns>
+        private static ISocketResult ExecuteCallDataHandler(Type Controller, MethodInfo Method, ISocketResult Param)
+        {
+            var Ctrl = Activator.CreateInstance(Controller);
+            var ParamInfo = Method.GetParameters().FirstOrDefault();
+            Object Result;
+            if (ParamInfo?.ParameterType == typeof(PageQuery))
+            {
+               
+                PageQuery TargetParamerter = Param.SocketJsonData.ToModel<PageQuery>();
+                Result = ((Task<ActionResult<Object>>)Method.Invoke(Ctrl, new[] { TargetParamerter })).Result.Value;
+                if (Result != null) return new SocketResult { SocketJsonData = Result.ToJson() };
+            }
+            else if (ParamInfo?.ParameterType == typeof(ResultProvider))
+            {
+                ResultProvider TargetParamerter = ResultProvider.SetValue(null, Param.SocketJsonData.ToModel<Dictionary<string, Object>>());
+                Result = ((Task<ActionResult<Object>>)Method.Invoke(Ctrl, new[] { TargetParamerter })).Result.Value;
+                if (Result != null) return new SocketResult { SocketJsonData = Result.ToJson() };
+            }
+            else
+            {
+                Result = ((Task<ActionResult<Object>>)Method.Invoke(Ctrl, null)).Result.Value;
+                if (Result != null) return new SocketResult { SocketJsonData = Result.ToJson() };
+            }
+            return null;
         }
     }
 }
