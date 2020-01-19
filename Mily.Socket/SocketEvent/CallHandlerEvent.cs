@@ -14,11 +14,11 @@ namespace Mily.Socket.SocketEvent
     public class CallHandlerEvent
     {
         /// <summary>
-        /// 逆向解析数据
+        /// 逆向解析方法
         /// </summary>
         /// <param name="Param"></param>
         /// <returns></returns>
-        public static ISocketResult ExecuteCallHandler(SocketMiddleData Param)
+        public static ISocketResult ExecuteCallFuncHandler(SocketMiddleData Param)
         {
             //一定是其它服务
             List<Type> SourceTypes = DependencyLibrary.Dependency.Where(item => item.GetCustomAttribute(typeof(SocketRouteAttribute)) != null).ToList();
@@ -32,7 +32,8 @@ namespace Mily.Socket.SocketEvent
                 {
                     //查询到了这个类
                     //开始处理所有方法
-                    Items.GetMethods().Where(x => x.GetCustomAttribute(typeof(SocketMethodAttribute)) != null).ToList().ForEach(Item =>
+                    var SoucreMethods = Items.GetMethods().Where(x => x.GetCustomAttribute(typeof(SocketMethodAttribute)) != null).ToList();
+                    foreach (var Item in SoucreMethods)
                     {
                         SocketMethodAttribute SocketMethod = (Item.GetCustomAttribute(typeof(SocketMethodAttribute)) as SocketMethodAttribute);
                         //找到对应方法
@@ -43,12 +44,23 @@ namespace Mily.Socket.SocketEvent
                             {
                                 //1.如果启用了Session需要用户实现ISocketSessionHandler处理
                                 //2.Invoke方法
-                                ExecuteCallSessionHandler(Items, Item);
+                                if (ExecuteCallSessionHandler(Items, Item))
+                                    return null;
+                                return null;
+                            }
+                            else {
+                                //1.如果启用了Session需要用户实现ISocketSessionHandler处理
+                                //2.Invoke方法
+                                if (ExecuteCallSessionHandler(Items, Item))
+                                    return null;
+                                else
+                                    return null;
                             }
                         }
-                    });
+                    }
                 }
             }
+            return null;
         }
 
         /// <summary>
@@ -56,24 +68,25 @@ namespace Mily.Socket.SocketEvent
         /// </summary>
         /// <param name="Controller"></param>
         /// <param name="Method"></param>
-        private static void ExecuteCallSessionHandler(Type Controller, MethodInfo Method)
+        private static bool ExecuteCallSessionHandler(Type Controller, MethodInfo Method)
         {
-            SocketAuthorAttribute CtrlAuthor =(Controller.GetCustomAttribute(typeof(SocketAuthorAttribute)) as SocketAuthorAttribute);
+            SocketAuthorAttribute CtrlAuthor = (Controller.GetCustomAttribute(typeof(SocketAuthorAttribute)) as SocketAuthorAttribute);
             SocketAuthorAttribute MethodAuthor = (Method.GetCustomAttribute(typeof(SocketAuthorAttribute)) as SocketAuthorAttribute);
             if (CtrlAuthor != null)
             {
                 if (CtrlAuthor.UseAuthor)
-                { 
-                
+                {
+                    return DependencyLibrary.SessionDependency.Count() == 0 ? true : false;
                 }
-            } else if(MethodAuthor!=null)
+            }
+            if (MethodAuthor != null)
             {
                 if (MethodAuthor.UseAuthor)
                 {
-
+                    return DependencyLibrary.SessionDependency.Count() == 0 ? true : false;
                 }
             }
-          
+            return false;
         }
     }
 }

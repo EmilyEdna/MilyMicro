@@ -29,7 +29,7 @@ namespace Mily.Socket.SocketEvent
         {
             if (Param.SendType == SendTypeEnum.RequestInfo)
             {
-                var ResultData = CallHandlerEvent.ExecuteCallHandler(Param);
+                var ResultData = CallHandlerEvent.ExecuteCallFuncHandler(Param);
                 CallBackInternalInfo(ResultData);
             }
         }
