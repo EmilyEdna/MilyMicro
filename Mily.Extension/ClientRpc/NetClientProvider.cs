@@ -37,21 +37,21 @@ namespace Mily.Extension.ClientRpc
         #endregion
 
         /// <summary>
-        /// 初始化客服端
+        /// 初始化网关客户端
         /// </summary>
         /// <param name="Action"></param>
-        public static void InitClinet(Action<NetClientProvider> Action)
+        public static void InitGateWayClinet(Action<NetClientProvider> Action)
         {
             NetClientProvider Client = new NetClientProvider();
             Action(Client);
-            Client.InitRpcProviderCustomer(Client.ServerPath, Client.ServerPort);
+            Client.InitProviderCustomer(Client.ServerPath, Client.ServerPort);
         }
         /// <summary>
-        /// 初始化Rpc
+        /// 初始化通信
         /// </summary>
         /// <param name="Ip"></param>
         /// <param name="Port"></param>
-        public virtual void InitRpcProviderCustomer(string Ip, int Port)
+        protected virtual void InitProviderCustomer(string Ip, int Port)
         {
             AsyncTcpClient ClientAsnyc = SocketFactory.CreateClient<AsyncTcpClient, SocketPacket>(Ip, Port);
             if (!ClientPath.IsNullOrEmpty() && ClientPort.HasValue)

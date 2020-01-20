@@ -40,19 +40,19 @@ namespace Mily.Extension.InitSystem
                 endpoints.MapControllers();
             });
             SetConfig(builder);
-            //初始化客户端
-            NetClientProvider.InitClinet(option =>
+            //初始化网关客户端
+            NetClientProvider.InitGateWayClinet(option =>
             {
                 option.ServerPath = MilyConfig.ServerCenterIP;
                 option.ServerPort = MilyConfig.ServerCenterPort;
                 option.ClientPath = MilyConfig.ClientIP;
                 option.ClientPort = MilyConfig.ClientPort;
             });
-            //初始化Socket
-            SocketBasic.InitSocket(option =>
+            //初始化Socket通信中心
+            SocketBasic.InitInternalSocket(option =>
             {
-                option.ServerPath = MilyConfig.ServerCenterIP;
-                option.ServerPort = MilyConfig.ServerCenterPort;
+                option.SockInfoIP = MilyConfig.SocketInfoIP;
+                option.SockInfoPort = MilyConfig.SocketInfoPort;
                 option.ClientPath = MilyConfig.ClientIP;
                 option.ClientPort = MilyConfig.ClientPort;
             }, true);
@@ -72,6 +72,8 @@ namespace Mily.Extension.InitSystem
             MilyConfig.ServerCenterPort = Convert.ToInt32(Builder["ServerCenter:ServerCenterIPV4Port"]);
             MilyConfig.ClientIP = Builder["ClientConfig:ClientIPV4"];
             MilyConfig.ClientPort = Convert.ToInt32(Builder["ClientConfig:ClientIPV4Port"]);
+            MilyConfig.SocketInfoIP = Builder["SocketInfoConfig:SocketInfoIPV4"];
+            MilyConfig.ClientPort = Convert.ToInt32(Builder["SocketInfoConfig:SocketInfoIPV4Port"]);
             Caches.DbName = Builder["MongoDbName"];
             Caches.RedisConnectionString = Builder.GetConnectionString("RedisConnectionString");
             Caches.MongoDBConnectionString = Builder.GetConnectionString("MongoDBConnectionString");

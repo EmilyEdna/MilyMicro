@@ -67,6 +67,16 @@ namespace Mily.Setting
         public static int ServerCenterPort { get; set; }
 
         /// <summary>
+        /// 通信中心IP
+        /// </summary>
+        public static string SocketInfoIP { get; set; }
+
+        /// <summary>
+        /// 通信中心端口
+        /// </summary>
+        public static int SocketInfoPort { get; set; }
+
+        /// <summary>
         /// 客服端IP
         /// </summary>
         public static string ClientIP { get; set; }

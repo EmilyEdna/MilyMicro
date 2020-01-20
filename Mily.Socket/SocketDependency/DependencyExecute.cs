@@ -9,17 +9,17 @@ using XExten.XPlus;
 using System.IO;
 using Mily.Socket.SocketEnum;
 using Mily.Socket.SocketConfig;
-using Mily.Socket.SocketInterface;
 using Mily.Socket.SocketInterface.DefaultImpl;
+
 
 namespace Mily.Socket.SocketDependency
 {
     public class DependencyExecute
     {
         public static DependencyExecute Instance => new DependencyExecute();
-       
+
         private Dictionary<string, List<string>> SocketJson = new Dictionary<string, List<string>>();
-       
+
         /// <summary>
         /// 查询需要生成APIJson的接口
         /// </summary>
@@ -48,7 +48,14 @@ namespace Mily.Socket.SocketDependency
                         SocketUrl = SocketUrl + "/" + SocketMethod.MethodVersion;
                     Route.Add(sb.Append(SocketUrl).ToString().ToLower());
                 });
-                XPlusEx.XTry(() => SocketJson.Add(ControllerName.ToLower(), Route), Ex => throw Ex);
+                XPlusEx.XTry(() =>
+                {
+                    var Key = ControllerName.ToLower();
+                    if (SocketJson.ContainsKey(Key))
+                        SocketJson[Key].AddRange(Route);
+                    else
+                        SocketJson.Add(Key, Route);
+                }, Ex => throw Ex);
             }
             CreateSocketApiJsonScript();
             return SocketMiddleData.Middle(SendTypeEnum.Init, SocketResult.SetValue(null, SocketJson.ToJson()));
@@ -76,7 +83,7 @@ namespace Mily.Socket.SocketDependency
         /// 添加文件内容
         /// </summary>
         /// <param name="FilePath"></param>
-        private void CreateSocketFileContent(string FilePath)
+        private  void CreateSocketFileContent(string FilePath)
         {
             using FileStream Fs = new FileStream(FilePath, FileMode.Create, FileAccess.ReadWrite);
             using StreamWriter Sw = new StreamWriter(Fs);

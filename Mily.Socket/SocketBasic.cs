@@ -18,13 +18,13 @@ namespace Mily.Socket
     {
         #region Basic Config
         /// <summary>
-        /// 服务器地址
+        /// 通信中心IP
         /// </summary>
-        public string ServerPath { get; set; }
+        public string SockInfoIP { get; set; }
         /// <summary>
-        /// 服务器端口
+        /// 通信中心端口
         /// </summary>
-        public int ServerPort { get; set; }
+        public int SockInfoPort { get; set; }
         /// <summary>
         /// 客服端地址
         /// </summary>
@@ -36,15 +36,15 @@ namespace Mily.Socket
         #endregion
 
         /// <summary>
-        /// 初始化Socket
+        /// 初始化通信中心Socket
         /// </summary>
         /// <param name="Action"></param>
-        public static void InitSocket(Action<SocketBasic> Action, bool UseServer = false)
+        public static void InitInternalSocket(Action<SocketBasic> Action, bool UseServer = false)
         {
             SocketBasic Client = new SocketBasic();
             Action(Client);
             if (UseServer)
-                Client.InitInternalSocket(Client.ServerPath, Client.ServerPort, DependencyExecute.Instance.FindLibrary());
+                Client.InitInternalSocket(Client.SockInfoIP, Client.SockInfoPort, DependencyExecute.Instance.FindLibrary());
 
         }
         /// <summary>
@@ -67,7 +67,10 @@ namespace Mily.Socket
             ClientAsnyc.ClientError = (Client, Error) =>
             {
                 String ExceptionInfomations = $"Service errored with exception：【{Error.Message}】====write time：{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}\n";
-                File.AppendAllText(Path.Combine(Path.Combine(AppContext.BaseDirectory, @"SocketLogger\"), "SocketError.log"), ExceptionInfomations);
+                var Diretories = Path.Combine(AppContext.BaseDirectory, "SocketError");
+                if (!Directory.Exists(Diretories))
+                    Directory.CreateDirectory(Diretories);
+                File.AppendAllText(Path.Combine(Diretories, "SocketErrorInfo.log"), ExceptionInfomations);
                 Console.WriteLine(ExceptionInfomations);
             };
             if (MiddleData.SendType == SendTypeEnum.Init)

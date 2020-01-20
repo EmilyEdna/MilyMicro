@@ -1,11 +1,16 @@
+/*
+端口85XX系列代表网关类
+端口95XX系列代表本机连接网关的固定端口
+端口90XX系列代表消息内部通信中间件
+*/
 {
   "TCP": {
-    "TcpHost": "0.0.0.0",
-    "TcpPort": "9090"
+    "TcpHost": "0.0.0.0", //网关的TCP/IP地址
+    "TcpPort": "8530" //网关的TCP端口号
   },
   "Socket": {
-    "SocketHost": "0.0.0.0",
-    "SocketPort": "9091"
+    "SocketHost": "0.0.0.0", //HTTP应用的IP
+    "SocketPort": "8520" //HTTP应用的端口号
   },
   "Redis": {
     "RedisConnectionString": "127.0.0.1:6379" //Redis
