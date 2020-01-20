@@ -10,7 +10,7 @@ namespace Mily.Service.MiddleConfig
     {
         public static IConfiguration Builder => GetSetting();
         public static string TCP_Host { get; set; } = Builder["TcpHost"] ?? "0.0.0.0";
-        public static int TCP_Port { get; set; } = Convert.ToInt32(Builder["TcpPort"] ?? "9092");
+        public static int TCP_Port { get; set; } = Convert.ToInt32(Builder["TcpPort"] ?? "9090");
         private static IConfiguration GetSetting()
         {
             IConfigurationBuilder Buidler = new ConfigurationBuilder();

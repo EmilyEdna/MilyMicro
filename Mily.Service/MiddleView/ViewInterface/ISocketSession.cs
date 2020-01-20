@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mily.Socket.SocketInterface
+namespace Mily.Service.MiddleView.ViewInterface
 {
     public interface ISocketSession
     {

@@ -12,9 +12,9 @@ namespace Mily.Gateway.GatewaySetting
     {
         public static IConfiguration Builder => GetSetting();
         public static string TCP_Host { get; set; } = Builder["TCP:TcpHost"] ?? "0.0.0.0";
-        public static int TCP_Port { get; set; } = Convert.ToInt32(Builder["TCP:TcpPort"] ?? "9090");
+        public static int TCP_Port { get; set; } = Convert.ToInt32(Builder["TCP:TcpPort"] ?? "8530");
         public static string SOCKET_Host { get; set; } = Builder["Socket:SocketHost"] ?? "0.0.0.0";
-        public static int SOCKET_Port { get; set; } = Convert.ToInt32(Builder["Socket:SocketPort"] ?? "9091");
+        public static int SOCKET_Port { get; set; } = Convert.ToInt32(Builder["Socket:SocketPort"] ?? "8520");
         public static List<string> FuncArray { get; set; } = Builder["ProxyFunctionAarry:FuncArray"].Split(",").ToList();
         public static HeadConfiger Heads { get; set; }
         public static string Authorization { get; set; }
