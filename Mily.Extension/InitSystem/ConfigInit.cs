@@ -43,18 +43,18 @@ namespace Mily.Extension.InitSystem
             //初始化网关客户端
             NetClientProvider.InitGateWayClinet(option =>
             {
-                option.ServerPath = MilyConfig.ServerCenterIP;
-                option.ServerPort = MilyConfig.ServerCenterPort;
-                option.ClientPath = MilyConfig.ClientIP;
-                option.ClientPort = MilyConfig.ClientPort;
+                option.ServerPath = MilyConfig.SocketGateWay.GateWayIPV4;
+                option.ServerPort = MilyConfig.SocketGateWay.GateWayIPV4Port;
+                option.ClientPath = MilyConfig.SocketGateWay.ClientIPV4;
+                option.ClientPort = MilyConfig.SocketGateWay.ClientIPV4Port;
             });
             //初始化Socket通信中心
             SocketBasic.InitInternalSocket(option =>
             {
-                option.SockInfoIP = MilyConfig.SocketInfoIP;
-                option.SockInfoPort = MilyConfig.SocketInfoPort;
-                option.ClientPath = MilyConfig.ClientIP;
-                option.ClientPort = MilyConfig.ClientPort;
+                option.SockInfoIP = MilyConfig.SocketInternal.InternalIPV4;
+                option.SockInfoPort = MilyConfig.SocketInternal.InternalIPV4Port;
+                option.ClientPath = MilyConfig.SocketInternal.ClientInternalIPV4;
+                option.ClientPort = MilyConfig.SocketInternal.ClientInternalIPV4Port;
             }, true);
             MilyConfig.XmlSQL = XPlusEx.XReadXml();
             WebPath = env.WebRootPath;
@@ -63,20 +63,9 @@ namespace Mily.Extension.InitSystem
         private static void SetConfig(IConfiguration Builder)
         {
             Builder.Bind(new MilyConfig());
-            MilyConfig.ConnectionString1 = Builder.GetConnectionString("ConnectionString1");
-            MilyConfig.ConnectionString2 = Builder.GetConnectionString("ConnectionString2");
-            MilyConfig.ConnectionStringSlave = Builder.GetConnectionString("ConnectionStringSlave");
-            MilyConfig.RabbitMQConnectionString = Builder.GetConnectionString("RabbitMQConnectionString");
-            MilyConfig.Discovery = Builder["Discovery"];
-            MilyConfig.ServerCenterIP = Builder["ServerCenter:ServerCenterIPV4"];
-            MilyConfig.ServerCenterPort = Convert.ToInt32(Builder["ServerCenter:ServerCenterIPV4Port"]);
-            MilyConfig.ClientIP = Builder["ClientConfig:ClientIPV4"];
-            MilyConfig.ClientPort = Convert.ToInt32(Builder["ClientConfig:ClientIPV4Port"]);
-            MilyConfig.SocketInfoIP = Builder["SocketInfoConfig:SocketInfoIPV4"];
-            MilyConfig.ClientPort = Convert.ToInt32(Builder["SocketInfoConfig:SocketInfoIPV4Port"]);
-            Caches.DbName = Builder["MongoDbName"];
-            Caches.RedisConnectionString = Builder.GetConnectionString("RedisConnectionString");
-            Caches.MongoDBConnectionString = Builder.GetConnectionString("MongoDBConnectionString");
+            Caches.DbName = MilyConfig.ConnectionStrings.MongoDbName;
+            Caches.RedisConnectionString = MilyConfig.ConnectionStrings.RedisConnectionString;
+            Caches.MongoDBConnectionString = MilyConfig.ConnectionStrings.MongoDBConnectionString;
         }
     }
 }

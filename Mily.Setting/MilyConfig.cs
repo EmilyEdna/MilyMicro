@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyModel;
+using Mily.Setting.DbConfig;
 using Mily.Setting.ModelEnum;
+using Mily.Setting.SocketConfig;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,92 +12,46 @@ namespace Mily.Setting
 {
     public class MilyConfig
     {
-
+        /// <summary>
+        /// 链接字符串配置
+        /// </summary>
+        public static ConnectionString ConnectionStrings { get; set; }
+        /// <summary>
+        /// 网关配置
+        /// </summary>
+        public static SocketGateWayConfig SocketGateWay { get; set; }
+        /// <summary>
+        /// 内部通信配置
+        /// </summary>
+        public static SocketInternalConfig SocketInternal { get; set; }
         /// <summary>
         /// 数据库类型(动态切换)
         /// </summary>
         public static DBTypeEnum DbTypeAttribute { get; set; }
-
-        /// <summary>
-        /// 连接字符串-DataBase1
-        /// </summary>
-        public static String ConnectionString1 { get; set; }
-
-        /// <summary>
-        /// 连接字符串-DataBase2
-        /// </summary>
-        public static String ConnectionString2 { get; set; }
-
-        /// <summary>
-        /// 连接字符串
-        /// </summary>
-        public static String ConnectionStringSlave { get; set; }
-
-        /// <summary>
-        /// 消息队列链接字符串
-        /// </summary>
-        public static String RabbitMQConnectionString { get; set; }
-
-        /// <summary>
-        /// 记录名称
-        /// </summary>
-        public static String Discovery { get; set; }
-
         /// <summary>
         /// 缓存Key
         /// </summary>
         public static String CacheKey { get; set; }
-
+        /// <summary>
+        /// 记录名称
+        /// </summary>
+        public static String Discovery { get; set; }
         /// <summary>
         /// 数据库名集合
         /// </summary>
         public static  List<string> DbName { get; set; }
-
         /// <summary>
         /// 默认数据库
         /// </summary>
         public static string Default { get; set; }
-
-        /// <summary>
-        /// 服务中心IP
-        /// </summary>
-        public static string ServerCenterIP { get; set; }
-
-        /// <summary>
-        /// 服务中心端口
-        /// </summary>
-        public static int ServerCenterPort { get; set; }
-
-        /// <summary>
-        /// 通信中心IP
-        /// </summary>
-        public static string SocketInfoIP { get; set; }
-
-        /// <summary>
-        /// 通信中心端口
-        /// </summary>
-        public static int SocketInfoPort { get; set; }
-
-        /// <summary>
-        /// 客服端IP
-        /// </summary>
-        public static string ClientIP { get; set; }
-
-        /// <summary>
-        /// 客服端端口
-        /// </summary>
-        public static int ClientPort { get; set; }
-
         /// <summary>
         /// 配置SQL语句
         /// </summary>
         public static Dictionary<string, string> XmlSQL { get; set; }
-
         /// <summary>
         /// 所有程序集
         /// </summary>
         public static IList<Assembly> Assembly { get; set; } = GetAssembly();
-
         private static IList<Assembly> GetAssembly()
         {
             IList<Assembly> ass = new List<Assembly>();

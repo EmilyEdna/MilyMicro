@@ -38,27 +38,28 @@ namespace Mily.DbCore
         {
             get
             {
+
                 List<ConnectionConfig> Configs = new List<ConnectionConfig> {
                     new ConnectionConfig() {
                     ConfigId="MSSQL",
-                    ConnectionString =string.Format(MilyConfig.ConnectionString1,TargetDbName),
+                    ConnectionString =string.Format(MilyConfig.ConnectionStrings.ConnectionString1,TargetDbName),
                     DbType = DbType.SqlServer,
                     IsAutoCloseConnection = true,
                     InitKeyType = InitKeyType.Attribute,
                     IsShardSameThread=true,
                     SlaveConnectionConfigs = new List<SlaveConnectionConfig>() { new SlaveConnectionConfig()  {
-                        HitRate =100, ConnectionString=MilyConfig.ConnectionStringSlave}
+                        HitRate =100, ConnectionString=MilyConfig.ConnectionStrings.ConnectionStringSlave}
                     }},
                     #if RELEASE
                     new ConnectionConfig() {
                     ConfigId="MYSQL",
-                    ConnectionString = string.Format(MilyConfig.ConnectionString2,TargetDbName),
+                    ConnectionString = string.Format(MilyConfig.ConnectionStrings.ConnectionString2,TargetDbName),
                     DbType = DbType.MySql,
                     IsAutoCloseConnection = true,
                     InitKeyType = InitKeyType.Attribute,
                     IsShardSameThread=true,
                     SlaveConnectionConfigs = new List<SlaveConnectionConfig>() { new SlaveConnectionConfig()  {
-                        HitRate =100, ConnectionString=MilyConfig.ConnectionStringSlave}
+                        HitRate =100, ConnectionString=MilyConfig.ConnectionStrings.ConnectionStringSlave}
                     }},
                     #endif
                 };

@@ -45,7 +45,17 @@ namespace Mily.Socket
             Action(Client);
             if (UseServer)
                 Client.InitInternalSocket(Client.SockInfoIP, Client.SockInfoPort, DependencyExecute.Instance.FindLibrary());
-
+        }
+        /// <summary>
+        /// 重新连接通信中心
+        /// </summary>
+        /// <param name="Ip"></param>
+        /// <param name="Port"></param>
+        public static void ReOpenInternalSocket(string Ip,int Port) {
+            SocketBasic Client = new SocketBasic();
+            if (CallEvent.SocketClient.IsConnected)
+                CallEvent.SocketClient.DisConnect();
+            Client.InitInternalSocket(Ip, Port, DependencyExecute.Instance.FindLibrary());
         }
         /// <summary>
         /// 初始化内部通信

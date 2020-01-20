@@ -21,7 +21,7 @@ namespace Mily.RabbitMQ
         public static IBus CreateMQ()
         {
             if (Bus == null)
-                Bus = RabbitHutch.CreateBus(MilyConfig.RabbitMQConnectionString);
+                Bus = RabbitHutch.CreateBus(MilyConfig.ConnectionStrings.RabbitMQConnectionString);
             return Bus;
         }
 
