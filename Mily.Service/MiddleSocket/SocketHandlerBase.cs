@@ -5,10 +5,11 @@ using Mily.Service.MiddleView;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using XExten.XCore;
 
 namespace Mily.Service.MiddleSocket
 {
-    public class SocketHandlerBase: ServerHandlerBase
+    public class SocketHandlerBase : ServerHandlerBase
     {
         public override void Disconnect(IServer Server, SessionEventArgs Event)
         {
@@ -17,7 +18,9 @@ namespace Mily.Service.MiddleSocket
         }
         public override void SessionPacketDecodeCompleted(IServer Server, PacketDecodeCompletedEventArgs Event)
         {
-            ExecuteDependency.ExecuteInternalInfo((SocketMiddleData)Event.Message);
+            var AcceptData = Event.Message.ToString().ToModel<SocketMiddleData>();
+            ExecuteDependency.ExecutePacketCache(AcceptData, Event);
+            ExecuteDependency.ExecuteInternalInfo(AcceptData);
         }
     }
 }

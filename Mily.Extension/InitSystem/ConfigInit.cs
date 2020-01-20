@@ -41,13 +41,13 @@ namespace Mily.Extension.InitSystem
             });
             SetConfig(builder);
             //初始化网关客户端
-            NetClientProvider.InitGateWayClinet(option =>
-            {
-                option.ServerPath = MilyConfig.SocketGateWay.GateWayIPV4;
-                option.ServerPort = MilyConfig.SocketGateWay.GateWayIPV4Port;
-                option.ClientPath = MilyConfig.SocketGateWay.ClientIPV4;
-                option.ClientPort = MilyConfig.SocketGateWay.ClientIPV4Port;
-            });
+            //NetClientProvider.InitGateWayClinet(option =>
+            //{
+            //    option.ServerPath = MilyConfig.SocketGateWay.GateWayIPV4;
+            //    option.ServerPort = MilyConfig.SocketGateWay.GateWayIPV4Port;
+            //    option.ClientPath = MilyConfig.SocketGateWay.ClientIPV4;
+            //    option.ClientPort = MilyConfig.SocketGateWay.ClientIPV4Port;
+            //});
             //初始化Socket通信中心
             SocketBasic.InitInternalSocket(option =>
             {

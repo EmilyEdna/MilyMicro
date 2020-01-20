@@ -8,6 +8,7 @@ namespace Mily.Service
         public static void Main(string[] args)
         {
             SocketBasic.Bootstrap();
+            while (true) { Console.ReadLine(); }
         }
     }
 }

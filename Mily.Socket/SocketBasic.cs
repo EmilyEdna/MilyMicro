@@ -84,7 +84,7 @@ namespace Mily.Socket
                 Console.WriteLine(ExceptionInfomations);
             };
             if (MiddleData.SendType == SendTypeEnum.Init)
-                ClientAsnyc.Send(MiddleData);
+                ClientAsnyc.Send(MiddleData.ToJson());
         }
     }
 }
