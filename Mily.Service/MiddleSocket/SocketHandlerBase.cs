@@ -18,9 +18,14 @@ namespace Mily.Service.MiddleSocket
         }
         public override void SessionPacketDecodeCompleted(IServer Server, PacketDecodeCompletedEventArgs Event)
         {
-            var AcceptData = Event.Message.ToString().ToModel<SocketMiddleData>();
+            SocketMiddleData AcceptData;
+            if (Event.Message is SocketMiddleData)
+                AcceptData = (SocketMiddleData)Event.Message;
+            else
+                AcceptData = Event.Message.ToString().ToModel<SocketMiddleData>();
             ExecuteDependency.ExecutePacketCache(AcceptData, Event);
-            ExecuteDependency.ExecuteInternalInfo(AcceptData);
+            ExecuteDependency.ExecuteInternalInfo(Event, AcceptData);
+
         }
     }
 }

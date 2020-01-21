@@ -16,7 +16,7 @@ namespace Mily.Socket.SocketConfig
         }
         public SocketSerializeData AppendRoute(string Router)
         {
-            Route = Router;
+            Route = Router.ToLower();
             return this;
         }
     }

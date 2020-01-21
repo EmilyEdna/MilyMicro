@@ -50,7 +50,7 @@ namespace Mily.Socket.SocketDependency
                 });
                 XPlusEx.XTry(() =>
                 {
-                    var Key = ControllerName.ToLower();
+                    var Key = SocketRoute.InternalServer.ToLower();
                     if (SocketJson.ContainsKey(Key))
                         SocketJson[Key].AddRange(Route);
                     else

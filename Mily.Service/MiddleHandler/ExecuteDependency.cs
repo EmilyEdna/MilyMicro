@@ -1,6 +1,5 @@
 ﻿using Mily.Service.MiddleView;
 using Mily.Service.MiddleView.ViewEnum;
-using Mily.Service.MiddleView.ViewInterface;
 using XExten.XCore;
 using System.IO;
 using System;
@@ -8,6 +7,8 @@ using System.Collections.Generic;
 using System.Text;
 using BeetleX.EventArgs;
 using System.Linq;
+using Mily.Service.MiddleHandler.IntegrationHandler;
+using BeetleX;
 
 namespace Mily.Service.MiddleHandler
 {
@@ -25,23 +26,29 @@ namespace Mily.Service.MiddleHandler
         /// <param name="Event"></param>
         public static void ExecutePacketCache(SocketMiddleData Provider, PacketDecodeCompletedEventArgs Event)
         {
-            var Keys = Provider.MiddleResult.SocketJsonData.ToModel<Dictionary<string, List<string>>>().Keys.ToList();
-            PacketCache.Add(string.Join(",", Keys), Event);
+            if (Provider.SendType == SendTypeEnum.Init)
+            {
+                var Keys = Provider.MiddleResult.SocketJsonData.ToModel<Dictionary<string, List<string>>>().Keys.ToList();
+                PacketCache.Add(string.Join(",", Keys), Event);
+            }
         }
         /// <summary>
         /// 处理内部消息
         /// </summary>
         /// <param name="Param"></param>
-        public static void ExecuteInternalInfo(SocketMiddleData Param)
+        public static void ExecuteInternalInfo(PacketDecodeCompletedEventArgs Event,SocketMiddleData Param)
         {
+
             switch (Param.SendType)
             {
                 case SendTypeEnum.Init:
-                    ExecuteSocketApiJson(Param.MiddleResult);
+                    InitHandler.ExecuteSocketApiJson(Param.MiddleResult);
                     break;
                 case SendTypeEnum.InternalInfo:
+                    InternalHandler.ExecuteSocketIniternalInfo(Param, PacketCache);
                     break;
                 case SendTypeEnum.RequestInfo:
+                    Event.Server.Send(Param.ToJson(),Event.Session);
                     break;
                 case SendTypeEnum.CallBack:
                     break;
@@ -49,41 +56,6 @@ namespace Mily.Service.MiddleHandler
                     break;
             }
         }
-        /// <summary>
-        /// 把服务注入的API持久化
-        /// </summary>
-        /// <param name="Param"></param>
-        private static void ExecuteSocketApiJson(ISocketResult Provider)
-        {
-            var Directories = Path.Combine(AppContext.BaseDirectory, "SocketApi");
-            if (!Directory.Exists(Directories))
-                Directory.CreateDirectory(Directories);
-            var JsonData = Provider.SocketJsonData.ToModel<Dictionary<string, List<string>>>();
-            foreach (var Item in JsonData)
-            {
-                var FilePath = Path.Combine(Directories, $"{Item.Key}.json");
-                if (File.Exists(FilePath))
-                {
-                    File.Delete(FilePath);
-                    ExecuteSocketApiFile(FilePath, Provider.SocketJsonData);
-                }
-                else ExecuteSocketApiFile(FilePath, Provider.SocketJsonData);
 
-            }
-        }
-        /// <summary>
-        /// API写入文件
-        /// </summary>
-        /// <param name="FilePath"></param>
-        /// <param name="Data"></param>
-        private static void ExecuteSocketApiFile(string FilePath, string Data)
-        {
-            using FileStream Fs = new FileStream(FilePath, FileMode.Create, FileAccess.ReadWrite);
-            using StreamWriter Sw = new StreamWriter(Fs);
-            Sw.Write(Data);
-            Sw.Flush();
-            Sw.Close();
-            Fs.Close();
-        }
     }
 }

@@ -21,8 +21,8 @@ namespace Mily.Socket.SocketEvent
         /// <param name="Session"></param>
         public static void SendInternalInfo(SocketSerializeData SerializeData,ISocketSession Session = null)
         {
-            ISocketResult Param = new SocketResult() { Router = SerializeData.Route, SocketJsonData=SerializeData.Providor.ToJson() };
-           SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.InternalInfo, Param, Session));
+            ISocketResult Param = new SocketResult() { Router = SerializeData.Route,SocketJsonData= SerializeData.Providor?.ToJson() };
+           SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.InternalInfo, Param, Session).ToJson());
         }
         /// <summary>
         /// 处理数据然后回发数据

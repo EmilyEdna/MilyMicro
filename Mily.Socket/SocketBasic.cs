@@ -71,7 +71,7 @@ namespace Mily.Socket
             CallEvent.SocketClient = ClientAsnyc;
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
-                if (Client.IsConnected && ((SocketMiddleData)Data).MiddleResult != null)
+                if (Client.IsConnected && Data.ToString().ToModel<SocketMiddleData>().MiddleResult != null)
                     CallEvent.CallBackHandler((SocketMiddleData)Data);
             };
             ClientAsnyc.ClientError = (Client, Error) =>
