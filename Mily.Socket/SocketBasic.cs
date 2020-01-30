@@ -51,7 +51,8 @@ namespace Mily.Socket
         /// </summary>
         /// <param name="Ip"></param>
         /// <param name="Port"></param>
-        public static void ReOpenInternalSocket(string Ip,int Port) {
+        public static void ReOpenInternalSocket(string Ip, int Port)
+        {
             SocketBasic Client = new SocketBasic();
             if (CallEvent.SocketClient.IsConnected)
                 CallEvent.SocketClient.DisConnect();
@@ -71,8 +72,9 @@ namespace Mily.Socket
             CallEvent.SocketClient = ClientAsnyc;
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
-                if (Client.IsConnected && Data.ToString().ToModel<SocketMiddleData>().MiddleResult != null)
-                    CallEvent.CallBackHandler((SocketMiddleData)Data);
+                var MiddleData = DependencyCondition.Instance.ExecuteMapper(Data);
+                if (Client.IsConnected)
+                    CallEvent.CallBackHandler(MiddleData);
             };
             ClientAsnyc.ClientError = (Client, Error) =>
             {

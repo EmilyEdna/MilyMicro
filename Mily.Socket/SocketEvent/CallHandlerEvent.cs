@@ -32,7 +32,7 @@ namespace Mily.Socket.SocketEvent
                 SocketRouteAttribute SocketRoute = (Items.GetCustomAttribute(typeof(SocketRouteAttribute)) as SocketRouteAttribute);
                 //比较接受的路由和当前程序的路由是否一直
                 //全部得小写
-                if (SocketRoute.InternalServer.ToLower() == Routes[0] && (SocketRoute.ControllerName.IsNullOrEmpty() ? Items.Name.ToLower() == Routes[1] : Items.Name.ToLower() == SocketRoute.ControllerName.ToLower()))
+                if (SocketRoute.InternalServer.ToLower() == Routes[0] && (SocketRoute.ControllerName.IsNullOrEmpty() ? Items.Name.ToLower().Contains(Routes[1]) : Items.Name.ToLower().Contains(SocketRoute.ControllerName.ToLower())))
                 {
                     //查询到了这个类
                     //开始处理所有方法
@@ -41,7 +41,7 @@ namespace Mily.Socket.SocketEvent
                     {
                         SocketMethodAttribute SocketMethod = (Item.GetCustomAttribute(typeof(SocketMethodAttribute)) as SocketMethodAttribute);
                         //找到对应方法
-                        if (SocketMethod.MethodName.IsNullOrEmpty() ? SocketMethod.MethodName.ToLower() == Item.Name.ToLower() : SocketMethod.MethodName.ToLower() == Routes[2])
+                        if (SocketMethod.MethodName.IsNullOrEmpty() ? Routes[2] == Item.Name.ToLower() : SocketMethod.MethodName.ToLower() == Routes[2])
                         {
                             //路由数量大于等于4说明有版本号
                             if (Routes.Count >= 4 && !SocketMethod.MethodVersion.IsNullOrEmpty() && SocketMethod.MethodVersion.ToLower() == Routes.LastOrDefault())
@@ -84,7 +84,7 @@ namespace Mily.Socket.SocketEvent
                     return SocketSessionHandler.Executing(Session);
                 }
             }
-            return false;
+            return true;
         }
         /// <summary>
         /// 处理数据
@@ -102,18 +102,18 @@ namespace Mily.Socket.SocketEvent
                
                 PageQuery TargetParamerter = Param.SocketJsonData.ToModel<PageQuery>();
                 Result = ((Task<ActionResult<Object>>)Method.Invoke(Ctrl, new[] { TargetParamerter })).Result.Value;
-                if (Result != null) return new SocketResult { SocketJsonData = Result.ToJson() };
+                if (Result != null) return new SocketResultDefault { SocketJsonData = Result.ToJson() };
             }
             else if (ParamInfo?.ParameterType == typeof(ResultProvider))
             {
                 ResultProvider TargetParamerter = ResultProvider.SetValue(null, Param.SocketJsonData.ToModel<Dictionary<string, Object>>());
                 Result = ((Task<ActionResult<Object>>)Method.Invoke(Ctrl, new[] { TargetParamerter })).Result.Value;
-                if (Result != null) return new SocketResult { SocketJsonData = Result.ToJson() };
+                if (Result != null) return new SocketResultDefault { SocketJsonData = Result.ToJson() };
             }
             else
             {
                 Result = ((Task<ActionResult<Object>>)Method.Invoke(Ctrl, null)).Result.Value;
-                if (Result != null) return new SocketResult { SocketJsonData = Result.ToJson() };
+                if (Result != null) return new SocketResultDefault { SocketJsonData = Result.ToJson() };
             }
             return null;
         }

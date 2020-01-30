@@ -4,13 +4,13 @@ using System.Text;
 
 namespace Mily.Socket.SocketInterface.DefaultImpl
 {
-    public class SocketResult : ISocketResult
+    public class SocketResultDefault : ISocketResult
     {
         public string Router { get; set; }
         public string SocketJsonData { get; set; }
-        public static SocketResult SetValue(string Router, string SocketJsonData)
+        public static SocketResultDefault SetValue(string Router, string SocketJsonData)
         {
-            return new SocketResult
+            return new SocketResultDefault
             {
                 Router = Router,
                 SocketJsonData = SocketJsonData

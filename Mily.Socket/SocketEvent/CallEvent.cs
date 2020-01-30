@@ -21,7 +21,7 @@ namespace Mily.Socket.SocketEvent
         /// <param name="Session"></param>
         public static void SendInternalInfo(SocketSerializeData SerializeData,ISocketSession Session = null)
         {
-            ISocketResult Param = new SocketResult() { Router = SerializeData.Route,SocketJsonData= SerializeData.Providor?.ToJson() };
+            ISocketResult Param = new SocketResultDefault() { Router = SerializeData.Route,SocketJsonData= SerializeData.Providor?.ToJson() };
            SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.InternalInfo, Param, Session).ToJson());
         }
         /// <summary>
@@ -42,7 +42,7 @@ namespace Mily.Socket.SocketEvent
         /// <param name="Param"></param>
         private static void CallBackInternalInfo(ISocketResult Param)
         {
-            SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.CallBack, Param));
+            SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.CallBack, Param).ToJson());
         }
     }
 }

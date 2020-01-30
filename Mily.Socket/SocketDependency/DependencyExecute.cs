@@ -58,7 +58,7 @@ namespace Mily.Socket.SocketDependency
                 }, Ex => throw Ex);
             }
             CreateSocketApiJsonScript();
-            return SocketMiddleData.Middle(SendTypeEnum.Init, SocketResult.SetValue(null, SocketJson.ToJson()));
+            return SocketMiddleData.Middle(SendTypeEnum.Init, SocketResultDefault.SetValue(null, SocketJson.ToJson()));
         }
         /// <summary>
         /// 创建API文件

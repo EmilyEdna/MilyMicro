@@ -16,17 +16,9 @@ namespace Mily.OtherApi.Controllers
     {
         [HttpGet]
         [SocketMethod]
-        public async Task<ActionResult<string>> Test1()
+        public async Task<ActionResult<object>> Test1()
         {
             return await Task.FromResult("123");
-        }
-        [HttpGet]
-        public string Test2()
-        {
-            var m = new SocketSerializeData();
-            m.AppendRoute("otherapi/other/test1");
-            CallEvent.SendInternalInfo(m);
-            return "1";
         }
     }
 }
