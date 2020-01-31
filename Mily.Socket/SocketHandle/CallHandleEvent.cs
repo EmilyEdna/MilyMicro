@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Mily.Service.MiddleEvent
+namespace Mily.Socket.SocketHandle
 {
-    public class CallEvent
+    public class CallHandleEvent
     {
         #region Event
         /// <summary>
@@ -24,7 +24,7 @@ namespace Mily.Service.MiddleEvent
         /// <summary>
         /// 保证是同一个对象
         /// </summary>
-        private static readonly Dictionary<String, CallEvent> Cache = new Dictionary<String, CallEvent>();
+        private static readonly Dictionary<String, CallHandleEvent> Cache = new Dictionary<String, CallHandleEvent>();
         private Dictionary<String, Object> Result;
         /// <summary>
         /// 结果
@@ -32,7 +32,7 @@ namespace Mily.Service.MiddleEvent
         public Dictionary<String, Object> Response
         {
             get { return Result; }
-            set { Result = value; OnChanged(new CallResultEvent(value)); }
+            set { Result = value; OnChanged(new CallHandleResultEvent(value)); }
         }
         #endregion
 
@@ -41,12 +41,12 @@ namespace Mily.Service.MiddleEvent
         /// 创建对象
         /// </summary>
         /// <returns></returns>
-        public static CallEvent Instance()
+        public static CallHandleEvent Instance()
         {
-            if (Cache.ContainsKey(typeof(CallEvent).Name)) return Cache.Values.FirstOrDefault();
+            if (Cache.ContainsKey(typeof(CallHandleEvent).Name)) return Cache.Values.FirstOrDefault();
             else
             {
-                var Instance = new CallEvent();
+                var Instance = new CallHandleEvent();
                 Cache.Add(Instance.GetType().Name, Instance);
                 return Instance;
             }

@@ -8,6 +8,7 @@ using System.Text;
 using Mily.Socket.SocketInterface;
 using Mily.Socket.SocketInterface.DefaultImpl;
 using XExten.XCore;
+using Mily.Socket.SocketConfig.ConstConfig;
 
 namespace Mily.Socket.SocketEvent
 {
@@ -22,7 +23,7 @@ namespace Mily.Socket.SocketEvent
         public static void SendInternalInfo(SocketSerializeData SerializeData,ISocketSession Session = null)
         {
             ISocketResult Param = new SocketResultDefault() { Router = SerializeData.Route,SocketJsonData= SerializeData.Providor?.ToJson() };
-           SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.InternalInfo, Param, Session).ToJson());
+           SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.InternalInfo, Param, Session, SocketConstConfig.ClientPort).ToJson());
         }
         /// <summary>
         /// 处理数据然后回发数据
@@ -33,16 +34,17 @@ namespace Mily.Socket.SocketEvent
             if (Param.SendType == SendTypeEnum.RequestInfo)
             {
                 var ResultData = CallHandlerEvent.ExecuteCallFuncHandler(Param);
-                CallBackInternalInfo(ResultData);
+                CallBackInternalInfo(ResultData,Param.SendPort);
             }
         }
         /// <summary>
         /// 回调数据
         /// </summary>
         /// <param name="Param"></param>
-        private static void CallBackInternalInfo(ISocketResult Param)
+        /// <param name="SendPort"></param>
+        private static void CallBackInternalInfo(ISocketResult Param,int? SendPort)
         {
-            SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.CallBack, Param).ToJson());
+            SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.CallBack, Param,null,SendPort).ToJson());
         }
     }
 }

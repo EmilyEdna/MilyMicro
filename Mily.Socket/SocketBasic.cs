@@ -11,6 +11,8 @@ using System.Text;
 using XExten.XCore;
 using System.IO;
 using Mily.Socket.SocketEvent;
+using Mily.Socket.SocketConfig.ConstConfig;
+using Mily.Socket.SocketHandle;
 
 namespace Mily.Socket
 {
@@ -43,8 +45,12 @@ namespace Mily.Socket
         {
             SocketBasic Client = new SocketBasic();
             Action(Client);
+            SocketConstConfig.ClientPort = Client.ClientPort;
             if (UseServer)
+            {
+                CallHandleEvent.Instance().Changed += new CallHandleEvent.ResultEventHandler(CallHandleEventAction.Instance().OnResponse);
                 Client.InitInternalSocket(Client.SockInfoIP, Client.SockInfoPort, DependencyExecute.Instance.FindLibrary());
+            }
         }
         /// <summary>
         /// 重新连接通信中心
@@ -72,9 +78,15 @@ namespace Mily.Socket
             CallEvent.SocketClient = ClientAsnyc;
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
-                var MiddleData = DependencyCondition.Instance.ExecuteMapper(Data);
-                if (Client.IsConnected)
-                    CallEvent.CallBackHandler(MiddleData);
+                DependencyCondition Instance = DependencyCondition.Instance;
+                if (Instance.ExecuteIsCall(Data) != SendTypeEnum.CallBack)
+                {
+                    var MiddleData = Instance.ExecuteMapper(Data);
+                    if (Client.IsConnected)
+                        CallEvent.CallBackHandler(MiddleData);
+                }
+                else
+                    Instance.ExecuteCallData(Data);
             };
             ClientAsnyc.ClientError = (Client, Error) =>
             {

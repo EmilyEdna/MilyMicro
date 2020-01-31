@@ -11,14 +11,7 @@ namespace Mily.OtherApi.Controllers
 {
     [Route("Api/[controller]/[action]")]
     [ApiController]
-    [SocketRoute("OtherApi", ControllerName = "Other")]
     public class OtherController : Controller
     {
-        [HttpGet]
-        [SocketMethod]
-        public async Task<ActionResult<object>> Test1()
-        {
-            return await Task.FromResult("123");
-        }
     }
 }

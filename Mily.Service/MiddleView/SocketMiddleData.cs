@@ -11,21 +11,24 @@ namespace Mily.Service.MiddleView
     {
         public SendTypeEnum SendType { get; set; }
         public SocketSession Session { get; set; }
+        public int? SendPort { get; set; }
         public SocketResult MiddleResult { get; set; }
         /// <summary>
         /// 传输数据
         /// </summary>
         /// <param name="SendType"></param>
-        /// <param name="Data"></param>
+        /// <param name="Result"></param>
         /// <param name="Session"></param>
+        /// <param name="SendPort"></param>
         /// <returns></returns>
-        public static SocketMiddleData Middle(SendTypeEnum SendType, SocketResult Result, SocketSession Session = null)
+        public static SocketMiddleData Middle(SendTypeEnum SendType, SocketResult Result, SocketSession Session = null, int? SendPort = null)
         {
             return new SocketMiddleData()
             {
                 SendType = SendType,
                 MiddleResult = Result,
-                Session = Session
+                Session = Session,
+                SendPort= SendPort
             };
         }
     }

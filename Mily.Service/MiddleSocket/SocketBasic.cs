@@ -1,6 +1,5 @@
 ﻿using BeetleX;
 using Mily.Service.MiddleConfig;
-using Mily.Service.MiddleEvent;
 using Mily.Service.MiddleSocket.Setting;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,6 @@ namespace Mily.Service.MiddleSocket
         public static void Bootstrap()
         {
             IServer Serv = SocketFactory.CreateTcpServer<SocketHandlerBase, SocketPacket>();
-            CallEvent.Instance().Changed += new CallEvent.ResultEventHandler(EventAction.Instance().OnResponse);
             Serv.Setting(option =>
             {
                 option.DefaultListen.Host = Configuration.TCP_Host;

@@ -48,9 +48,10 @@ namespace Mily.Service.MiddleHandler
                     InternalHandler.ExecuteSocketIniternalInfo(Param, PacketCache);
                     break;
                 case SendTypeEnum.RequestInfo:
-                    Event.Server.Send(Param.ToJson(),Event.Session);
+                    RequestHandler.ExecuteSocketRequest(Event, Param);
                     break;
                 case SendTypeEnum.CallBack:
+                    CallHandler.ExecuteSocketCallBack(PacketCache.Values.ToList(), Param);
                     break;
                 default:
                     break;
