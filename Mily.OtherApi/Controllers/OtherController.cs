@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System;
 using Mily.Socket.SocketConfig;
-using Mily.Socket.SocketEvent;
+using Mily.Socket.SocketCall;
 using System.Threading;
 
 namespace Mily.OtherApi.Controllers

@@ -6,7 +6,7 @@ using Mily.Socket.SocketInterface;
 
 namespace Mily.OtherApi
 {
-    public abstract class Controller : ControllerBase, IClientService,ISocketDependency
+    public abstract class Controller : ControllerBase, IClientGateWayService,ISocketDependency
     {
        public  IOtherLogic OtherService = AutofocManage.CreateInstance().Resolve<IOtherLogic>();
     }

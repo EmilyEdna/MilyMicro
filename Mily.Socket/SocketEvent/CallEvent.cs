@@ -1,50 +1,65 @@
-﻿using BeetleX.Clients;
-using Mily.Socket.SocketConfig;
-using Mily.Socket.SocketEnum;
-using System.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Mily.Socket.SocketInterface;
-using Mily.Socket.SocketInterface.DefaultImpl;
-using XExten.XCore;
-using Mily.Socket.SocketConfig.ConstConfig;
 
 namespace Mily.Socket.SocketEvent
 {
     public class CallEvent
     {
-        public static AsyncTcpClient SocketClient { get; set; }
+        #region Event
         /// <summary>
-        /// 发送内部通信
+        /// 事件
         /// </summary>
-        /// <param name="Param"></param>
-        /// <param name="Session"></param>
-        public static void SendInternalInfo(SocketSerializeData SerializeData,ISocketSession Session = null)
+        public event ResultEventHandler Changed;
+        /// <summary>
+        /// 委托事件
+        /// </summary>
+        /// <param name="Sender"></param>
+        /// <param name="Args"></param>
+        public delegate void ResultEventHandler(object Sender, EventArgs Args);
+        #endregion
+
+        #region Property
+        /// <summary>
+        /// 保证是同一个对象
+        /// </summary>
+        private static readonly Dictionary<String, CallEvent> Cache = new Dictionary<String, CallEvent>();
+        private Dictionary<String, Object> Result;
+        /// <summary>
+        /// 结果
+        /// </summary>
+        public Dictionary<String, Object> Response
         {
-            ISocketResult Param = new SocketResultDefault() { Router = SerializeData.Route,SocketJsonData= SerializeData.Providor?.ToJson() };
-           SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.InternalInfo, Param, Session, SocketConstConfig.ClientPort).ToJson());
+            get { return Result; }
+            set { Result = value; OnChanged(new CallResultEvent(value)); }
         }
+        #endregion
+
+        #region Instance
         /// <summary>
-        /// 处理数据然后回发数据
+        /// 创建对象
         /// </summary>
-        /// <param name="Param"></param>
-        public static void CallBackHandler(SocketMiddleData Param)
+        /// <returns></returns>
+        public static CallEvent Instance()
         {
-            if (Param.SendType == SendTypeEnum.RequestInfo)
+            if (Cache.ContainsKey(typeof(CallEvent).Name)) return Cache.Values.FirstOrDefault();
+            else
             {
-                var ResultData = CallHandlerEvent.ExecuteCallFuncHandler(Param);
-                CallBackInternalInfo(ResultData,Param.SendPort);
+                var Instance = new CallEvent();
+                Cache.Add(Instance.GetType().Name, Instance);
+                return Instance;
             }
         }
+        #endregion
+
         /// <summary>
-        /// 回调数据
+        /// 事件
         /// </summary>
-        /// <param name="Param"></param>
-        /// <param name="SendPort"></param>
-        private static void CallBackInternalInfo(ISocketResult Param,int? SendPort)
+        /// <param name="Args"></param>
+        protected virtual void OnChanged(EventArgs Args)
         {
-            SocketClient.Send(SocketMiddleData.Middle(SendTypeEnum.CallBack, Param,null,SendPort).ToJson());
+            Changed?.Invoke(this, Args);
         }
     }
 }

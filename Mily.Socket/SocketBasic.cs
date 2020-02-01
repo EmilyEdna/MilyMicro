@@ -10,9 +10,10 @@ using System.Linq;
 using System.Text;
 using XExten.XCore;
 using System.IO;
-using Mily.Socket.SocketEvent;
+using Mily.Socket.SocketCall;
 using Mily.Socket.SocketConfig.ConstConfig;
-using Mily.Socket.SocketHandle;
+using Mily.Socket.SocketEvent;
+using Mily.Socket.SocketAbstract;
 
 namespace Mily.Socket
 {
@@ -37,6 +38,13 @@ namespace Mily.Socket
         public int? ClientPort { get; set; }
         #endregion
 
+        #region 抽象处理器
+        /// <summary>
+        /// 回调处理器
+        /// </summary>
+        public CallHandleAbstract CallHandle { get; set; }
+        #endregion
+
         /// <summary>
         /// 初始化通信中心Socket
         /// </summary>
@@ -48,21 +56,22 @@ namespace Mily.Socket
             SocketConstConfig.ClientPort = Client.ClientPort;
             if (UseServer)
             {
-                CallHandleEvent.Instance().Changed += new CallHandleEvent.ResultEventHandler(CallHandleEventAction.Instance().OnResponse);
+                CallEvent.Instance().Changed += new CallEvent.ResultEventHandler(CallEventAction.Instance().OnResponse);
                 Client.InitInternalSocket(Client.SockInfoIP, Client.SockInfoPort, DependencyExecute.Instance.FindLibrary());
             }
         }
         /// <summary>
         /// 重新连接通信中心
         /// </summary>
-        /// <param name="Ip"></param>
-        /// <param name="Port"></param>
-        public static void ReOpenInternalSocket(string Ip, int Port)
+        /// <param name="Action"></param>
+        public static void ReOpenInternalSocket(Action<SocketBasic> Action)
         {
             SocketBasic Client = new SocketBasic();
-            if (CallEvent.SocketClient.IsConnected)
-                CallEvent.SocketClient.DisConnect();
-            Client.InitInternalSocket(Ip, Port, DependencyExecute.Instance.FindLibrary());
+            Action(Client);
+            if (Call.SocketClient.IsConnected)
+                Call.SocketClient.DisConnect();
+            CallEvent.Instance().Changed += new CallEvent.ResultEventHandler(CallEventAction.Instance().OnResponse);
+            Client.InitInternalSocket(Client.SockInfoIP, Client.SockInfoPort, DependencyExecute.Instance.FindLibrary());
         }
         /// <summary>
         /// 初始化内部通信
@@ -71,11 +80,13 @@ namespace Mily.Socket
         /// <param name="Port"></param>
         protected virtual void InitInternalSocket(string Ip, int Port, SocketMiddleData MiddleData)
         {
+            if (CallHandle == null) 
+                CallHandle = new CallHandle();
             AsyncTcpClient ClientAsnyc = SocketFactory.CreateClient<AsyncTcpClient, SocketPacket>(Ip, Port);
             if (!ClientPath.IsNullOrEmpty() && ClientPort.HasValue)
                 ClientAsnyc.LocalEndPoint = new IPEndPoint(IPAddress.Parse(ClientPath), ClientPort.Value);
             ClientAsnyc.Connect(out bool Connect);
-            CallEvent.SocketClient = ClientAsnyc;
+            Call.SocketClient = ClientAsnyc;
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
                 DependencyCondition Instance = DependencyCondition.Instance;
@@ -83,19 +94,14 @@ namespace Mily.Socket
                 {
                     var MiddleData = Instance.ExecuteMapper(Data);
                     if (Client.IsConnected)
-                        CallEvent.CallBackHandler(MiddleData);
+                        Call.CallBackHandler(MiddleData, CallHandle);
                 }
                 else
                     Instance.ExecuteCallData(Data);
             };
             ClientAsnyc.ClientError = (Client, Error) =>
             {
-                String ExceptionInfomations = $"Service errored with exception：【{Error.Message}】====write time：{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}\n";
-                var Diretories = Path.Combine(AppContext.BaseDirectory, "SocketError");
-                if (!Directory.Exists(Diretories))
-                    Directory.CreateDirectory(Diretories);
-                File.AppendAllText(Path.Combine(Diretories, "SocketErrorInfo.log"), ExceptionInfomations);
-                Console.WriteLine(ExceptionInfomations);
+                DependencyError.Instance.ExecuteRecordLog(Error);
             };
             if (MiddleData.SendType == SendTypeEnum.Init)
                 ClientAsnyc.Send(MiddleData.ToJson());

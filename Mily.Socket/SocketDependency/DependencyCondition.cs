@@ -8,7 +8,7 @@ using Mily.Socket.SocketInterface.DefaultImpl;
 using XExten.XCore;
 using Newtonsoft.Json.Linq;
 using Mily.Socket.SocketEnum;
-using Mily.Socket.SocketHandle;
+using Mily.Socket.SocketEvent;
 
 namespace Mily.Socket.SocketDependency
 {
@@ -48,7 +48,7 @@ namespace Mily.Socket.SocketDependency
         {
             JObject Obj = (Param as string).ToModel<JObject>();
             var CallData = Obj["MiddleResult"].ToJson().ToModel<SocketResultDefault>();
-            CallHandleEvent.Instance().Response = new Dictionary<string, object> { { "SocketJsonData", CallData.SocketJsonData.ToModel<object>() } };
+            CallEvent.Instance().Response = new Dictionary<string, object> { { "SocketJsonData", CallData.SocketJsonData.ToModel<object>() } };
         }
     }
 }

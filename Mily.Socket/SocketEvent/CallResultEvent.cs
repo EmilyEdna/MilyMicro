@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mily.Socket.SocketHandle
+namespace Mily.Socket.SocketEvent
 {
-    public class CallHandleResultEvent: EventArgs
+    public class CallResultEvent: EventArgs
     {
         private Dictionary<String, Object> Result;
-        public CallHandleResultEvent(Dictionary<String, Object> Param)
+        public CallResultEvent(Dictionary<String, Object> Param)
         {
             Result = Param;
         }

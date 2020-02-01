@@ -13,16 +13,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Mily.Socket.SocketInterface.DefaultImpl;
 
-namespace Mily.Socket.SocketEvent
+namespace Mily.Socket.SocketAbstract
 {
-    public class CallHandlerEvent
+    public abstract class CallHandleAbstract
     {
         /// <summary>
         /// 逆向解析方法
         /// </summary>
         /// <param name="Param"></param>
         /// <returns></returns>
-        public static ISocketResult ExecuteCallFuncHandler(SocketMiddleData Param)
+        public virtual ISocketResult ExecuteCallFuncHandler(SocketMiddleData Param)
         {
             //一定是其它服务
             List<Type> SourceTypes = DependencyLibrary.Dependency.Where(item => item.GetCustomAttribute(typeof(SocketRouteAttribute)) != null).ToList();
@@ -72,7 +72,7 @@ namespace Mily.Socket.SocketEvent
         /// </summary>
         /// <param name="Controller"></param>
         /// <param name="Method"></param>
-        private static bool ExecuteCallSessionHandler(MethodInfo Method, ISocketSession Session)
+        protected virtual bool ExecuteCallSessionHandler(MethodInfo Method, ISocketSession Session)
         {
             SocketAuthorAttribute MethodAuthor = (Method.GetCustomAttribute(typeof(SocketAuthorAttribute)) as SocketAuthorAttribute);
             if (MethodAuthor != null)
@@ -92,14 +92,14 @@ namespace Mily.Socket.SocketEvent
         /// <param name="Controller"></param>
         /// <param name="Method"></param>
         /// <returns></returns>
-        private static ISocketResult ExecuteCallDataHandler(Type Controller, MethodInfo Method, ISocketResult Param)
+        protected virtual ISocketResult ExecuteCallDataHandler(Type Controller, MethodInfo Method, ISocketResult Param)
         {
             var Ctrl = Activator.CreateInstance(Controller);
             var ParamInfo = Method.GetParameters().FirstOrDefault();
             Object Result;
             if (ParamInfo?.ParameterType == typeof(PageQuery))
             {
-               
+
                 PageQuery TargetParamerter = Param.SocketJsonData.ToModel<PageQuery>();
                 Result = ((Task<ActionResult<Object>>)Method.Invoke(Ctrl, new[] { TargetParamerter })).Result.Value;
                 if (Result != null) return new SocketResultDefault { SocketJsonData = Result.ToJson() };

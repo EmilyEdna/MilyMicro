@@ -4,19 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Mily.Socket.SocketHandle
+namespace Mily.Socket.SocketEvent
 {
-    public class CallHandleEventAction
+    public class CallEventAction
     {
         private Dictionary<String, Object> ResponseResult;
-        private static readonly Dictionary<String, CallHandleEventAction> Cache = new Dictionary<string, CallHandleEventAction>();
+        private static readonly Dictionary<String, CallEventAction> Cache = new Dictionary<string, CallEventAction>();
         /// <summary>
         /// 实例
         /// </summary>
         /// <returns></returns>
-        public static CallHandleEventAction Instance()
+        public static CallEventAction Instance()
         {
-            if (Cache.ContainsKey(typeof(CallHandleEventAction).Name))
+            if (Cache.ContainsKey(typeof(CallEventAction).Name))
             {
                 var Instance = Cache.Values.FirstOrDefault();
                 Instance.ResponseResult = null;
@@ -24,7 +24,7 @@ namespace Mily.Socket.SocketHandle
             }
             else
             {
-                var Instance = new CallHandleEventAction();
+                var Instance = new CallEventAction();
                 Cache.Add(Instance.GetType().Name, Instance);
                 return Instance;
             }
@@ -36,8 +36,8 @@ namespace Mily.Socket.SocketHandle
         /// <param name="Event"></param>
         public void OnResponse(Object Sender, EventArgs Event)
         {
-            if ((Event as CallHandleResultEvent).ResultCheck)
-                ResponseResult = (Sender as CallHandleEvent).Response;
+            if ((Event as CallResultEvent).ResultCheck)
+                ResponseResult = (Sender as CallEvent).Response;
             else
                 ResponseResult = null;
         }

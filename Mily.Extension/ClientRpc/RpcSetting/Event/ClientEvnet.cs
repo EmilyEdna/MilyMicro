@@ -23,7 +23,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Event
             GetCacheKeyInvoke(Provider);
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
             MilyConfig.DbTypeAttribute = InvokeDyType(Provider.DictionaryStringProvider["DataBase"]);
-            Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IClientService))))
+            Type Control = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IClientGateWayService))))
                 .Where(t => t.GetMethods().Any(x => x.Name.ToLower() == Method.ToLower())).FirstOrDefault();
             MethodInfo CtrlMehtod = Control.GetMethod(Method);
             if (CtrlMehtod == null) return ClientSend.Instance.Invoke(Provider, ResponseEnum.NotFound);
