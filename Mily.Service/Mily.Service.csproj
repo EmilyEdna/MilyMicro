@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="BeetleX" Version="1.4.8.6" />
-    <PackageReference Include="XExten" Version="2.2.1.8" />
+    <PackageReference Include="XExten" Version="2.2.1.9" />
   </ItemGroup>
 
   <ItemGroup>
