@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BeetleX" Version="1.4.8.6" />
+    <PackageReference Include="BeetleX" Version="1.4.9.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.1.0" />
     <PackageReference Include="XExten" Version="2.2.1.9" />
   </ItemGroup>
