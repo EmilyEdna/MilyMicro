@@ -17,14 +17,12 @@ namespace Mily.Extension.FileReader
         /// <param name="Builder"></param>
         public static void Instruct(this IApplicationBuilder Application, IWebHostEnvironment Environment, IConfiguration Builder)
         {
-            PhysicalFileReader Physical = new PhysicalFileReader()
+            new PhysicalFileReader()
             {
                 Environment = Environment,
                 Configuration = Builder
-            };
-            Physical.SetConfiguration();
-            Physical.DynamicFileReaderJSON();
-            Physical.DynamicFileReaderXML();
+            }.SetConfiguration().DynamicFileReaderJSON().DynamicFileReaderXML();
+
         }
     }
 }
