@@ -23,7 +23,6 @@ namespace Mily.Extension.FileReader
                 Configuration = Builder
             };
             Physical.SetConfiguration().DynamicFileReaderJSON().DynamicFileReaderXML();
-
         }
     }
 }
