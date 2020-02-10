@@ -16,18 +16,18 @@ namespace Mily.Extension.InitSystem
 {
     public class ServInit
     {
-        public static IServiceCollection InitServCollection(IServiceCollection services)
+        public static IServiceCollection InitServCollection(IServiceCollection Services)
         {
-            AutofocManage.CreateInstance().ServiceProvider(services);
-            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
-            services.Configure<ApiBehaviorOptions>(opt =>
+            AutofocManage.CreateInstance().ServiceProvider(Services);
+            Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+            Services.Configure<ApiBehaviorOptions>(opt =>
             {
                 opt.SuppressModelStateInvalidFilter = true;
                 opt.SuppressInferBindingSourcesForParameters = true;
                 opt.SuppressConsumesConstraintForFormFileParameters = true;
             });
             //启用权限认证
-            services.AddAuthentication(options=> {
+            Services.AddAuthentication(options=> {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options => {
@@ -43,7 +43,7 @@ namespace Mily.Extension.InitSystem
                 };
             });
             //设置数据格式
-            services.AddControllers(opt =>
+            Services.AddControllers(opt =>
             {
                 opt.Filters.Add(typeof(ActionFilter));
                 opt.RespectBrowserAcceptHeader = true;
@@ -53,22 +53,22 @@ namespace Mily.Extension.InitSystem
                 opt.SerializerSettings.ContractResolver = new DefaultContractResolver();
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             //启用跨域
-            services.AddCors(option =>
+            Services.AddCors(option =>
             {
                 option.AddPolicy("MilyMicro", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             });
             //启用Swagger
-            services.AddSwaggerGen(opt =>
+            Services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
                 //opt.IncludeXmlComments(Path.Combine(Directory.GetCurrentDirectory(), "Mily.OtherApi.xml"));
             });
             //使用NLog
-            services.AddLogging(builder =>
+            Services.AddLogging(builder =>
             {
                 builder.AddNLog();
             });
-            return services;
+            return Services;
         }
     }
 }
