@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
+using XExten.XPlus;
 
 namespace Mily.Extension.Authentication.JwtAuthentication
 {
@@ -22,7 +23,7 @@ namespace Mily.Extension.Authentication.JwtAuthentication
             String RoleId = Token.Claims.FirstOrDefault(t => t.Type == "RoleId").Value;
             String UserName = Token.Claims.FirstOrDefault(t => t.Type == "UserName").Value;
             String UserRole = Token.Claims.FirstOrDefault(t => t.Type == "UserRole").Value;
-            String ExpTime = TimeUnity.ConvertStamptime(Token.Claims.FirstOrDefault(t => t.Type == "exp").Value).ToString();
+            String ExpTime =XPlusEx.XConvertStamptime(Token.Claims.FirstOrDefault(t => t.Type == "exp").Value).ToString();
             HashData.Add("KeyId", KeyId);
             HashData.Add("RoleId", RoleId);
             HashData.Add("UserName", UserName);
