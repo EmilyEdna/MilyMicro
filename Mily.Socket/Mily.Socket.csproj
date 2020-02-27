@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BeetleX" Version="1.4.9.4" />
+    <PackageReference Include="BeetleX" Version="1.4.9.8" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.1.0" />
-    <PackageReference Include="XExten" Version="2.2.1.9" />
+    <PackageReference Include="XExten" Version="2.2.2.1" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" Version="3.1.0" />

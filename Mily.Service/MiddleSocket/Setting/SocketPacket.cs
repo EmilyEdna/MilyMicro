@@ -18,7 +18,7 @@ namespace Mily.Service.MiddleSocket.Setting
             return new SocketPacket();
         }
 
-        protected override object OnReader(ISession session, PipeStream stream)
+        protected override object OnRead(ISession session, PipeStream stream)
         {
             return MessagePackSerializer.Deserialize(TypeHeader.ReadType(stream), stream, MessagePackSerializerOptions.Standard.WithResolver(ContractlessStandardResolver.Instance));
         }

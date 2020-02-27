@@ -6,7 +6,7 @@ import lzstring from 'lz-string'
 axios.defaults.retry
 
 const service = axios.create({
-    baseURL: 'http://127.0.0.1:9091/Proxy/',
+    baseURL: 'http://127.0.0.1:8520/Proxy/',
     timeout: 3000,
     headers: { "Content-Type": "application/json" },
     withCredentials: false,

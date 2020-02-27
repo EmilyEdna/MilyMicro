@@ -18,15 +18,15 @@ namespace Mily.Gateway.GatewayBasic.SocketBasic.SocketSetting
             return new SocketPacket();
         }
 
-        protected override object OnReader(ISession session, PipeStream stream)
-        {
-            return MessagePackSerializer.Deserialize(TypeHeader.ReadType(stream), stream, MessagePackSerializerOptions.Standard.WithResolver(ContractlessStandardResolver.Instance));
-        }
-
         protected override void OnWrite(ISession session, object data, PipeStream stream)
         {
             TypeHeader.WriteType(data, stream);
             MessagePackSerializer.Serialize(data.GetType(), stream, data, MessagePackSerializerOptions.Standard.WithResolver(ContractlessStandardResolver.Instance));
+        }
+
+        protected override object OnRead(ISession session, PipeStream stream)
+        {
+            return MessagePackSerializer.Deserialize(TypeHeader.ReadType(stream), stream, MessagePackSerializerOptions.Standard.WithResolver(ContractlessStandardResolver.Instance));
         }
     }
 }

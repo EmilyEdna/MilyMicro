@@ -44,11 +44,12 @@ namespace Mily.Gateway.GatewayCenter.SocketCenter.Balance
                 {
                     Param.Add(new KeyValuePair<String, String>(item.Key, item.Value.ToString()));
                 }
-                return HttpMultiClient.HttpMulti.Headers("ActionType", Configuration.Heads.DataBase.ToString())
-                       .Header("Global", (Request.ContainsKey("Global") ? Request["Request"].ToString().ToLzStringDec() : null))
-                       .Header("Authorization", Configuration.Authorization)
-                       .AddNode(Path, Param, RequestType.POST)
-                       .Build().RunString().FirstOrDefault().ToModel<Object>();
+                var Header = HttpMultiClient.HttpMulti.Headers("ActionType", Configuration.Heads.DataBase.ToString())
+                        .Header("Global", (Request.ContainsKey("Global") ? Request["Global"].ToString().ToLzStringDec() : null));
+                if (!Configuration.Authorization.IsNullOrEmpty())
+                    Header.Header("Authorization", Configuration.Authorization);
+                return Header.AddNode(Path, Param, RequestType.POST)
+                         .Build().RunString().FirstOrDefault().ToModel<Object>();
             }, (Ex) => { return TCP(Request); });
         }
         /// <summary>

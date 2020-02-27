@@ -24,7 +24,7 @@ namespace Mily.Gateway.GatewayBasic
             ApiServ.Options.Port = Configuration.SOCKET_Port;
             ApiServ.Options.SetDebug();//调式用
             ApiServ.Options.AddFilter<DefaultJsonResultFilter>();
-            ApiServ.ServerLog = (Server, Event) =>
+            ApiServ.ServerLog += (Server, Event) =>
             {
                 if (Event.Type == LogType.Error)
                     if (Event.Message.Contains("http") || Event.Message.Contains("https"))
