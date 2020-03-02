@@ -25,7 +25,22 @@ export const Menu = (param) => {
     const target = Object.assign({}, param);
     const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
     return servcie({
-        url: "Main/System/SearchMenuItem/ProxyMain",
+        url: "Main/System/GetMenuItem/ProxyMain",
+        method: 'post',
+        data: target,
+        headers: { Author: Author }
+    });
+}
+
+/**
+ * 菜单分页查询
+ * @param {any} param
+ */
+export const SearchMenuPage = (param) => {
+    const target = Object.assign({}, param);
+    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
+    return servcie({
+        url: "Main/System/SearchMenuItemPage/ProxyMain",
         method: 'post',
         data: target,
         headers: { Author: Author }

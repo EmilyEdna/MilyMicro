@@ -130,7 +130,7 @@ namespace Mily.MainLogic.LogicImplement
         /// </summary>
         /// <param name="db"></param>
         /// <returns></returns>
-        public async Task<Object> SearchMenuItem(ResultProvider Provider)
+        public async Task<Object> GetMenuItem(ResultProvider Provider)
         {
             Guid Key = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
             return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
@@ -178,6 +178,32 @@ namespace Mily.MainLogic.LogicImplement
             List<MenuItems> Items = DbContext().Queryable<MenuItems>().WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
                   .Where(t => t.Deleted == false).ToList();
             return await base.LogicDeleteOrRecovery(Items, true);
+        }
+
+        /// <summary>
+        /// 菜单分页
+        /// </summary>
+        /// <param name="Page"></param>
+        /// <returns></returns>
+        public async Task<Object> SearchMenuItemPage(PageQuery Page)
+        {
+            return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
+                    .Where((Role, Menu) => Role.Deleted == false && Menu.Deleted == false)
+                    .WhereIF(Page.KeyWord.ContainsKey("Title"), (Role, Menu) => Menu.Title.Contains(Page.KeyWord["Title"].ToString()))
+                    .WhereIF(Page.KeyWord.ContainsKey("MenuLv"), (Role, Menu) => Menu.Lv == (MenuItemEnum)Page.KeyWord["MenuLv"])
+                    .Select((Role, Menu) => new MenuItems
+                    {
+                        KeyId = Menu.KeyId,
+                        RouterPath = Menu.RouterPath,
+                        Path = Menu.Path,
+                        Lv = Menu.Lv,
+                        Icon = Menu.Icon,
+                        Title = Menu.Title,
+                        ParentId = Menu.ParentId,
+                        Parent = Menu.Parent,
+                        Created = Menu.Created,
+                        Deleted = Menu.Deleted
+                    }).ToPageListAsync(Page.PageIndex, Page.PageSize);
         }
         #endregion
     }
