@@ -8,7 +8,7 @@ GO
 -- ----------------------------
 -- Records of [System_MenuItems]
 -- ----------------------------
-INSERT INTO [dbo].[System_MenuItems] ([KeyId], [Icon], [Title], [Path], [Lv], [ParentId], [Parent], [Deleted], [RouterPath], [Created]) VALUES (N'C078B6E0-F762-4783-8143-1F921ECD3ED9', NULL, N'后台菜单', N'System/SysMenu', N'3', N'747CFFD2-6F45-4BF0-8D50-7D7469AE9F6C', N'0', N'0', N'System/SysMenu.vue', NULL)
+INSERT INTO [dbo].[System_MenuItems] ([KeyId], [Icon], [Title], [Path], [Lv], [ParentId], [Parent], [Deleted], [RouterPath], [Created]) VALUES (N'C078B6E0-F762-4783-8143-1F921ECD3ED9', NULL, N'后台菜单', N'Views/System/SysMenu', N'3', N'747CFFD2-6F45-4BF0-8D50-7D7469AE9F6C', N'0', N'0', N'System/SysMenu.vue', NULL)
 GO
 
 INSERT INTO [dbo].[System_MenuItems] ([KeyId], [Icon], [Title], [Path], [Lv], [ParentId], [Parent], [Deleted], [RouterPath], [Created]) VALUES (N'747CFFD2-6F45-4BF0-8D50-7D7469AE9F6C', N'el-icon-lx-settings', N'菜单管理', NULL, N'2', N'95332CD5-8159-45B8-83C8-A540F3279B0E', N'1', N'0', NULL, NULL)
