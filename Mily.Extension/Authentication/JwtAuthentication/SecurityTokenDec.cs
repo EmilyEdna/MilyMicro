@@ -18,6 +18,7 @@ namespace Mily.Extension.Authentication.JwtAuthentication
         public static Dictionary<string, string> SecurityToken(string Security)
         {
             Dictionary<string, string> HashData = new Dictionary<string, string>();
+            Security = Security.Equals("undefined") ? string.Empty : Security;
             JwtSecurityToken Token = new JwtSecurityToken(Security);
             String KeyId = Token.Claims.FirstOrDefault(t => t.Type == "KeyId").Value;
             String RoleId = Token.Claims.FirstOrDefault(t => t.Type == "RoleId").Value;

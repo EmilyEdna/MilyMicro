@@ -22,6 +22,7 @@ namespace Mily.Extension.Authentication.JwtAuthentication
 
         public ClaimsPrincipal ValidateToken(string securityToken, TokenValidationParameters validationParameters, out SecurityToken validatedToken)
         {
+            securityToken = securityToken.Equals("undefined") ? string.Empty : securityToken;
             JwtSecurityToken Token = new JwtSecurityToken(securityToken);
             String KeyId = Token.Claims.FirstOrDefault(t => t.Type == "KeyId").Value;
             String RoleId = Token.Claims.FirstOrDefault(t => t.Type == "RoleId").Value;
@@ -33,7 +34,7 @@ namespace Mily.Extension.Authentication.JwtAuthentication
             claimIdentity.AddClaim(new Claim("UserName", UserName));
             claimIdentity.AddClaim(new Claim("UserRole", UserRole));
             validatedToken = Token;
-            return  new ClaimsPrincipal(claimIdentity);
+            return new ClaimsPrincipal(claimIdentity);
         }
     }
 }
