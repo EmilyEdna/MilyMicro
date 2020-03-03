@@ -24,7 +24,55 @@
                 <el-input v-model="query.KeyWord.Title" placeholder="菜单名称" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="SearchMenu">搜索</el-button>
             </div>
+            <!--表单-->
+            <el-table :data="tableData"
+                      border
+                      class="table"
+                      ref="multipleTable"
+                      header-cell-class-name="table-header"
+                      @selection-change="SelectionChange">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column label="图标" align="center" width="55">
+                    <template slot-scope="scope">
+                        <i :class="scope.row.Icon"></i>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="Title" label="菜单名称" align="center"></el-table-column>
+                <el-table-column label="菜单级别" align="center">
+                    <template slot-scope="scope">
+                        <small v-if="scope.row.Lv==1">一级菜单</small>
+                        <small v-else-if="scope.row.Lv==2">二级菜单</small>
+                        <small v-else>三级菜单</small>
+                    </template>
+                </el-table-column>
+                <!--<el-table-column label="头像(查看大图)" align="center">
+        <template slot-scope="scope">
+            <el-image class="table-td-thumb"
+                      :src="scope.row.thumb"
+                      :preview-src-list="[scope.row.thumb]"></el-image>
+        </template>
+    </el-table-column>-->
+                <el-table-column prop="Path" label="菜单地址" align="center"></el-table-column>
+                <el-table-column prop="RouterPath" label="路由地址" align="center"></el-table-column>
+                <el-table-column label="状态" align="center">
+                    <template slot-scope="scope">
+                        <el-tag :type="scope.row.Deleted?'danger':'success'">{{scope.row.Deleted?'不可用':'可用'}}</el-tag>
+                    </template>
+                </el-table-column>
 
+                <el-table-column prop="Created" label="创建时间" align="center"></el-table-column>
+                <el-table-column label="操作" width="180" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="text"
+                                   icon="el-icon-edit"
+                                   @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button type="text"
+                                   icon="el-icon-delete"
+                                   class="red"
+                                   @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
         </div>
 
 
@@ -75,16 +123,20 @@
                         Title: ""
                     },
                     PageIndex: 1,
-                    PageSize:10
-                }
+                    PageSize: 10
+                },
+                tableData: []
             }
         },
         methods: {
             SearchMenu() {
                 SearchMenuPage(this.query).then(res => {
-                    debugger;
-                })
-            }
+                    this.tableData = res.ResultData
+                });
+            },
+            AddMenu() { },
+            DeleteSelected() { },
+            SelectionChange() { }
         }
     }
 </script>

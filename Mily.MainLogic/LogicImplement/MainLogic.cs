@@ -187,8 +187,9 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> SearchMenuItemPage(PageQuery Page)
         {
-            return await DbContext(InitDbTable:true).Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
+            return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
                      .Where((Role, Menu) => Role.Deleted == false && Menu.Deleted == false)
+                     .OrderBy((Role, Menu)=>Menu.Lv,OrderByType.Asc)
                      .WhereIF(!Page.KeyWord["Title"].IsNullOrEmpty(), (Role, Menu) => Menu.Title.Contains(Page.KeyWord["Title"].ToString()))
                      .WhereIF(!Page.KeyWord["MenuLv"].IsNullOrEmpty(), (Role, Menu) => Menu.Lv == (MenuItemEnum)Page.KeyWord["MenuLv"])
                      .Select((Role, Menu) => new MenuItems
