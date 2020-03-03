@@ -46,3 +46,18 @@ export const SearchMenuPage = (param) => {
         headers: { Author: Author }
     });
 }
+
+/**
+ * 逻辑删除菜单
+ * @param {any} param
+ */
+export const DeleteMenu = (param) => {
+    const target = Object.assign({}, param);
+    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
+    return servcie({
+        url: "Main/System/DeleteMenuItem/ProxyMain",
+        method: 'post',
+        data: target,
+        headers: { Author: Author }
+    });
+}

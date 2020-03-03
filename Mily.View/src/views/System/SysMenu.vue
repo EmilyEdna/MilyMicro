@@ -46,12 +46,12 @@
                     </template>
                 </el-table-column>
                 <!--<el-table-column label="头像(查看大图)" align="center">
-        <template slot-scope="scope">
-            <el-image class="table-td-thumb"
-                      :src="scope.row.thumb"
-                      :preview-src-list="[scope.row.thumb]"></el-image>
-        </template>
-    </el-table-column>-->
+                    <template slot-scope="scope">
+                        <el-image class="table-td-thumb"
+                                  :src="scope.row.thumb"
+                                  :preview-src-list="[scope.row.thumb]"></el-image>
+                    </template>
+                </el-table-column>-->
                 <el-table-column prop="Path" label="菜单地址" align="center"></el-table-column>
                 <el-table-column prop="RouterPath" label="路由地址" align="center"></el-table-column>
                 <el-table-column label="状态" align="center">
@@ -59,7 +59,6 @@
                         <el-tag :type="scope.row.Deleted?'danger':'success'">{{scope.row.Deleted?'不可用':'可用'}}</el-tag>
                     </template>
                 </el-table-column>
-
                 <el-table-column prop="Created" label="创建时间" align="center"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
@@ -114,6 +113,8 @@
 </style>
 <script>
     import { SearchMenuPage } from '../../utils/ApiFactory';
+    import { DeleteMenu } from '../../utils/ApiFactory';
+    import Enumerable from 'linq';
     export default {
         data() {
             return {
@@ -125,8 +126,12 @@
                     PageIndex: 1,
                     PageSize: 10
                 },
+                multipleSelection: [],
                 tableData: []
             }
+        },
+        mounted() {
+            this.SearchMenu();
         },
         methods: {
             SearchMenu() {
@@ -135,8 +140,13 @@
                 });
             },
             AddMenu() { },
-            DeleteSelected() { },
-            SelectionChange() { }
+            DeleteSelected() {
+                let param = { KeyId: Enumerable.from(this.multipleSelection).select(item => item.KeyId).toJoinedString(",") }
+                DeleteMenu(param).then(res => { });
+            },
+            SelectionChange(param) {
+                this.multipleSelection = param;
+            }
         }
     }
 </script>
