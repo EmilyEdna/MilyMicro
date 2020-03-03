@@ -13,7 +13,7 @@ namespace Mily.DbCore
     {
         public void Intercept(IInvocation Invocation)
         {
-            StarExcute(() => Console.Write($"\n执行方法：{Invocation.InvocationTarget.GetType().FullName}，执行参数：{Invocation.Arguments.FirstOrDefault().ToJson()}，"));
+            StarExcute(() => Console.Write($"\n执行方法：{Invocation.InvocationTarget.GetType().FullName}.{Invocation.Method.Name}，执行参数：{Invocation.Arguments.FirstOrDefault().ToJson()}，"));
             SugerDbContext.TypeAttrbuite = MilyConfig.DbTypeAttribute;
             Invocation.ReturnValue = RetryException.DoRetry(() => OnExcute(Invocation));
             EndExcute(() => Console.Write($"\n执行结果：{JsonConvert.SerializeObject((Invocation.ReturnValue as dynamic).Result)}，"));
