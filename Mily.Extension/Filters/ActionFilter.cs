@@ -79,7 +79,6 @@ namespace Mily.Extension.Filters
                         {
                             string Key = item.Key.Split("[")[1].Split("]")[0];
                             Query.Add(Key, item.Value.ToString());
-                           
                         }
                     });
                     ((PageQuery)ParamType).KeyWord = Query;
@@ -92,7 +91,6 @@ namespace Mily.Extension.Filters
                         {
                             string Key = item.Key.Split("[")[1].Split("]")[0];
                             Query.Add(Key, item.Value.ToString());
-
                         }
                     });
                     ((PageQuery)ParamType).KeyWord = Query;

@@ -3,6 +3,7 @@ using Mily.Gateway.GatewayBasic.SocketBasic.SocketSetting.View;
 using Mily.Gateway.GatewayEvent.SocketEvent;
 using Mily.Gateway.GatewaySetting;
 using Mily.Gateway.GatewaySetting.ViewModel;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,13 @@ namespace Mily.Gateway.GatewayCenter.SocketCenter.Balance
                 List<KeyValuePair<String, String>> Param = new List<KeyValuePair<String, String>>();
                 foreach (var item in Request)
                 {
-                    Param.Add(new KeyValuePair<String, String>(item.Key, item.Value.ToString()));
+                    if (item.Value is JObject)
+                        item.Value.ToJson().ToModel<Dictionary<String, String>>().ToEachs(Selector =>
+                        {
+                            Param.Add(new KeyValuePair<String, String>($"{item.Key}[{Selector.Key}]", Selector.Value));
+                        });
+                    else
+                        Param.Add(new KeyValuePair<String, String>(item.Key, item.Value.ToString()));
                 }
                 var Header = HttpMultiClient.HttpMulti.Headers("ActionType", Configuration.Heads.DataBase.ToString())
                         .Header("Global", (Request.ContainsKey("Global") ? Request["Global"].ToString().ToLzStringDec() : null));

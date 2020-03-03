@@ -67,7 +67,7 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<Object> SearchAdminPage(PageQuery Page)
         {
             return await DbContext().Queryable<Administrator>()
-                .WhereIF(Page.KeyWord.ContainsKey("AdminName"), t => t.AdminName == Page.KeyWord["AdminName"].ToString())
+                .WhereIF(!Page.KeyWord["AdminName"].IsNullOrEmpty(), t => t.AdminName == Page.KeyWord["AdminName"].ToString())
                 .Where(t => t.Deleted == false).ToPageListAsync(Page.PageIndex, Page.PageSize);
         }
 
@@ -188,22 +188,22 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<Object> SearchMenuItemPage(PageQuery Page)
         {
             return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
-                    .Where((Role, Menu) => Role.Deleted == false && Menu.Deleted == false)
-                    .WhereIF(Page.KeyWord.ContainsKey("Title"), (Role, Menu) => Menu.Title.Contains(Page.KeyWord["Title"].ToString()))
-                    .WhereIF(Page.KeyWord.ContainsKey("MenuLv"), (Role, Menu) => Menu.Lv == (MenuItemEnum)Page.KeyWord["MenuLv"])
-                    .Select((Role, Menu) => new MenuItems
-                    {
-                        KeyId = Menu.KeyId,
-                        RouterPath = Menu.RouterPath,
-                        Path = Menu.Path,
-                        Lv = Menu.Lv,
-                        Icon = Menu.Icon,
-                        Title = Menu.Title,
-                        ParentId = Menu.ParentId,
-                        Parent = Menu.Parent,
-                        Created = Menu.Created,
-                        Deleted = Menu.Deleted
-                    }).ToPageListAsync(Page.PageIndex, Page.PageSize);
+                     .Where((Role, Menu) => Role.Deleted == false && Menu.Deleted == false)
+                     .WhereIF(!Page.KeyWord["Title"].IsNullOrEmpty(), (Role, Menu) => Menu.Title.Contains(Page.KeyWord["Title"].ToString()))
+                     .WhereIF(!Page.KeyWord["MenuLv"].IsNullOrEmpty(), (Role, Menu) => Menu.Lv == (MenuItemEnum)Page.KeyWord["MenuLv"])
+                     .Select((Role, Menu) => new MenuItems
+                     {
+                         KeyId = Menu.KeyId,
+                         RouterPath = Menu.RouterPath,
+                         Path = Menu.Path,
+                         Lv = Menu.Lv,
+                         Icon = Menu.Icon,
+                         Title = Menu.Title,
+                         ParentId = Menu.ParentId,
+                         Parent = Menu.Parent,
+                         Created = Menu.Created,
+                         Deleted = Menu.Deleted
+                     }).ToPageListAsync(Page.PageIndex, Page.PageSize);
         }
         #endregion
     }
