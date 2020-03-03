@@ -123,7 +123,7 @@ namespace Miliy.MainApi.Controllers
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Create)]
         [Authorize]
-        public async Task<Object> InsertMenuItem(ResultProvider Provider) => await SysService.InsertMenuItem(Provider);
+        public async Task<ActionResult<Object>> InsertMenuItem(ResultProvider Provider) => await SysService.InsertMenuItem(Provider);
 
         /// <summary>
         /// 逻辑删除菜单
@@ -133,7 +133,7 @@ namespace Miliy.MainApi.Controllers
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Delete)]
         [Authorize]
-        public async Task<Object> DeleteMenuItem(ResultProvider Provider) => await SysService.DeleteMenuItem(Provider);
+        public async Task<ActionResult<Object>> DeleteMenuItem(ResultProvider Provider) => await SysService.DeleteMenuItem(Provider);
 
         /// <summary>
         /// 菜单分页查询
@@ -143,7 +143,7 @@ namespace Miliy.MainApi.Controllers
         [AcceptVerbs("GET", "POST")]
         [Author(Roles.Admin, Roles.Delete)]
         [Authorize]
-        public async Task<Object> SearchMenuItemPage(PageQuery Page) => await SysService.SearchMenuItemPage(Page);
+        public async Task<ActionResult<Object>> SearchMenuItemPage(PageQuery Page) => await SysService.SearchMenuItemPage(Page);
         #endregion
     }
 }

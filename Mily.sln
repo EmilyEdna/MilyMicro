@@ -55,8 +55,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.Service", "Mily.Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mily.Socket", "Mily.Socket\Mily.Socket.csproj", "{4AE3330F-12C7-44F6-AE03-8410754D04F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XExten", "..\XExten\XExten\XExten.csproj", "{682665A2-D882-461C-837E-934DF54600B5}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,10 +129,6 @@ Global
 		{4AE3330F-12C7-44F6-AE03-8410754D04F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AE3330F-12C7-44F6-AE03-8410754D04F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AE3330F-12C7-44F6-AE03-8410754D04F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{682665A2-D882-461C-837E-934DF54600B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{682665A2-D882-461C-837E-934DF54600B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{682665A2-D882-461C-837E-934DF54600B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{682665A2-D882-461C-837E-934DF54600B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -11,7 +11,7 @@ namespace Mily.DbEntity
         /// <summary>
         /// 主键
         /// </summary>
-        [SugarColumn(IsNullable = false, IsPrimaryKey = true)]
+        [SugarColumn(IsNullable = false, IsPrimaryKey = true, ColumnDescription = "主键")]
         public Guid KeyId { get; set; }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Mily.DbEntity
         /// <summary>
         /// 创建时间
         /// </summary>
-        [SugarColumn(IsNullable = true, ColumnDataType = "DATETIME", ColumnDescription = "逻辑删除")]
+        [SugarColumn(IsNullable = true, ColumnDataType = "DATETIME", ColumnDescription = "创建时间")]
         public DateTime? Created { get; set; }
     }
 }
