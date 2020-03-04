@@ -63,11 +63,14 @@ namespace Mily.DbCore
         /// <returns></returns>
         internal virtual async Task<Object> ExecuteAlter<Entity>(IUpdateable<Entity> Update, DbReturnEnum type, Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
         {
+            IUpdateable<Entity> Updateable = Update;
+            if (BoolExp != null)
+                Updateable = Updateable.Where(BoolExp);
             return type switch
             {
-                DbReturnEnum.AlterEntity => await Update.Where(BoolExp).ExecuteCommandAsync(),
-                DbReturnEnum.AlterCols => await Update.UpdateColumns(ObjExp).Where(BoolExp).ExecuteCommandAsync(),
-                _ => await Update.Where(BoolExp).ExecuteCommandAsync(),
+                DbReturnEnum.AlterEntity => await Updateable.ExecuteCommandAsync(),
+                DbReturnEnum.AlterCols => await Updateable.UpdateColumnsIF(ObjExp != null, ObjExp).ExecuteCommandAsync(),
+                _ => await Updateable.ExecuteCommandAsync(),
             };
         }
         #endregion
@@ -100,7 +103,10 @@ namespace Mily.DbCore
         /// <returns></returns>
         internal virtual async Task<Object> ExecuteLogicDeleteOrRecovery<Entity>(IUpdateable<Entity> Update, Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
         {
-            return await Update.UpdateColumns(ObjExp).Where(BoolExp).ExecuteCommandAsync();
+            IUpdateable<Entity> Updateable = Update.UpdateColumnsIF(ObjExp != null, ObjExp);
+            if (BoolExp != null)
+                Updateable = Updateable.Where(BoolExp);
+            return await Updateable.ExecuteCommandAsync();
         }
         #endregion
 

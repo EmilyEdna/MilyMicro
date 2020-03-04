@@ -175,9 +175,8 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<Object> DeleteMenuItem(ResultProvider Provider)
         {
             string Key = Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString();
-            List<MenuItems> Items = DbContext().Queryable<MenuItems>().WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
-                  .Where(t => t.Deleted == false).ToList();
-            return await base.LogicDeleteOrRecovery(Items, true);
+            List<MenuItems> Items = DbContext().Queryable<MenuItems>().WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString())).ToList();
+            return await base.LogicDeleteOrRecovery(Items, true,null,null,t=>t.Deleted==false);
         }
 
         /// <summary>

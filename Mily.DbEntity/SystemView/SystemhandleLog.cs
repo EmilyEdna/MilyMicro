@@ -27,7 +27,7 @@ namespace Mily.DbEntity.SystemView
         /// <summary>
         /// 操作时间
         /// </summary>
-        [SugarColumn(IsNullable = true, ColumnDescription = "操作时间", ColumnDataType = "NVARCHAR", Length = 50)]
+        [SugarColumn(IsNullable = true, ColumnDescription = "操作时间", ColumnDataType = "DATETIME", Length = 50)]
         public DateTime? HandleTime { get; set; }
 
         /// <summary>

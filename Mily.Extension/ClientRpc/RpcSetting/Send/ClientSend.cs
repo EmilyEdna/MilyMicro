@@ -78,7 +78,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
         {
             PageQuery TargetParamerter = Provider.DictionaryStringProvider.ToJson().ToModel<PageQuery>();
             var PreResult = (Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { TargetParamerter });
-            var BaseException = PreResult.Exception.GetBaseException();
+            var BaseException = PreResult.Exception?.GetBaseException();
             if (BaseException != null)
             {
                 Console.WriteLine($"Exception Message：{BaseException.Message}");
@@ -94,7 +94,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
         private ResultProvider InvokeProvider(ResultProvider Provider, MethodInfo TargetMethod, Object TargetCtrl)
         {
             var PreResult = (Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { Provider });
-            var BaseException = PreResult.Exception.GetBaseException();
+            var BaseException = PreResult.Exception?.GetBaseException();
             if (BaseException != null)
             {
                 Console.WriteLine($"Exception Message：{BaseException.Message}");
@@ -110,7 +110,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
         private ResultProvider InvokeNull(ResultProvider Provider, MethodInfo TargetMethod, Object TargetCtrl)
         {
             var PreResult = (Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, null);
-            var BaseException = PreResult.Exception.GetBaseException();
+            var BaseException = PreResult.Exception?.GetBaseException();
             if (BaseException != null)
             {
                 Console.WriteLine($"Exception Message：{BaseException.Message}");

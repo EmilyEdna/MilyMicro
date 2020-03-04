@@ -227,7 +227,7 @@ namespace Mily.DbCore
         /// <returns></returns>
         public virtual async Task<Object> InsertData<Entity>(List<Entity> entities, String DbName = null, DbReturnEnum type = DbReturnEnum.InsertDefault) where Entity : class, new()
         {
-            base.InsertDataEvent(entities);
+            base.InsertDataEvent(entities.ToArray());
             IInsertable<Entity> Insert;
             SqlSugarClient Client = DbContext(DbName);
             Insert = Client.Insertable(entities);
@@ -344,7 +344,7 @@ namespace Mily.DbCore
         public virtual async Task<Object> LogicDeleteOrRecovery<Entity>(List<Entity> entities, bool Delete, String DbName = null,
             Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
         {
-            base.LogicDeleteOrRecoveryEvent(Delete, entities);
+            base.LogicDeleteOrRecoveryEvent(Delete,entities.ToArray());
             SqlSugarClient Client = DbContext(DbName);
             IUpdateable<Entity> Update = Client.Updateable(entities);
             return await XPlusEx.XTry<Object>(async () =>
@@ -406,7 +406,7 @@ namespace Mily.DbCore
             Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()
         {
             if (type == DbReturnEnum.RemoveEntity) return await Task.FromResult(false);
-            List<Guid> Ids = base.RemoveDataEvent(entities);
+            List<Guid> Ids = base.RemoveDataEvent(entities.ToArray());
             SqlSugarClient Client = DbContext(DbName);
             IDeleteable<Entity> Delete = Client.Deleteable(entities);
             return await XPlusEx.XTry<Object>(async () =>
@@ -440,7 +440,8 @@ namespace Mily.DbCore
                 Hnadler = SearchCache(),
                 HandleObject = entity,
                 HandleType = handle,
-                HandleName = handle.ToDescription()
+                HandleName = handle.ToDescription(),
+                Created=DateTime.Now
             };
             Log.HandleObvious = $"【{Log.Hnadler}】对【{entity}】表进行了【{Log.HandleName}】，操作时间为：【{Log.HandleTime}】";
             return await Client.Insertable(Log).ExecuteCommandAsync();
