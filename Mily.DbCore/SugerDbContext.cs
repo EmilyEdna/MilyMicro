@@ -173,7 +173,7 @@ namespace Mily.DbCore
                         LogFactoryExtension.WriteSqlWarn(Logs);
                 });
             };
-            #endif
+           #endif
             if (InitDbTable)
             {
                 Type[] ModelTypes = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.BaseType == typeof(BaseEntity))).ToArray();
@@ -207,13 +207,13 @@ namespace Mily.DbCore
              {
                  Client.BeginTran();
                  await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Add);
-                 Task<Object> ExecuteResult = base.ExecuteInsert(Insert, type);
+                 Object ExecuteResult = await base.ExecuteInsert(Insert, type);
                  Client.CommitTran();
-                 return ExecuteResult;
+                 return await Task.FromResult(ExecuteResult);
              }, async Ex =>
              {
                  Client.RollbackTran();
-                 return await Task.FromResult(false);
+                 return await Task.FromResult(-1);
              });
         }
 
@@ -235,13 +235,13 @@ namespace Mily.DbCore
            {
                Client.BeginTran();
                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Add);
-               Task<Object> ExecuteResult = base.ExecuteInsert(Insert, type);
+               Object ExecuteResult = await base.ExecuteInsert(Insert, type);
                Client.CommitTran();
-               return ExecuteResult;
+               return await Task.FromResult(ExecuteResult);
            }, async Ex =>
            {
                Client.RollbackTran();
-               return await Task.FromResult(false);
+               return await Task.FromResult(-1);
            });
         }
 
@@ -264,13 +264,13 @@ namespace Mily.DbCore
            {
                Client.BeginTran();
                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Edit);
-               Task<Object> ExecuteResult = base.ExecuteAlter(Update, type, ObjExp, BoolExp);
+               Object ExecuteResult = await base.ExecuteAlter(Update, type, ObjExp, BoolExp);
                Client.CommitTran();
-               return ExecuteResult;
+               return await Task.FromResult(ExecuteResult);
            }, async Ex =>
            {
                Client.RollbackTran();
-               return await Task.FromResult(false);
+               return await Task.FromResult(-1);
            });
         }
 
@@ -293,13 +293,13 @@ namespace Mily.DbCore
            {
                Client.BeginTran();
                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Edit);
-               Task<Object> ExecuteResult = base.ExecuteAlter(Update, type, ObjExp, BoolExp);
+               Object ExecuteResult = await base.ExecuteAlter(Update, type, ObjExp, BoolExp);
                Client.CommitTran();
-               return ExecuteResult;
+               return await Task.FromResult(ExecuteResult);
            }, async Ex =>
            {
                Client.RollbackTran();
-               return await Task.FromResult(false);
+               return await Task.FromResult(-1);
            });
         }
 
@@ -322,13 +322,13 @@ namespace Mily.DbCore
            {
                Client.BeginTran();
                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);
-               Task<Object> ExecuteResult = base.ExecuteLogicDeleteOrRecovery(Update, ObjExp, BoolExp);
+               Object ExecuteResult = await base.ExecuteLogicDeleteOrRecovery(Update, ObjExp, BoolExp);
                Client.CommitTran();
-               return ExecuteResult;
+               return await Task.FromResult(ExecuteResult);
            }, async Ex =>
            {
                Client.RollbackTran();
-               return await Task.FromResult(false);
+               return await Task.FromResult(-1);
            });
         }
 
@@ -344,20 +344,20 @@ namespace Mily.DbCore
         public virtual async Task<Object> LogicDeleteOrRecovery<Entity>(List<Entity> entities, bool Delete, String DbName = null,
             Expression<Func<Entity, Object>> ObjExp = null, Expression<Func<Entity, bool>> BoolExp = null) where Entity : class, new()
         {
-            base.LogicDeleteOrRecoveryEvent(Delete,entities.ToArray());
+            base.LogicDeleteOrRecoveryEvent(Delete, entities.ToArray());
             SqlSugarClient Client = DbContext(DbName);
             IUpdateable<Entity> Update = Client.Updateable(entities);
             return await XPlusEx.XTry<Object>(async () =>
            {
                Client.BeginTran();
                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);
-               Task<Object> ExecuteResult = base.ExecuteLogicDeleteOrRecovery(Update, ObjExp, BoolExp);
+               Object ExecuteResult = await base.ExecuteLogicDeleteOrRecovery(Update, ObjExp, BoolExp);
                Client.CommitTran();
-               return ExecuteResult;
+               return await Task.FromResult(ExecuteResult);
            }, async Ex =>
            {
                Client.RollbackTran();
-               return await Task.FromResult(false);
+               return await Task.FromResult(-1);
            });
         }
 
@@ -382,13 +382,13 @@ namespace Mily.DbCore
            {
                Client.BeginTran();
                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);
-               Task<Object> ExecuteResult = base.ExecuteRemove(Delete, Ids, entity, type, BoolExp, ObjExp);
+               Object ExecuteResult = await base.ExecuteRemove(Delete, Ids, entity, type, BoolExp, ObjExp);
                Client.CommitTran();
-               return ExecuteResult;
+               return await Task.FromResult(ExecuteResult);
            }, async Ex =>
            {
                Client.RollbackTran();
-               return await Task.FromResult(false);
+               return await Task.FromResult(-1);
            });
         }
 
@@ -413,13 +413,13 @@ namespace Mily.DbCore
            {
                Client.BeginTran();
                await AddSystemLog(Client, typeof(Entity).Name, HandleEnum.Remove);
-               Task<Object> ExecuteResult = base.ExecuteRemove(Delete, Ids, entities, type, BoolExp, ObjExp);
+               Object ExecuteResult = await base.ExecuteRemove(Delete, Ids, entities, type, BoolExp, ObjExp);
                Client.CommitTran();
-               return ExecuteResult;
+               return await Task.FromResult(ExecuteResult);
            }, async Ex =>
            {
                Client.RollbackTran();
-               return await Task.FromResult(false);
+               return await Task.FromResult(-1);
            });
         }
 
@@ -441,7 +441,7 @@ namespace Mily.DbCore
                 HandleObject = entity,
                 HandleType = handle,
                 HandleName = handle.ToDescription(),
-                Created=DateTime.Now
+                Created = DateTime.Now
             };
             Log.HandleObvious = $"【{Log.Hnadler}】对【{entity}】表进行了【{Log.HandleName}】，操作时间为：【{Log.HandleTime}】";
             return await Client.Insertable(Log).ExecuteCommandAsync();
