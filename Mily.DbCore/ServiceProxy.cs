@@ -24,10 +24,10 @@ namespace Mily.DbCore
             dynamic Result = Invocation.Method.Invoke(Invocation.InvocationTarget, Invocation.Arguments);
             if (Result.Exception != null)
             {
-                if (Result.Exception.Count != null)
-                    return Result.Exception.FirstOrDefault();
-                else
+                if (Result.Exception.GetType().Name.Contains("Exception"))
                     return Result;
+                else
+                    return Result.Exception.FirstOrDefault();
             }
             else
                 return Result;

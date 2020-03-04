@@ -43,26 +43,12 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
         internal ResultProvider InvokeMthond(ResultProvider Provider, Type Control, MethodInfo TargetMethod, ParameterInfo ParamInfo)
         {
             Object TargetCtrl = Activator.CreateInstance(Control);
-            Object Result;
             if (ParamInfo?.ParameterType == typeof(PageQuery))
-            {
-                PageQuery TargetParamerter = Provider.DictionaryStringProvider.ToJson().ToModel<PageQuery>();
-                Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { TargetParamerter })).Result.Value;
-                if (Result != null) return Invoke(Provider,ResponseEnum.OK, Result);
-                else return Invoke(Provider, ResponseEnum.InternalServerError);
-            }
+                return InvokePage(Provider, TargetMethod, TargetCtrl);
             else if (ParamInfo?.ParameterType == typeof(ResultProvider))
-            {
-                Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { Provider })).Result.Value;
-                if (Result != null) return Invoke(Provider, ResponseEnum.OK, Result);
-                else return Invoke(Provider, ResponseEnum.InternalServerError);
-            }
+                return InvokeProvider(Provider, TargetMethod, TargetCtrl);
             else
-            {
-                Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, null)).Result.Value;
-                if (Result != null) return Invoke(Provider, ResponseEnum.OK, Result);
-                else return Invoke(Provider, ResponseEnum.InternalServerError);
-            }
+                return InvokeNull(Provider, TargetMethod, TargetCtrl);
         }
         /// <summary>
         /// 删除Header数据
@@ -86,5 +72,57 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
                 return ClientAsync.Send(ResultProvider.SetValue(ClientKey.SetValue(NetTypeEnum.CallBack, MilyConfig.Discovery), Provider.DictionaryStringProvider));
             return null;
         }
+
+        #region 结果回调
+        private ResultProvider InvokePage(ResultProvider Provider, MethodInfo TargetMethod, Object TargetCtrl)
+        {
+            PageQuery TargetParamerter = Provider.DictionaryStringProvider.ToJson().ToModel<PageQuery>();
+            var PreResult = (Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { TargetParamerter });
+            var BaseException = PreResult.Exception.GetBaseException();
+            if (BaseException != null)
+            {
+                Console.WriteLine($"Exception Message：{BaseException.Message}");
+                return Invoke(Provider, ResponseEnum.InternalServerError);
+            }
+            else
+            {
+                Object Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { TargetParamerter })).Result.Value;
+                if (Result != null) return Invoke(Provider, ResponseEnum.OK, Result);
+                else return Invoke(Provider, ResponseEnum.InternalServerError);
+            }
+        }
+        private ResultProvider InvokeProvider(ResultProvider Provider, MethodInfo TargetMethod, Object TargetCtrl)
+        {
+            var PreResult = (Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { Provider });
+            var BaseException = PreResult.Exception.GetBaseException();
+            if (BaseException != null)
+            {
+                Console.WriteLine($"Exception Message：{BaseException.Message}");
+                return Invoke(Provider, ResponseEnum.InternalServerError);
+            }
+            else
+            {
+                Object Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { Provider })).Result.Value;
+                if (Result != null) return Invoke(Provider, ResponseEnum.OK, Result);
+                else return Invoke(Provider, ResponseEnum.InternalServerError);
+            }
+        }
+        private ResultProvider InvokeNull(ResultProvider Provider, MethodInfo TargetMethod, Object TargetCtrl)
+        {
+            var PreResult = (Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, null);
+            var BaseException = PreResult.Exception.GetBaseException();
+            if (BaseException != null)
+            {
+                Console.WriteLine($"Exception Message：{BaseException.Message}");
+                return Invoke(Provider, ResponseEnum.InternalServerError);
+            }
+            else
+            {
+                Object Result = ((Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, null)).Result.Value;
+                if (Result != null) return Invoke(Provider, ResponseEnum.OK, Result);
+                else return Invoke(Provider, ResponseEnum.InternalServerError);
+            }
+        }
+        #endregion
     }
 }

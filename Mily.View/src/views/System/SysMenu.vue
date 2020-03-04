@@ -142,7 +142,9 @@
             AddMenu() { },
             DeleteSelected() {
                 let param = { KeyId: Enumerable.from(this.multipleSelection).select(item => item.KeyId).toJoinedString(",") }
-                DeleteMenu(param).then(res => { });
+                DeleteMenu(param).then(res => {
+                    debugger;
+                });
             },
             SelectionChange(param) {
                 this.multipleSelection = param;
