@@ -1,10 +1,15 @@
-﻿using System;
+﻿using Mily.ViewModels.Basic;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Mily.ViewModels
 {
-    public class AdminRoleViewModel : BaseViewModel
+
+    /// <summary>
+    /// 用户信息
+    /// </summary>
+    public class AdminRoleViewModel : BasicViewModel
     {
         /// <summary>
         /// 管理员

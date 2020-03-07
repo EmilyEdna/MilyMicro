@@ -77,7 +77,7 @@
     <Content Include="src\utils\http.service.js">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="src\views\System\SysMenu.vue">
+    <Content Include="src\views\Menu\SysMenu.vue">
       <SubType>Code</SubType>
     </Content>
     <Content Include="vue.config.js" />
@@ -97,7 +97,7 @@
     <Folder Include="src\views\" />
     <Folder Include="src\utils\" />
     <Folder Include="src\router\" />
-    <Folder Include="src\views\System\" />
+    <Folder Include="src\views\Menu\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="babel.config.js" />

@@ -15,7 +15,9 @@
                            icon="el-icon-delete"
                            class="handle-del mr5"
                            @click="DeleteSelected">批量删除</el-button>
-                <el-button type="primary" icon="el-icon-plus" @click="AddMenu" class="handle-del mr10">新增</el-button>
+                <router-link :to="'/Index'" style="padding-left:5px" class="mr10">
+                    <el-button type="primary" icon="el-icon-plus" @click="AddMenu">新增</el-button>
+                </router-link>
                 <el-select v-model="query.KeyWord.MenuLv" placeholder="菜单级别" class="handle-select mr10">
                     <el-option key="1" label="一级菜单" value="1"></el-option>
                     <el-option key="2" label="二级菜单" value="2"></el-option>
@@ -100,6 +102,10 @@
         color: #ff0000;
     }
 
+   .mr5 {
+        margin-right: 5px;
+    }
+
     .mr10 {
         margin-right: 10px;
     }
@@ -114,7 +120,6 @@
 <script>
     import { SearchMenuPage } from '../../utils/ApiFactory';
     import { DeleteMenu } from '../../utils/ApiFactory';
-    import Enumerable from 'linq';
     export default {
         data() {
             return {
@@ -141,7 +146,7 @@
             },
             AddMenu() { },
             DeleteSelected() {
-                let param = { KeyId: Enumerable.from(this.multipleSelection).select(item => item.KeyId).toJoinedString(",") }
+                let param = { KeyId: this.Linq.from(this.multipleSelection).select(item => item.KeyId).toJoinedString(",") }
                 DeleteMenu(param).then(res => {
                     if (res.ResultData>=0) this.SearchMenu();
                 });

@@ -9,7 +9,14 @@ import { Local } from './extension/local'
 import dynamic from './utils/DynamicMenu';
 import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 import './assets/css/icon.css';
-
+/*
+ 全局公用插件
+ */
+import Enumerable from 'linq';
+/*
+ 注册全局插件
+ */
+Vue.prototype.Linq = Enumerable;
 
 Vue.config.productionTip = false;
 

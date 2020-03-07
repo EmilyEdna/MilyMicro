@@ -1,9 +1,9 @@
 ﻿using Mily.Setting.ModelEnum;
 using System;
 
-namespace Mily.ViewModels
+namespace Mily.ViewModels.Basic
 {
-    public class BaseViewModel
+    public class BasicViewModel
     {
         /// <summary>
         /// 主键
@@ -14,6 +14,11 @@ namespace Mily.ViewModels
         /// 逻辑删除
         /// </summary>
         public bool? Deleted { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime? Created { get; set; }
 
         /// <summary>
         /// 数据库类型

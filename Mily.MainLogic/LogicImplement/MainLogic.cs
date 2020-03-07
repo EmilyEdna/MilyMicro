@@ -134,7 +134,7 @@ namespace Mily.MainLogic.LogicImplement
         {
             Guid Key = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
             return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
-               .Where(Role => Role.RolePermissionId == Key).Select((Role, Menu) => new MenuItems
+               .Where(Role => Role.RolePermissionId == Key).Select((Role, Menu) => new RoleMenuItemViewModel
                {
                    KeyId = Menu.KeyId,
                    RouterPath = Menu.RouterPath,
@@ -148,10 +148,20 @@ namespace Mily.MainLogic.LogicImplement
                    Deleted = Menu.Deleted
                }).MergeTable().Where(Item => Item.Lv == MenuItemEnum.Lv1).Mapper(Item =>
                {
-                   Item.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Item.KeyId).Where(t => t.Lv == MenuItemEnum.Lv2).ToList();
+                   Item.ChildMenus = DbContext().Queryable<MenuItems>()
+                          .Where(VModel => VModel.ParentId == Item.KeyId).Where(t => t.Lv == MenuItemEnum.Lv2)
+                          .ToList().ToMappers<MenuItems, RoleMenuItemViewModel>().ToList();
                    Item.ChildMenus.ForEach(Menus =>
                    {
-                       Menus.ChildMenus = DbContext().Queryable<MenuItems>().Where(VModel => VModel.ParentId == Menus.KeyId).Where(t => t.Lv == MenuItemEnum.Lv3).ToList();
+                       Menus.FuncRouters = DbContext().Queryable<MenuRouter>().Where(VModel => VModel.MenuItemId == Menus.KeyId).ToList().ToMappers<MenuRouter, RoleMenuRouterViewModel>().ToList();
+                       Menus.ChildMenus = DbContext().Queryable<MenuItems>()
+                                  .Where(VModel => VModel.ParentId == Menus.KeyId)
+                                  .Where(t => t.Lv == MenuItemEnum.Lv3).ToList()
+                                  .ToMappers<MenuItems, RoleMenuItemViewModel>().ToList();
+                       Menus.ChildMenus.ForEach(ChildMenus =>
+                       {
+                           ChildMenus.FuncRouters = DbContext().Queryable<MenuRouter>().Where(VModel => VModel.MenuItemId == ChildMenus.KeyId).ToList().ToMappers<MenuRouter, RoleMenuRouterViewModel>().ToList();
+                       });
                    });
                }).ToListAsync();
         }
@@ -176,7 +186,7 @@ namespace Mily.MainLogic.LogicImplement
         {
             string Key = Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString();
             List<MenuItems> Items = DbContext().Queryable<MenuItems>().WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString())).ToList();
-            return await base.LogicDeleteOrRecovery(Items, true,null,null,t=>t.Deleted==false);
+            return await base.LogicDeleteOrRecovery(Items, true, null, null, t => t.Deleted == false);
         }
 
         /// <summary>
@@ -188,7 +198,7 @@ namespace Mily.MainLogic.LogicImplement
         {
             return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
                      .Where((Role, Menu) => Role.Deleted == false && Menu.Deleted == false)
-                     .OrderBy((Role, Menu)=>Menu.Lv,OrderByType.Asc)
+                     .OrderBy((Role, Menu) => Menu.Lv, OrderByType.Asc)
                      .WhereIF(!Page.KeyWord["Title"].IsNullOrEmpty(), (Role, Menu) => Menu.Title.Contains(Page.KeyWord["Title"].ToString()))
                      .WhereIF(!Page.KeyWord["MenuLv"].IsNullOrEmpty(), (Role, Menu) => Menu.Lv == (MenuItemEnum)Page.KeyWord["MenuLv"])
                      .Select((Role, Menu) => new MenuItems
