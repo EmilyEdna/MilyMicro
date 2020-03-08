@@ -27,9 +27,13 @@ const InitRouter = (data) => {
     Path.forEach(item => {
         let value = item.component;
         item.component = resolve => require([`@/views/${value}`], resolve);
+        item.children.forEach(items => {
+            let values = items.component;
+            items.component = resolve => require([`@/views/${values}`], resolve);
+        });
         dynamic.routes[1].children.push(item);
     });
-    router.options.routers = dynamic.routes;
+    router.options.routers = dynamic.routes; 
     router.addRoutes(dynamic.routes);
 }
 
@@ -45,8 +49,18 @@ const InitChild = (data) => {
             if (item.RouterPath != null) {
                 Path.push({
                     "path": "/" + item.Path,
+                    "name": item.Path,
                     "component": item.RouterPath,
-                    "meta": { "title": item.Title }
+                    "meta": { "title": item.Title },
+                    children:[]
+                });
+                item.FuncRouters.forEach((items,index) => {
+                    Path[index].children.push({
+                        "path": "/" + items.MenuPath,
+                        "name":items.MenuPath,
+                        "component": items.FuncRouterPath,
+                        "meta": { "title": items.FuncName },
+                    })
                 });
             }
     });

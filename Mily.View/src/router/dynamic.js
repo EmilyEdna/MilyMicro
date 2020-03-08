@@ -14,12 +14,14 @@ let DynamicRouter = {
             component: () => import("../components/Basic/Home.vue"),
             children: [{
                 path: '/Index',
+                name:"Index",
                 component: () => import('../components/Basic/Index.vue'),
                 meta: { title: '系统首页' }
             }]
         },
         {
             path: '/login',
+            name:"login",
             meta: { tilte: "后台登录" },
             component: import('../components/Basic/Login.vue')
         }

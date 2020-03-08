@@ -133,6 +133,9 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<Object> GetMenuItem(ResultProvider Provider)
         {
             Guid Key = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
+            List<MenuRouter> Router = DbContext().Queryable<MenuRouter>().ToList();
+            List<MenuItems> MenuLv2 = DbContext().Queryable<MenuItems>().Where(Item => Item.Lv == MenuItemEnum.Lv2).ToList();
+            List<MenuItems> MenuLv3 = DbContext().Queryable<MenuItems>().Where(Item => Item.Lv == MenuItemEnum.Lv3).ToList();
             return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
                .Where(Role => Role.RolePermissionId == Key).Select((Role, Menu) => new RoleMenuItemViewModel
                {
@@ -148,19 +151,14 @@ namespace Mily.MainLogic.LogicImplement
                    Deleted = Menu.Deleted
                }).MergeTable().Where(Item => Item.Lv == MenuItemEnum.Lv1).Mapper(Item =>
                {
-                   Item.ChildMenus = DbContext().Queryable<MenuItems>()
-                          .Where(VModel => VModel.ParentId == Item.KeyId).Where(t => t.Lv == MenuItemEnum.Lv2)
-                          .ToList().ToMappers<MenuItems, RoleMenuItemViewModel>().ToList();
+                   Item.ChildMenus = MenuLv2.Where(VModel => VModel.ParentId == Item.KeyId).ToMappers<MenuItems, RoleMenuItemViewModel>();
                    Item.ChildMenus.ForEach(Menus =>
                    {
-                       Menus.FuncRouters = DbContext().Queryable<MenuRouter>().Where(VModel => VModel.MenuItemId == Menus.KeyId).ToList().ToMappers<MenuRouter, RoleMenuRouterViewModel>().ToList();
-                       Menus.ChildMenus = DbContext().Queryable<MenuItems>()
-                                  .Where(VModel => VModel.ParentId == Menus.KeyId)
-                                  .Where(t => t.Lv == MenuItemEnum.Lv3).ToList()
-                                  .ToMappers<MenuItems, RoleMenuItemViewModel>().ToList();
+                       Menus.FuncRouters = Router.Where(VModel => VModel.MenuItemId == Menus.KeyId).ToMappers<MenuRouter, RoleMenuRouterViewModel>();
+                       Menus.ChildMenus = MenuLv3.Where(VModel => VModel.ParentId == Menus.KeyId).ToMappers<MenuItems, RoleMenuItemViewModel>();
                        Menus.ChildMenus.ForEach(ChildMenus =>
                        {
-                           ChildMenus.FuncRouters = DbContext().Queryable<MenuRouter>().Where(VModel => VModel.MenuItemId == ChildMenus.KeyId).ToList().ToMappers<MenuRouter, RoleMenuRouterViewModel>().ToList();
+                           ChildMenus.FuncRouters = Router.Where(VModel => VModel.MenuItemId == ChildMenus.KeyId).ToMappers<MenuRouter, RoleMenuRouterViewModel>();
                        });
                    });
                }).ToListAsync();

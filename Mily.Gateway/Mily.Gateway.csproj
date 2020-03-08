@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="BeetleX.FastHttpApi" Version="1.7.9.8" />
     <PackageReference Include="PeterKottas.DotNetCore.WindowsService" Version="2.0.11" />
-    <PackageReference Include="XExten" Version="2.2.2.2" />
+    <PackageReference Include="XExten" Version="2.2.3" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" Version="3.1.0" />
