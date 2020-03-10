@@ -16,7 +16,6 @@ namespace Mily.Extension.Authentication.CookieAuthentication
     {
         protected async override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionAuthorizationRequirement requirement)
         {
-
             if (context.User != null)
             {
                 var UserClaim = context.User.Claims.ToList();
@@ -26,7 +25,7 @@ namespace Mily.Extension.Authentication.CookieAuthentication
                     String RolePromise = UserClaim.Where(t => t.Type == "RoleId").FirstOrDefault().Value;
                     String UserName = UserClaim.Where(t => t.Type == "UserName").FirstOrDefault().Value;
                     string UserRole = UserClaim.Where(t => t.Type == "UserRole").FirstOrDefault().Value;
-                    if( requirement.Roles.Contains((RoleTypeEnum)int.Parse(UserRole)))
+                    if (requirement.Roles.Contains(UserRole))
                         context.Succeed(requirement);
                     await Task.CompletedTask;
                 }

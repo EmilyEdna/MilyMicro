@@ -20,11 +20,11 @@ namespace Mily.Extension.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public class AuthorAttribute : Attribute, IAsyncAuthorizationFilter
     {
-        public List<RoleTypeEnum> Roles { get; set; }
+        public List<String> Roles { get; set; }
 
         public AuthorAttribute(params RoleTypeEnum[] Param)
         {
-            Roles = Param.ToList();
+           Roles = Param.Select(Item => Item.ToString()).ToList();
         }
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)

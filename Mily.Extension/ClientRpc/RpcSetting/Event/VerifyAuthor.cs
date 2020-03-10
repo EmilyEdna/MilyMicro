@@ -31,7 +31,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Event
             if (Author == null) return false;
             foreach (var Item in (Author as AuthorAttribute).Roles)
             {
-                if (int.Parse(SecurityData["UserRole"]) == (int)Item)
+                if (SecurityData["UserRole"] == Item)
                     return true;
             }
             return false;

@@ -8,9 +8,9 @@ namespace Mily.Extension.Authentication.CookieAuthentication
 {
     public class PermissionAuthorizationRequirement : IAuthorizationRequirement
     {
-        public List<RoleTypeEnum> Roles { get; set; }
+        public List<String> Roles { get; set; }
 
-        public PermissionAuthorizationRequirement(List<RoleTypeEnum> Param)
+        public PermissionAuthorizationRequirement(List<String> Param)
         {
             Roles = Param;
         }
