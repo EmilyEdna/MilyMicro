@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Mily.Setting.ModelEnum;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,7 +17,7 @@ namespace Mily.Extension.Authentication.JwtAuthentication
         public Guid KeyId { get; set; }
         public Guid RoleId { get; set; }
         public string UserName { get; set; }
-        public string UserRole { get; set; }
+        public RoleTypeEnum? RoleType { get; set; }
         /// <summary>
         /// 初始化JWT
         /// </summary>
@@ -32,15 +33,15 @@ namespace Mily.Extension.Authentication.JwtAuthentication
         {
             Claim[] Claims = new Claim[]
             {
-             new Claim("KeyId",KeyId.ToString()),
-             new Claim("RoleId",RoleId.ToString()),
+              new Claim("KeyId",KeyId.ToString()),
+              new Claim("RoleId",RoleId.ToString()),
               new Claim("UserName",UserName),
-             new Claim("UserRole",UserRole)
+              new Claim("UserRole",RoleType.ToString())
             };
             SymmetricSecurityKey Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("EmilyEdnaMilyMicro"));
             SigningCredentials Credentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
             JwtSecurityToken Token = new JwtSecurityToken(null, null, Claims, DateTime.Now, DateTime.Now.AddHours(2), Credentials);
-           return new JwtSecurityTokenHandler().WriteToken(Token);
+            return new JwtSecurityTokenHandler().WriteToken(Token);
         }
     }
 }

@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Mily.Setting.ModelEnum
 {
+    /// <summary>
+    /// 返回类型枚举
+    /// </summary>
     public enum DbReturnEnum
     {
         #region EnumOfInsert

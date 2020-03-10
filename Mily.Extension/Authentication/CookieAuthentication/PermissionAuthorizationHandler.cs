@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Mily.Setting.ModelEnum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XExten.XCore;
 
 namespace Mily.Extension.Authentication.CookieAuthentication
 {
@@ -17,24 +19,16 @@ namespace Mily.Extension.Authentication.CookieAuthentication
 
             if (context.User != null)
             {
-                if (context.User.IsInRole("Admin"))
-                    context.Succeed(requirement);
-                else
+                var UserClaim = context.User.Claims.ToList();
+                if (UserClaim.Count > 0)
                 {
-                    var UserClaim = context.User.Claims.ToList();
-                    if (UserClaim.Count > 0)
-                    {
-                        String PrimaryKey = UserClaim.Where(t => t.Type == "KeyId").FirstOrDefault().Value;
-                        String RolePromise = UserClaim.Where(t => t.Type == "RoleId").FirstOrDefault().Value;
-                        String UserName = UserClaim.Where(t => t.Type == "UserName").FirstOrDefault().Value;
-                        String UserRole = UserClaim.Where(t => t.Type == "UserRole").FirstOrDefault().Value;
-                        UserRole.Split("|").ToList().ForEach(Item =>
-                        {
-                            if (requirement.Names.Contains(Item))
-                                context.Succeed(requirement);
-                        });
-                        await Task.CompletedTask;
-                    }
+                    String PrimaryKey = UserClaim.Where(t => t.Type == "KeyId").FirstOrDefault().Value;
+                    String RolePromise = UserClaim.Where(t => t.Type == "RoleId").FirstOrDefault().Value;
+                    String UserName = UserClaim.Where(t => t.Type == "UserName").FirstOrDefault().Value;
+                    string UserRole = UserClaim.Where(t => t.Type == "UserRole").FirstOrDefault().Value;
+                    if( requirement.Roles.Contains((RoleTypeEnum)int.Parse(UserRole)))
+                        context.Succeed(requirement);
+                    await Task.CompletedTask;
                 }
             }
         }

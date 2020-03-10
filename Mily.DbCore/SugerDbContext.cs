@@ -20,6 +20,7 @@ using XCache = XExten.CacheFactory;
 using Mily.Extension.Attributes;
 using Mily.DbEntity.SystemView;
 using Mily.DbEntity;
+using Mily.Extension.LoggerFactory;
 
 namespace Mily.DbCore
 {
@@ -173,7 +174,7 @@ namespace Mily.DbCore
                         LogFactoryExtension.WriteSqlWarn(Logs);
                 });
             };
-           #endif
+            #endif
             if (InitDbTable)
             {
                 Type[] ModelTypes = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.BaseType == typeof(BaseEntity))).ToArray();

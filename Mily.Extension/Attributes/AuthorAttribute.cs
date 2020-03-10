@@ -20,17 +20,17 @@ namespace Mily.Extension.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public class AuthorAttribute : Attribute, IAsyncAuthorizationFilter
     {
-        public List<String> Names { get; set; }
+        public List<RoleTypeEnum> Roles { get; set; }
 
-        public AuthorAttribute(params String[] Param)
+        public AuthorAttribute(params RoleTypeEnum[] Param)
         {
-            Names = Param.ToList();
+            Roles = Param.ToList();
         }
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var authorizationService = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
-            var authorizationResult = await authorizationService.AuthorizeAsync(context.HttpContext.User, null, new PermissionAuthorizationRequirement(Names));
+            var authorizationResult = await authorizationService.AuthorizeAsync(context.HttpContext.User, null, new PermissionAuthorizationRequirement(Roles));
             if (!authorizationResult.Succeeded)
             {
                 context.Result = new ObjectResult(ResultCondition.Instance(false, StatusCodes.Status401Unauthorized, null, ResponseEnum.Unauthorized.ToDescription()));

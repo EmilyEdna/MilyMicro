@@ -1,4 +1,5 @@
-﻿using Mily.ViewModels.Basic;
+﻿using Mily.Setting.ModelEnum;
+using Mily.ViewModels.Basic;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -37,8 +38,8 @@ namespace Mily.ViewModels
         public string RoleName { get; set; }
 
         /// <summary>
-        /// 操作角色
+        /// 角色类型
         /// </summary>
-        public string HandlerRole { get; set; }
+        public RoleTypeEnum? RoleType { get; set; }
     }
 }

@@ -11,6 +11,8 @@ using XExten.Common;
 using XExten.XCore;
 using System.Linq;
 using Mily.DbEntity.SystemView;
+using Mily.DbEntity.SystemView.RoleSeries;
+using Mily.DbEntity.SystemView.MenuSeries;
 
 namespace Mily.MainLogic.LogicImplement
 {
@@ -46,7 +48,7 @@ namespace Mily.MainLogic.LogicImplement
                     Account = Admin.Account,
                     AdminName = Admin.AdminName,
                     RolePermissionId = Admin.RolePermissionId,
-                    HandlerRole = Role.HandlerRole,
+                    RoleType = Role.RoleType,
                     RoleName = Role.RoleName
                 }).FirstAsync();
             if (AdminRole != null)
@@ -132,16 +134,13 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> GetMenuItem(ResultProvider Provider)
         {
-            Guid Key = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
-            List<MenuRouter> Router = DbContext().Queryable<MenuRouter>().ToList();
+            Guid RoleId = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
             List<MenuItems> MenuLv2 = DbContext().Queryable<MenuItems>().Where(Item => Item.Lv == MenuItemEnum.Lv2).ToList();
             List<MenuItems> MenuLv3 = DbContext().Queryable<MenuItems>().Where(Item => Item.Lv == MenuItemEnum.Lv3).ToList();
             return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
-               .Where(Role => Role.RolePermissionId == Key).Select((Role, Menu) => new RoleMenuItemViewModel
+               .Where(Role => Role.RolePermissionId == RoleId).Select((Role, Menu) => new RoleMenuItemViewModel
                {
                    KeyId = Menu.KeyId,
-                   RouterPath = Menu.RouterPath,
-                   Path = Menu.Path,
                    Lv = Menu.Lv,
                    Icon = Menu.Icon,
                    Title = Menu.Title,
@@ -154,16 +153,31 @@ namespace Mily.MainLogic.LogicImplement
                    Item.ChildMenus = MenuLv2.Where(VModel => VModel.ParentId == Item.KeyId).ToMappers<MenuItems, RoleMenuItemViewModel>();
                    Item.ChildMenus.ForEach(Menus =>
                    {
-                       Menus.FuncRouters = Router.Where(VModel => VModel.MenuItemId == Menus.KeyId).ToMappers<MenuRouter, RoleMenuRouterViewModel>();
                        Menus.ChildMenus = MenuLv3.Where(VModel => VModel.ParentId == Menus.KeyId).ToMappers<MenuItems, RoleMenuItemViewModel>();
-                       Menus.ChildMenus.ForEach(ChildMenus =>
-                       {
-                           ChildMenus.FuncRouters = Router.Where(VModel => VModel.MenuItemId == ChildMenus.KeyId).ToMappers<MenuRouter, RoleMenuRouterViewModel>();
-                       });
                    });
                }).ToListAsync();
         }
 
+        /// <summary>
+        /// 获取菜单功能
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <returns></returns>
+        public async Task<Object> GetMenuFeatures(ResultProvider Provider)
+        {
+            Guid MenuId = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
+            return await DbContext().Queryable<MenuItems, MenuFeatures>((Items, Feats) => new Object[] { JoinType.Left, Items.KeyId == Feats.MenuItemId })
+                .Where(Items => Items.KeyId == MenuId).Select((Items, Feats) => new RoleMenuFeatsViewModel
+                {
+                    KeyId = Feats.KeyId,
+                    MenuItemId = Feats.MenuItemId,
+                    FeatName = Feats.FeatName,
+                    EnableOrDisable = Feats.EnableOrDisable,
+                    Icon = Feats.Icon
+                }).ToListAsync();
+        }
+
+        #region 新增
         /// <summary>
         /// 新增菜单
         /// </summary>
@@ -174,6 +188,39 @@ namespace Mily.MainLogic.LogicImplement
             MenuItems Menu = Provider.DictionaryStringProvider.ToJson().ToModel<MenuItems>();
             return await base.InsertData<MenuItems>(Menu);
         }
+
+        /// <summary>
+        /// 新增功能菜单
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <returns></returns>
+        public async Task<Object> InsertMenuFeatures(ResultProvider Provider)
+        {
+            MenuFeatures MenuFeats = Provider.DictionaryStringProvider.ToJson().ToModel<MenuFeatures>();
+            return await base.InsertData<MenuFeatures>(MenuFeats);
+        }
+
+        /// <summary>
+        /// 新增菜单路由
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <returns></returns>
+        public async Task<Object> InsertMenuRouter(ResultProvider Provider) 
+        {
+            MenuItemsRouter Router = Provider.DictionaryStringProvider.ToJson().ToModel<MenuItemsRouter>();
+            return await base.InsertData<MenuItemsRouter>(Router);
+        }
+
+        /// <summary>
+        /// 新增菜单功能路由
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Object> InsertMenuFeatsRouter(ResultProvider Provider) 
+        {
+            MenuFeaturesRouter FeatsRouter = Provider.DictionaryStringProvider.ToJson().ToModel<MenuFeaturesRouter>();
+            return await base.InsertData<MenuFeaturesRouter>(FeatsRouter);
+        }
+        #endregion
 
         /// <summary>
         /// 逻辑删除菜单
@@ -199,11 +246,9 @@ namespace Mily.MainLogic.LogicImplement
                      .OrderBy((Role, Menu) => Menu.Lv, OrderByType.Asc)
                      .WhereIF(!Page.KeyWord["Title"].IsNullOrEmpty(), (Role, Menu) => Menu.Title.Contains(Page.KeyWord["Title"].ToString()))
                      .WhereIF(!Page.KeyWord["MenuLv"].IsNullOrEmpty(), (Role, Menu) => Menu.Lv == (MenuItemEnum)Page.KeyWord["MenuLv"])
-                     .Select((Role, Menu) => new MenuItems
+                     .Select((Role, Menu) => new RoleMenuItemViewModel
                      {
                          KeyId = Menu.KeyId,
-                         RouterPath = Menu.RouterPath,
-                         Path = Menu.Path,
                          Lv = Menu.Lv,
                          Icon = Menu.Icon,
                          Title = Menu.Title,

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mily.DbEntity.SystemView
+namespace Mily.DbEntity.SystemView.RoleSeries
 {
     /// <summary>
     /// 权限菜单表
@@ -18,6 +18,7 @@ namespace Mily.DbEntity.SystemView
         /// </summary>
         [SugarColumn(IsNullable = true, ColumnDescription = "权限许可ID")]
         public Guid? RolePermissionId { get; set; }
+
         /// <summary>
         /// 菜单表ID
         /// </summary>

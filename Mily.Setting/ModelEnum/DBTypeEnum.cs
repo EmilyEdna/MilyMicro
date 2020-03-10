@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Mily.Setting.ModelEnum
 {
+    /// <summary>
+    /// 数据库类型枚举
+    /// </summary>
     public enum DBTypeEnum
     {
         #region DBTypeEnum

@@ -29,9 +29,9 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Event
             Dictionary<string, string> SecurityData = SecurityTokenDec.SecurityToken(Security);
             if (!VerifyExp(SecurityData)) return false;
             if (Author == null) return false;
-            foreach (var Item in (Author as AuthorAttribute).Names)
+            foreach (var Item in (Author as AuthorAttribute).Roles)
             {
-                if (SecurityData["UserRole"].Contains(Item))
+                if (int.Parse(SecurityData["UserRole"]) == (int)Item)
                     return true;
             }
             return false;

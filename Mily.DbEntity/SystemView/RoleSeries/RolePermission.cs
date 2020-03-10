@@ -1,7 +1,11 @@
 ﻿using Mily.Extension.Attributes;
+using Mily.Setting.ModelEnum;
 using SqlSugar;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Mily.DbEntity.SystemView
+namespace Mily.DbEntity.SystemView.RoleSeries
 {
     /// <summary>
     /// 权限许可表
@@ -17,9 +21,9 @@ namespace Mily.DbEntity.SystemView
         public string RoleName { get; set; }
 
         /// <summary>
-        /// 操作角色
+        /// 角色类型
         /// </summary>
-        [SugarColumn(IsNullable = true, ColumnDataType = "NVARCHAR", ColumnDescription = "操作角色", Length = 50)]
-        public string HandlerRole { get; set; }
+        [SugarColumn(IsNullable = true, ColumnDataType = "INT", ColumnDescription = "角色类型")]
+        public RoleTypeEnum? RoleType { get; set; }
     }
 }
