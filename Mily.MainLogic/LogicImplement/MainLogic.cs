@@ -177,6 +177,32 @@ namespace Mily.MainLogic.LogicImplement
                 }).ToListAsync();
         }
 
+        /// <summary>
+        /// 获取菜单路由
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Object> GetMenuRouter(ResultProvider Provider)
+        {
+            Guid RoleId = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
+            return await DbContext().Queryable<RoleMenuItems, MenuItemsRouter>((Item, ItemRouter) => new Object[] { JoinType.Left, Item.MenuItemsId == ItemRouter.MenuItemId })
+                 .Where((Item, ItemRouter) => Item.RolePermissionId == RoleId).Select((Item, ItemRouter) => new RoleMenuRouterViewModel
+                 {
+                     MenuItemId = ItemRouter.MenuItemId,
+                     Title = ItemRouter.Title,
+                     MenuPath = ItemRouter.PathRoad,
+                     RouterPath = ItemRouter.PathRouter
+                 }).MergeTable().Where(Item=> Item.MenuItemId != null).Mapper(Item =>
+                 {
+                     Item.ChildFeatures = DbContext().Queryable<RoleMenuFeatures, MenuFeaturesRouter>((Feat, FeatRouter) => new Object[] { JoinType.Inner, Feat.MenuFeatId == FeatRouter.MenuFeatId })
+                       .Where((Feat, FeatRouter) => Feat.RolePermissionId == RoleId && Feat.MenuItemId == Item.MenuItemId).Select((Feat, FeatRouter) => new RoleMenuRouterViewModel
+                       {
+                           Title = FeatRouter.Title,
+                           MenuPath = FeatRouter.PathRoad,
+                           RouterPath = FeatRouter.PathRouter
+                       }).ToList();
+                 }).ToListAsync();
+        }
+
         #region 新增
         /// <summary>
         /// 新增菜单
@@ -205,7 +231,7 @@ namespace Mily.MainLogic.LogicImplement
         /// </summary>
         /// <param name="Provider"></param>
         /// <returns></returns>
-        public async Task<Object> InsertMenuRouter(ResultProvider Provider) 
+        public async Task<Object> InsertMenuRouter(ResultProvider Provider)
         {
             MenuItemsRouter Router = Provider.DictionaryStringProvider.ToJson().ToModel<MenuItemsRouter>();
             return await base.InsertData<MenuItemsRouter>(Router);
@@ -215,7 +241,7 @@ namespace Mily.MainLogic.LogicImplement
         /// 新增菜单功能路由
         /// </summary>
         /// <returns></returns>
-        public async Task<Object> InsertMenuFeatsRouter(ResultProvider Provider) 
+        public async Task<Object> InsertMenuFeatsRouter(ResultProvider Provider)
         {
             MenuFeaturesRouter FeatsRouter = Provider.DictionaryStringProvider.ToJson().ToModel<MenuFeaturesRouter>();
             return await base.InsertData<MenuFeaturesRouter>(FeatsRouter);

@@ -126,6 +126,16 @@ namespace Miliy.MainApi.Controllers
         [Authorize]
         public async Task<ActionResult<Object>> GetMenuFeatures(ResultProvider Provider) => await SysService.GetMenuFeatures(Provider);
 
+        /// <summary>
+        /// 获取菜单路由
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <returns></returns>
+        [AcceptVerbs("GET", "POST")]
+        [Author(RoleTypeEnum.Administrator)]
+        [Authorize]
+        public async Task<Object> GetMenuRouter(ResultProvider Provider)=> await SysService.GetMenuRouter(Provider);
+
         #region 新增
         /// <summary>
         /// 新增菜单

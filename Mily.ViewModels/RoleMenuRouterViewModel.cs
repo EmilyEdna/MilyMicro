@@ -6,7 +6,7 @@ using System.Text;
 namespace Mily.ViewModels
 {
     /// <summary>
-    /// 功能菜单
+    /// 菜单路由
     /// </summary>
     public class RoleMenuRouterViewModel : BasicViewModel
     {
@@ -16,9 +16,9 @@ namespace Mily.ViewModels
         public Guid? MenuItemId { get; set; }
 
         /// <summary>
-        /// 功能名称
+        /// 名称
         /// </summary>
-        public string FuncName { get; set; }
+        public string Title { get; set; }
 
         /// <summary>
         /// 菜单路径
@@ -26,8 +26,13 @@ namespace Mily.ViewModels
         public string MenuPath { get; set; }
 
         /// <summary>
-        /// 功能路由
+        /// 路由地址
         /// </summary>
-        public string FuncRouterPath { get; set; }
+        public string RouterPath { get; set; }
+
+        /// <summary>
+        /// 子菜单路由
+        /// </summary>
+        public List<RoleMenuRouterViewModel> ChildFeatures { get; set; }
     }
 }

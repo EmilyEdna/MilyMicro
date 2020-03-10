@@ -33,6 +33,7 @@ namespace Mily.MainLogic.LogicInterface
         #region 获取菜单
         Task<Object> GetMenuItem(ResultProvider Provider);
         Task<Object> GetMenuFeatures(ResultProvider Provider);
+        Task<Object> GetMenuRouter(ResultProvider Provider);
         #region 新增
         Task<Object> InsertMenuItem(ResultProvider Provider);
         Task<Object> InsertMenuFeatures(ResultProvider Provider);
