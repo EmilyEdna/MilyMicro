@@ -134,7 +134,7 @@ namespace Miliy.MainApi.Controllers
         [AcceptVerbs("GET", "POST")]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
-        public async Task<Object> GetMenuRouter(ResultProvider Provider)=> await SysService.GetMenuRouter(Provider);
+        public async Task<ActionResult<Object>> GetMenuRouter(ResultProvider Provider)=> await SysService.GetMenuRouter(Provider);
 
         #region 新增
         /// <summary>
@@ -156,7 +156,7 @@ namespace Miliy.MainApi.Controllers
         [AcceptVerbs("GET", "POST")]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
-        public async Task<Object> InsertMenuFeatures(ResultProvider Provider) => await SysService.InsertMenuFeatures(Provider);
+        public async Task<ActionResult<Object>> InsertMenuFeatures(ResultProvider Provider) => await SysService.InsertMenuFeatures(Provider);
 
         /// <summary>
         /// 新增菜单路由
@@ -166,7 +166,7 @@ namespace Miliy.MainApi.Controllers
         [AcceptVerbs("GET", "POST")]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
-        public async Task<Object> InsertMenuRouter(ResultProvider Provider) => await SysService.InsertMenuRouter(Provider);
+        public async Task<ActionResult<Object>> InsertMenuRouter(ResultProvider Provider) => await SysService.InsertMenuRouter(Provider);
 
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace Miliy.MainApi.Controllers
         [AcceptVerbs("GET", "POST")]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
-        public async Task<Object> InsertMenuFeatsRouter(ResultProvider Provider) => await SysService.InsertMenuFeatsRouter(Provider);
+        public async Task<ActionResult<Object>> InsertMenuFeatsRouter(ResultProvider Provider) => await SysService.InsertMenuFeatsRouter(Provider);
         #endregion
 
         /// <summary>

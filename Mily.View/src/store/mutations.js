@@ -16,10 +16,10 @@ const mutations = {
      * @param {any} State
      * @param {any} Object
      */
-    ChangeUserRoleMenu(State, Object) {
-        State.RoleMenu = Object;
-        localStorage.RoleMenu = JSON.stringify(Object);
-        sessionStorage.IsLoadMenu = Object ? true : false;
+    ChangeUserRoleRouter(State, Object) {
+        State.RoleRouter = Object;
+        localStorage.RoleRouter = JSON.stringify(Object);
+        sessionStorage.IsLoadRouter = Object ? true : false;
     },
     /**
      * 退出登录

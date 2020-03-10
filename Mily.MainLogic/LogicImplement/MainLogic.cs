@@ -135,27 +135,56 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<Object> GetMenuItem(ResultProvider Provider)
         {
             Guid RoleId = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
-            List<MenuItems> MenuLv2 = DbContext().Queryable<MenuItems>().Where(Item => Item.Lv == MenuItemEnum.Lv2).ToList();
-            List<MenuItems> MenuLv3 = DbContext().Queryable<MenuItems>().Where(Item => Item.Lv == MenuItemEnum.Lv3).ToList();
-            return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
-               .Where(Role => Role.RolePermissionId == RoleId).Select((Role, Menu) => new RoleMenuItemViewModel
-               {
-                   KeyId = Menu.KeyId,
-                   Lv = Menu.Lv,
-                   Icon = Menu.Icon,
-                   Title = Menu.Title,
-                   ParentId = Menu.ParentId,
-                   Parent = Menu.Parent,
-                   Created = Menu.Created,
-                   Deleted = Menu.Deleted
-               }).MergeTable().Where(Item => Item.Lv == MenuItemEnum.Lv1).Mapper(Item =>
-               {
-                   Item.ChildMenus = MenuLv2.Where(VModel => VModel.ParentId == Item.KeyId).ToMappers<MenuItems, RoleMenuItemViewModel>();
-                   Item.ChildMenus.ForEach(Menus =>
-                   {
-                       Menus.ChildMenus = MenuLv3.Where(VModel => VModel.ParentId == Menus.KeyId).ToMappers<MenuItems, RoleMenuItemViewModel>();
-                   });
-               }).ToListAsync();
+            return await DbContext().Queryable<RoleMenuItems, MenuItems, MenuItemsRouter>((Role, Menu, Router) => new Object[] {
+                JoinType.Left, Role.MenuItemsId == Menu.KeyId ,
+                JoinType.Left,Menu.KeyId==Router.MenuItemId
+            }).Where(Role => Role.RolePermissionId == RoleId).Select((Role, Menu, Router) => new RoleMenuItemViewModel
+            {
+                KeyId = Menu.KeyId,
+                Lv = Menu.Lv,
+                Icon = Menu.Icon,
+                Title = Menu.Title,
+                ParentId = Menu.ParentId,
+                Path = Router.PathRoad,
+                Parent = Menu.Parent
+            }).MergeTable().Where(Item => Item.Lv == MenuItemEnum.Lv1).Mapper(Item =>
+            {
+                //二级菜单
+                Item.ChildMenus = DbContext().Queryable<MenuItems, MenuItemsRouter>((Items, Router) => new Object[]{
+                    JoinType.Left,Items.KeyId==Router.MenuItemId
+                })
+                .Where(Items => Items.Lv == MenuItemEnum.Lv2)
+                .Where(Items => Items.ParentId == Item.KeyId)
+                .Select((Items, Router) => new RoleMenuItemViewModel
+                {
+                    KeyId = Items.KeyId,
+                    Lv = Items.Lv,
+                    Icon = Items.Icon,
+                    Title = Items.Title,
+                    ParentId = Items.ParentId,
+                    Path = Router.PathRoad,
+                    Parent = Items.Parent
+                }).ToList();
+                Item.ChildMenus.ForEach(Menus =>
+                {
+                    //三级菜单
+                    Menus.ChildMenus = DbContext().Queryable<MenuItems, MenuItemsRouter>((Items, Router) => new Object[] {
+                       JoinType.Left,Items.KeyId==Router.MenuItemId
+                    })
+                    .Where(Items => Items.Lv == MenuItemEnum.Lv3)
+                    .Where(Items => Items.ParentId == Menus.KeyId)
+                    .Select((Items, Router) => new RoleMenuItemViewModel
+                    {
+                       KeyId = Items.KeyId,
+                       Lv = Items.Lv,
+                       Icon = Items.Icon,
+                       Title = Items.Title,
+                       ParentId = Items.ParentId,
+                       Path = Router.PathRoad,
+                       Parent = Items.Parent
+                    }).ToList();
+                });
+            }).ToListAsync();
         }
 
         /// <summary>
@@ -185,22 +214,22 @@ namespace Mily.MainLogic.LogicImplement
         {
             Guid RoleId = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
             return await DbContext().Queryable<RoleMenuItems, MenuItemsRouter>((Item, ItemRouter) => new Object[] { JoinType.Left, Item.MenuItemsId == ItemRouter.MenuItemId })
-                 .Where((Item, ItemRouter) => Item.RolePermissionId == RoleId).Select((Item, ItemRouter) => new RoleMenuRouterViewModel
+                 .Where(Item => Item.RolePermissionId == RoleId).Select((Item, ItemRouter) => new RoleMenuRouterViewModel
                  {
                      MenuItemId = ItemRouter.MenuItemId,
                      Title = ItemRouter.Title,
                      MenuPath = ItemRouter.PathRoad,
                      RouterPath = ItemRouter.PathRouter
-                 }).MergeTable().Where(Item=> Item.MenuItemId != null).Mapper(Item =>
-                 {
-                     Item.ChildFeatures = DbContext().Queryable<RoleMenuFeatures, MenuFeaturesRouter>((Feat, FeatRouter) => new Object[] { JoinType.Inner, Feat.MenuFeatId == FeatRouter.MenuFeatId })
-                       .Where((Feat, FeatRouter) => Feat.RolePermissionId == RoleId && Feat.MenuItemId == Item.MenuItemId).Select((Feat, FeatRouter) => new RoleMenuRouterViewModel
-                       {
-                           Title = FeatRouter.Title,
-                           MenuPath = FeatRouter.PathRoad,
-                           RouterPath = FeatRouter.PathRouter
-                       }).ToList();
-                 }).ToListAsync();
+                 }).MergeTable().Where(Item => Item.MenuItemId != null).Mapper(Item =>
+                  {
+                      Item.ChildFeatures = DbContext().Queryable<RoleMenuFeatures, MenuFeaturesRouter>((Feat, FeatRouter) => new Object[] { JoinType.Inner, Feat.MenuFeatId == FeatRouter.MenuFeatId })
+                        .Where(Feat => Feat.RolePermissionId == RoleId && Feat.MenuItemId == Item.MenuItemId).Select((Feat, FeatRouter) => new RoleMenuRouterViewModel
+                        {
+                            Title = FeatRouter.Title,
+                            MenuPath = FeatRouter.PathRoad,
+                            RouterPath = FeatRouter.PathRouter
+                        }).ToList();
+                  }).ToListAsync();
         }
 
         #region 新增

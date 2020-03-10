@@ -21,7 +21,7 @@
     </div>
 </template>
 <script>
-    import { Login } from '../../utils/ApiFactory'
+    import { Login } from '../../utils/ApiFactory';
     export default {
         data() {
             return {

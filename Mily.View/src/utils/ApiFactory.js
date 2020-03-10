@@ -18,7 +18,7 @@ export const Login = (param) => {
 }
 
 /**
- * 全局菜单
+ * 获取菜单
  * @param {any} param
  */
 export const Menu = (param) => {
@@ -26,6 +26,21 @@ export const Menu = (param) => {
     const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
     return servcie({
         url: "Main/System/GetMenuItem/ProxyMain",
+        method: 'post',
+        data: target,
+        headers: { Author: Author }
+    });
+}
+
+/**
+ * 获取路由
+ * @param {any} param
+ */
+export const Router = (param) => {
+    const target = Object.assign({}, param);
+    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
+    return servcie({
+        url: "Main/System/GetMenuRouter/ProxyMain",
         method: 'post',
         data: target,
         headers: { Author: Author }

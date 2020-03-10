@@ -1,19 +1,17 @@
 import store from '../store/store';
 import router from '../router/router';
 import dynamic from '../router/dynamic'
-import { Menu } from './ApiFactory';
-
-let Path = [];
+import { Router } from './ApiFactory';
 
 /**
- * 初始化菜单
+ * 初始化路由
  * */
-const InitMenu = () => {
+const InitRouter = () => {
     if (store.getters.IsLogin) {
         let Params = { "Key": store.state.USER.RolePermissionId };
-        Menu(Params).then(res => {
-            InitRouter(res.ResultData);
-            store.commit('ChangeUserRoleMenu', res.ResultData);
+        Router(Params).then(res => {
+            InitRouterCollection(res.ResultData);
+            store.commit('ChangeUserRoleRouter', res.ResultData);
         });
     }
 }
@@ -22,8 +20,25 @@ const InitMenu = () => {
  * 添加动态路由
  * @param {any} data
  */
-const InitRouter = (data) => {
-    InitChild(data);
+const InitRouterCollection = (data) => {
+    let Path = [];
+    data.forEach(item => {
+        Path.push({
+            "path": "/" + item.PathRoad,
+            "name": item.Title,
+            "component": item.PathRouter,
+            "meta": { "title": item.Title },
+            children: []
+        });
+        item.ChildFeatures.forEach((items, index) => {
+            Path[index].children.push({
+                "path": "/" + items.PathRoad,
+                "name": items.Title,
+                "component": items.PathRouter,
+                "meta": { "title": items.Title },
+            })
+        });
+    });
     Path.forEach(item => {
         let value = item.component;
         item.component = resolve => require([`@/views/${value}`], resolve);
@@ -33,36 +48,8 @@ const InitRouter = (data) => {
         });
         dynamic.routes[1].children.push(item);
     });
-    router.options.routers = dynamic.routes; 
+    router.options.routers = dynamic.routes;
     router.addRoutes(dynamic.routes);
 }
 
-/**
- * 递归遍历子菜单
- * @param {any} data
- */
-const InitChild = (data) => {
-    data.forEach(item => {
-        if (item.Parent)
-            InitChild(item.ChildMenus);
-        else
-            if (item.RouterPath != null) {
-                Path.push({
-                    "path": "/" + item.Path,
-                    "name": item.Path,
-                    "component": item.RouterPath,
-                    "meta": { "title": item.Title },
-                    children:[]
-                });
-                item.FuncRouters.forEach((items,index) => {
-                    Path[index].children.push({
-                        "path": "/" + items.MenuPath,
-                        "name":items.MenuPath,
-                        "component": items.FuncRouterPath,
-                        "meta": { "title": items.FuncName },
-                    })
-                });
-            }
-    });
-}
-export default InitMenu
+export default InitRouter

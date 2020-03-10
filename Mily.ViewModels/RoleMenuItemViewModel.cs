@@ -37,6 +37,11 @@ namespace Mily.ViewModels
         public Guid? ParentId { get; set; }
 
         /// <summary>
+        /// 路径
+        /// </summary>
+        public string Path { get; set; }
+
+        /// <summary>
         /// 子菜单
         /// </summary>
         public List<RoleMenuItemViewModel> ChildMenus { get; set; }
