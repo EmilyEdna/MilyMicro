@@ -43,7 +43,7 @@ namespace Miliy.MainApi.Controllers
             else
                 AuthorToken = JsonWebToken.InitToken(option =>
                  {
-                     option.KeyId = RoleAdmin.KeyId;
+                     option.KeyId = RoleAdmin.KeyId.Value;
                      option.RoleId = RoleAdmin.RolePermissionId.Value;
                      option.UserName = RoleAdmin.AdminName;
                      option.RoleType = RoleAdmin.RoleType;
