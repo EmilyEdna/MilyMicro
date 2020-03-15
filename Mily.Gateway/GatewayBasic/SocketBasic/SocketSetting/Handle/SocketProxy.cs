@@ -42,6 +42,5 @@ namespace Mily.Gateway.GatewayBasic.SocketBasic.SocketSetting.Handle
                     return ResultProvider.SetValue(ServerKey.SetValue(SocketTypeEnum.Listened, Key.ServName), ServerValue.SetStrValue(ServerValue.ListenedSuccessful, "OK"));
             }
         }
-
     }
 }

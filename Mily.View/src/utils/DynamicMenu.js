@@ -24,17 +24,17 @@ const InitRouterCollection = (data) => {
     let Path = [];
     data.forEach(item => {
         Path.push({
-            "path": "/" + item.PathRoad,
+            "path": "/" + item.MenuPath,
             "name": item.Title,
-            "component": item.PathRouter,
+            "component": item.RouterPath,
             "meta": { "title": item.Title },
             children: []
         });
         item.ChildFeatures.forEach((items, index) => {
             Path[index].children.push({
-                "path": "/" + items.PathRoad,
+                "path": "/" + items.MenuPath,
                 "name": items.Title,
-                "component": items.PathRouter,
+                "component": items.RouterPath,
                 "meta": { "title": items.Title },
             })
         });

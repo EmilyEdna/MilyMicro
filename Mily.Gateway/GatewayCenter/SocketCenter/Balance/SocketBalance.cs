@@ -18,7 +18,7 @@ namespace Mily.Gateway.GatewayCenter.SocketCenter.Balance
 {
     public class SocketBalance
     {
-        private static Object TCP(Dictionary<String, Object> Request)
+        public static Object TCP(Dictionary<String, Object> Request)
         {
             return XPlusEx.XTry<Object>(() =>
             {
@@ -34,7 +34,7 @@ namespace Mily.Gateway.GatewayCenter.SocketCenter.Balance
                 return EventAction.Instance().DelegateResult;
             }, (Ex) => { return Http(Request); });
         }
-        private static Object Http(Dictionary<String, Object> Request)
+        public static Object Http(Dictionary<String, Object> Request)
         {
             return XPlusEx.XTry<Object>(() =>
             {

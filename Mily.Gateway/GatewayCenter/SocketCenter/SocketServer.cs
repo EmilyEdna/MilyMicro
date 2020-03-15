@@ -45,5 +45,18 @@ namespace Mily.Gateway.GatewayCenter.SocketCenter
             Dictionary<String, Object> Request = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<Dictionary<String, Object>>();
             return SocketBalance.LoadBalance(Request);
         }
+        [Post]
+        [JsonDataConvert]
+        public object ProxyHttp(IHttpContext Context) {
+            Dictionary<String, Object> Request = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<Dictionary<String, Object>>();
+            return SocketBalance.Http(Request);
+        }
+        [Post]
+        [JsonDataConvert]
+        public object ProxyTcp(IHttpContext Context)
+        {
+            Dictionary<String, Object> Request = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<Dictionary<String, Object>>();
+            return SocketBalance.TCP(Request);
+        }
     }
 }
