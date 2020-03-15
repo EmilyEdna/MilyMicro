@@ -25,7 +25,6 @@ namespace Mily.Service.MiddleSocket
                 AcceptData = Event.Message.ToString().ToModel<SocketMiddleData>();
             ExecuteDependency.ExecutePacketCache(AcceptData, Event);
             ExecuteDependency.ExecuteInternalInfo(Event, AcceptData);
-
         }
     }
 }

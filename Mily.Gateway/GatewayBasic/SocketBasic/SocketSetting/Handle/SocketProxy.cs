@@ -37,7 +37,6 @@ namespace Mily.Gateway.GatewayBasic.SocketBasic.SocketSetting.Handle
                     return ResultProvider.SetValue(ServerKey.SetValue(SocketTypeEnum.DisConnect, Key.ServName), ServerValue.SetStrValue(ServerValue.ListenedFailed, "FAIL"));
                 case SocketTypeEnum.CallBack:
                     ListenEvent.Instance().Response = Provider.DictionaryStringProvider;
-                    ResultProcess.Event.CacheProcess(Key.ServName, Provider.DictionaryStringProvider);
                     return ResultProvider.SetValue(ServerKey.SetValue(SocketTypeEnum.CallBack, Key.ServName), ServerValue.SetStrValue(ServerValue.CallBackSuccessful, "CALL"));
                 default:
                     return ResultProvider.SetValue(ServerKey.SetValue(SocketTypeEnum.Listened, Key.ServName), ServerValue.SetStrValue(ServerValue.ListenedSuccessful, "OK"));

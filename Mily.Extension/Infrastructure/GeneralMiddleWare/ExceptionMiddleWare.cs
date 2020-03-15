@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Mily.Extension.Infrastructure.Common;
+using Mily.Setting.ModelEnum;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using XExten.XCore;
 
 namespace Mily.Extension.Infrastructure.GeneralMiddleWare
 {
@@ -19,18 +21,13 @@ namespace Mily.Extension.Infrastructure.GeneralMiddleWare
         public ExceptionMiddleWare(RequestDelegate RequestDelegates)
         {
             RequestDelegate = RequestDelegates;
-            ExceptionMap = new Dictionary<int, String>
+            ExceptionMap = new Dictionary<int, String>();
+            Array Stutas = Enum.GetValues(typeof(ResponseEnum));
+            for (int Item = 0; Item < Stutas.Length; Item++)
             {
-                { 400, "错误请求" },
-                { 401, "未授权请求" },
-                { 403, "拒绝授权请求" },
-                { 404, "页面丢失" },
-                { 500, "内部服务器错误" },
-                { 501, "不支持的请求"},
-                { 502, "错误的网关"},
-                { 503, "服务不可用"},
-                { 504, "网关超时" },
-            };
+                var CodeResponse = (ResponseEnum)Stutas.GetValue(Item);
+                ExceptionMap.Add((int)CodeResponse, CodeResponse.ToDescription());
+            }
         }
 
         public async Task Invoke(HttpContext Context)
@@ -58,7 +55,7 @@ namespace Mily.Extension.Infrastructure.GeneralMiddleWare
                     Ex = new Exception(ErrorMsg);
                     if (Ex != null)
                     {
-                        ResultCondition Result = new ResultCondition() { IsSuccess = false, Info = Ex.Message, StatusCode = Context.Response.StatusCode };
+                        ResultCondition Result = new ResultCondition() { IsSuccess = false, Info = Ex.Message, StatusCode = Context.Response.StatusCode,ServerTime=DateTime.Now };
                         Context.Response.ContentType = "application/json";
                         await Context.Response.WriteAsync(JsonConvert.SerializeObject(Result), Encoding.UTF8);
                     }

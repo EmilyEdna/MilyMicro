@@ -10,15 +10,16 @@ namespace Mily.Extension.Infrastructure.Common
         public Int32 StatusCode { get; set; }
         public Object ResultData { get; set; }
         public String Info { get; set; }
+        public DateTime ServerTime { get; set; }
 
         public static ResultCondition Instance(Object Param)
         {
             return new ResultCondition() { ResultData = Param };
         }
 
-        public static ResultCondition Instance(Boolean Flag, Int32 Code, Object Param, String Msg)
+        public static ResultCondition Instance(Boolean Flag, Int32 Code, Object Param, String Msg, DateTime Time)
         {
-            return new ResultCondition() { IsSuccess = Flag, StatusCode = Code, ResultData = Param, Info = Msg };
+            return new ResultCondition() { IsSuccess = Flag, StatusCode = Code, ResultData = Param, Info = Msg, ServerTime = Time };
         }
     }
 }

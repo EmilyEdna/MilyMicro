@@ -15,7 +15,7 @@
                            icon="el-icon-delete"
                            class="handle-del mr5"
                            @click="DeleteSelected">批量删除</el-button>
-                <router-link :to="{name:'MenuAdd'}" style="padding-left:5px" class="mr10">
+                <router-link :to="Menu/Handler/AddMenu" style="padding-left:5px" class="mr10">
                     <el-button type="primary" icon="el-icon-plus" @click="AddMenu">新增</el-button>
                 </router-link>
                 <el-select v-model="query.KeyWord.MenuLv" placeholder="菜单级别" class="handle-select mr10">
