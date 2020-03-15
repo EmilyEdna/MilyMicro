@@ -23,7 +23,7 @@ service.interceptors.request.use(config => {
     return new Promise(resolve => {
         setTimeout(() => {
             resolve(config);
-        }, 2500);
+        }, 500);
     })
 }, err => {
     return Promise.reject(err);

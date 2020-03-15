@@ -68,7 +68,7 @@
                 Menu({ "Key": this.$store.state.USER.RolePermissionId }).then(res => {
                     this.Menus= res.ResultData;
                 })
-            }, 2000);
+            }, 1000);
         }
     };
 </script>

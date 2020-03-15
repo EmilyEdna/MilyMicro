@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using XExten.XCore;
 
 namespace Mily.Gateway.GatewayEvent.SocketEvent
 {
@@ -57,7 +58,10 @@ namespace Mily.Gateway.GatewayEvent.SocketEvent
                 return IsNull();
             }
             else
+            {
+                ResponseResult["ResultData"] = ResponseResult["ResultData"]?.ToString().ToModel<Object>();
                 return ResponseResult;
+            }
         }
     }
 }
