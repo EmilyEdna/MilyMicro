@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using XExten.CacheFactory;
 using XExten.Common;
 using XExten.HttpFactory;
@@ -65,23 +64,23 @@ namespace Mily.Gateway.GatewayCenter.SocketCenter.Balance
         /// </summary>
         /// <param name="Request"></param>
         /// <returns></returns>
-        public static async Task<Object> LoadBalance(Dictionary<String, Object> Request)
+        public static Object LoadBalance(Dictionary<String, Object> Request)
         {
             ServerCondition Condition = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1);
             int Seeds = (new Random(Guid.NewGuid().GetHashCode())).Next(1, 10);
-            if (Condition == null) return await Task.Run(() => Http(Request));
-            if (!Condition.UseHttp) return await Task.Run(() => TCP(Request));
+            if (Condition == null) return Http(Request);
+            if (!Condition.UseHttp) return TCP(Request);
             else
             {
-                if (Condition.HttpWeight.IsNullOrEmpty() && Condition.TcpWeight.IsNullOrEmpty()) return await Task.Run(() => TCP(Request));
-                else if (Condition.HttpWeight.IsNullOrEmpty() && !Condition.TcpWeight.IsNullOrEmpty()) return await Task.Run(() => TCP(Request));
-                else if (!Condition.HttpWeight.IsNullOrEmpty() && Condition.TcpWeight.IsNullOrEmpty()) return await Task.Run(() => Http(Request));
+                if (Condition.HttpWeight.IsNullOrEmpty() && Condition.TcpWeight.IsNullOrEmpty()) return TCP(Request);
+                else if (Condition.HttpWeight.IsNullOrEmpty() && !Condition.TcpWeight.IsNullOrEmpty()) return TCP(Request);
+                else if (!Condition.HttpWeight.IsNullOrEmpty() && Condition.TcpWeight.IsNullOrEmpty()) return Http(Request);
                 else
                 {
                     if (Condition.TcpWeight.Split(",").ToList().Min(t => Convert.ToInt32(t)) <= Seeds && Condition.TcpWeight.Split(",").ToList().Max(t => Convert.ToInt32(t)) >= Seeds)
-                        return await Task.Run(() => TCP(Request));
+                        return TCP(Request);
                     else
-                        return await Task.Run(() => Http(Request));
+                        return Http(Request);
                 }
             }
         }

@@ -7,7 +7,6 @@ using Mily.Gateway.GatewaySetting.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using XExten.CacheFactory;
 using XExten.XCore;
 
@@ -41,11 +40,11 @@ namespace Mily.Gateway.GatewayCenter.SocketCenter
 
         [Post]
         [JsonDataConvert]
-        public async Task<object >ProxyMain(IHttpContext Context)
+        public object ProxyMain(IHttpContext Context)
         {
             Console.WriteLine($"GateWay Request Params：【{Context.Data.Copy().FirstOrDefault().Value.ToJson()}】\n");
             Dictionary<String, Object> Request = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<Dictionary<String, Object>>();
-            return await SocketBalance.LoadBalance(Request);
+            return SocketBalance.LoadBalance(Request);
         }
     }
 }
