@@ -18,7 +18,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
     {
         public static ClientSend Instance => new ClientSend();
         /// <summary>
-        /// 执行方法
+        /// 返回结果给请求端
         /// </summary>
         /// <param name="Provider"></param>
         /// <param name="Response"></param>
@@ -28,7 +28,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
         {
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
             Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
-            Provider.DictionaryStringProvider = ResultCondition.Instance(true, (int)Response, Result?.ToJson(), Response.ToDescription()).ToJson().ToModel<Dictionary<String, Object>>();
+            Provider.DictionaryStringProvider = ResultCondition.Instance(true, (int)Response, Result?.ToJson(), Response.ToDescription(),DateTime.Now).ToJson().ToModel<Dictionary<String, Object>>();
             RemoveInvoke(Provider);
             return Provider;
         }
@@ -74,6 +74,13 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
         }
 
         #region 结果回调
+        /// <summary>
+        /// 分页结果
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <param name="TargetMethod"></param>
+        /// <param name="TargetCtrl"></param>
+        /// <returns></returns>
         private ResultProvider InvokePage(ResultProvider Provider, MethodInfo TargetMethod, Object TargetCtrl)
         {
             PageQuery TargetParamerter = Provider.DictionaryStringProvider.ToJson().ToModel<PageQuery>();
@@ -91,6 +98,13 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
                 else return Invoke(Provider, ResponseEnum.InternalServerError);
             }
         }
+        /// <summary>
+        /// 通常结果
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <param name="TargetMethod"></param>
+        /// <param name="TargetCtrl"></param>
+        /// <returns></returns>
         private ResultProvider InvokeProvider(ResultProvider Provider, MethodInfo TargetMethod, Object TargetCtrl)
         {
             var PreResult = (Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, new[] { Provider });
@@ -107,6 +121,13 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
                 else return Invoke(Provider, ResponseEnum.InternalServerError);
             }
         }
+        /// <summary>
+        /// 无参数结果
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <param name="TargetMethod"></param>
+        /// <param name="TargetCtrl"></param>
+        /// <returns></returns>
         private ResultProvider InvokeNull(ResultProvider Provider, MethodInfo TargetMethod, Object TargetCtrl)
         {
             var PreResult = (Task<ActionResult<Object>>)TargetMethod.Invoke(TargetCtrl, null);

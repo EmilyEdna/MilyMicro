@@ -17,42 +17,45 @@ namespace Mily.Gateway.GatewayBasic.SocketBasic.SocketSetting.Result
         /// </summary>
         /// <param name="KeyPress"></param>
         /// <param name="StringCache"></param>
+        /// <param name="CacheTime"></param>
         /// <param name="UseRedis"></param>
-        public virtual void CacheProcess(String KeyPress, Dictionary<String, Object> StringCache, bool UseRedis = false)
+        public virtual void CacheProcess(String KeyPress, Dictionary<String, Object> StringCache, int CacheTime = 5, bool UseRedis = false)
         {
             StringCache["ResultData"] = StringCache["ResultData"]?.ToString().ToModel<Object>();
             if (UseRedis)
-                Caches.RedisCacheSet(KeyPress, StringCache, 10, true);
+                Caches.RedisCacheSet(KeyPress, StringCache, CacheTime, true);
             else
-                Caches.RunTimeCacheSet(KeyPress, StringCache, 10, true);
+                Caches.RunTimeCacheSet(KeyPress, StringCache, CacheTime, true);
         }
         /// <summary>
         /// 结果缓存
         /// </summary>
         /// <param name="KeyPress"></param>
         /// <param name="ObjectCache"></param>
+        /// <param name="CacheTime"></param>
         /// <param name="UseRedis"></param>
-        public virtual void CacheProcess(String KeyPress, Dictionary<Object, Object> ObjectCache, bool UseRedis = false)
+        public virtual void CacheProcess(String KeyPress, Dictionary<Object, Object> ObjectCache, int CacheTime = 5, bool UseRedis = false)
         {
             ObjectCache["ResultData"] = ObjectCache["ResultData"].ToString().ToModel<Object>();
             if (UseRedis)
-                Caches.RedisCacheSet(KeyPress, ObjectCache, 10, true);
+                Caches.RedisCacheSet(KeyPress, ObjectCache, CacheTime, true);
             else
-                Caches.RunTimeCacheSet(KeyPress, ObjectCache, 10, true);
+                Caches.RunTimeCacheSet(KeyPress, ObjectCache, CacheTime, true);
         }
         /// <summary>
         /// 结果缓存
         /// </summary>
         /// <param name="KeyPress"></param>
         /// <param name="DynamicCache"></param>
+        /// <param name="CacheTime"></param>
         /// <param name="UseRedis"></param>
-        public virtual void CacheProcess(String KeyPress, dynamic DynamicCache, bool UseRedis = false)
+        public virtual void CacheProcess(String KeyPress, dynamic DynamicCache, int CacheTime = 5, bool UseRedis = false)
         {
             DynamicCache.ResultData = DynamicCache.ResultData.ToString().ToModel<Object>();
             if (UseRedis)
-                Caches.RedisCacheSet(KeyPress, DynamicCache, 10, true);
+                Caches.RedisCacheSet(KeyPress, DynamicCache, CacheTime, true);
             else
-                Caches.RunTimeCacheSet(KeyPress, DynamicCache, 10, true);
+                Caches.RunTimeCacheSet(KeyPress, DynamicCache, CacheTime, true);
         }
         /// <summary>
         /// 获取结果

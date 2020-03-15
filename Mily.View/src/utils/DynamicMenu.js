@@ -6,12 +6,13 @@ import { Router } from './ApiFactory';
 /**
  * 初始化路由
  * */
-const InitRouter = async () => {
+const InitRouter = () => {
     if (store.getters.IsLogin) {
         let Params = { "Key": store.state.USER.RolePermissionId };
-        let res = await Router(Params);
-        InitRouterCollection(res.ResultData);
-        store.commit('ChangeUserRoleRouter', res.ResultData);
+        Router(Params).then(res => {
+            InitRouterCollection(res.ResultData);
+            store.commit('ChangeUserRoleRouter', res.ResultData);
+        });
     }
 }
 
@@ -23,17 +24,17 @@ const InitRouterCollection = (data) => {
     let Path = [];
     data.forEach(item => {
         Path.push({
-            "path": "/" + item.MenuPath,
+            "path": "/" + item.PathRoad,
             "name": item.Title,
-            "component": item.RouterPath,
+            "component": item.PathRouter,
             "meta": { "title": item.Title },
             children: []
         });
         item.ChildFeatures.forEach((items, index) => {
             Path[index].children.push({
-                "path": "/" + items.MenuPath,
+                "path": "/" + items.PathRoad,
                 "name": items.Title,
-                "component": items.RouterPath,
+                "component": items.PathRouter,
                 "meta": { "title": items.Title },
             })
         });
