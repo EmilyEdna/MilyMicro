@@ -41,7 +41,7 @@ namespace Mily.Gateway.GatewayCenter.SocketCenter
 
         [Post]
         [JsonDataConvert]
-        public async Task<object >ProxyMain(IHttpContext Context)
+        public async Task<Object>ProxyMain(IHttpContext Context)
         {
             Console.WriteLine($"GateWay Request Params：【{Context.Data.Copy().FirstOrDefault().Value.ToJson()}】\n");
             Dictionary<String, Object> Request = Context.Data.Copy().FirstOrDefault().Value.ToJson().ToModel<Dictionary<String, Object>>();
