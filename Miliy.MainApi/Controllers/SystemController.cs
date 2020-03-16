@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.Attributes;
 using Mily.Extension.Authentication.JwtAuthentication;
-using Mily.Extension.Constant;
 using Mily.Setting.ModelEnum;
 using System;
 using System.Threading.Tasks;
