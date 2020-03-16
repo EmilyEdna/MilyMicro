@@ -28,7 +28,15 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
         {
             String Method = Provider.DictionaryStringProvider["Method"].ToString();
             Provider.ObjectProvider = ClientKey.SetValue(NetTypeEnum.Listened, Method);
-            Provider.DictionaryStringProvider = ResultCondition.Instance(true, (int)Response, Result?.ToJson(), Response.ToDescription()).ToJson().ToModel<Dictionary<String, Object>>();
+            ResultCondition Condition = ResultCondition.Instance(Item =>
+            {
+                Item.IsSuccess = false;
+                Item.StatusCode = (int)Response;
+                Item.ResultData = Result?.ToJson();
+                Item.Info = Response.ToDescription();
+                Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH：mm：ss：ffff");
+            });
+            Provider.DictionaryStringProvider = Condition.ToJson().ToModel<Dictionary<String, Object>>();
             RemoveInvoke(Provider);
             return Provider;
         }

@@ -55,7 +55,14 @@ namespace Mily.Extension.Infrastructure.GeneralMiddleWare
                     Ex = new Exception(ErrorMsg);
                     if (Ex != null)
                     {
-                        ResultCondition Result = new ResultCondition() { IsSuccess = false, Info = Ex.Message, StatusCode = Context.Response.StatusCode };
+                        ResultCondition Result = ResultCondition.Instance(Item =>
+                        {
+                            Item.IsSuccess = false;
+                            Item.Info = Ex.Message;
+                            Item.StatusCode = Context.Response.StatusCode;
+                            Item.ResultData = null;
+                            Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH：mm：ss：ffff");
+                        });
                         Context.Response.ContentType = "application/json";
                         await Context.Response.WriteAsync(JsonConvert.SerializeObject(Result), Encoding.UTF8);
                     }

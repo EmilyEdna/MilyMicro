@@ -36,7 +36,7 @@ namespace Mily.Extension.InitSystem
             });
             App.Instruct(Environment, Builder);
             //初始化Socket相关组件
-            InitSocketProxy.InitSocketDependency();
+            InitSocketProxy.InitSocketDependency(false);
         }
     }
 }

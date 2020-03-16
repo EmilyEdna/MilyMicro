@@ -34,7 +34,15 @@ namespace Mily.Extension.Filters
                 LogFactoryExtension.WriteError(Path, MethodName, Parameter, Message, WebPath);
                 return;
             }
-            ResultCondition Result = ResultCondition.Instance(true, Context.HttpContext.Response.StatusCode, (Context.Result as ObjectResult).Value, "执行成功!");
+            ResultCondition Condition = ResultCondition.Instance(Item =>
+            {
+                Item.IsSuccess = true;
+                Item.StatusCode = Context.HttpContext.Response.StatusCode;
+                Item.ResultData = (Context.Result as ObjectResult).Value;
+                Item.Info = "执行成功!";
+                Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH：mm：ss：ffff");
+            });
+            ResultCondition Result = Condition;
             Context.Result = new ObjectResult(Result);
         }
 
