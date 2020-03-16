@@ -2,12 +2,129 @@ import axios from 'axios';
 import cookie from 'js-cookie';
 import lzstring from 'lz-string'
 
-const service = axios.create({
-    baseURL: 'http://127.0.0.1:8520/Proxy/',
-    timeout: 3000,
-    headers: { "Content-Type": "application/json" },
-    withCredentials: false,
-});
+let PendingRqesut = [];
+// 默认把请求视为切换路由就会把pending状态的请求取消，false为不取消
+
+//https://juejin.im/post/5d441a98e51d4561db5e39ee
+/**
+ * 创建请求
+ */
+const service = () => {
+    let Instance = axios.create({
+        baseURL: 'http://127.0.0.1:8520/Proxy/',
+        timeout: 3000,
+        headers: { "Content-Type": "application/json" },
+        withCredentials: false,
+    });
+    // 默认把请求视为切换路由就会把pending状态的请求取消，false为不取消
+    Instance.defaults.routeChangeCancel = true;
+    // 请求拦截
+    instance.interceptors.request.use(ReqeustFilter, error => Promise.reject(error));
+    // 响应拦截
+    instance.interceptors.response.use(res => {
+        handleResponseIntercept(res.config);
+        return response.data.Data;
+    }, error => { });
+}
+/**
+ * 请求拦截器
+ * @param {any} config
+ */
+const ReqeustFilter = option => {
+    // 区别请求的唯一标识，这里用方法名+请求路径
+    // 如果一个项目里有多个不同baseURL的请求
+    // 可以改成`${option.method} ${option.baseURL}${option.url}`
+    let RequestMark = `${option.method}[${option.url}]`;
+    // 找当前请求的标识是否存在PendingRqesut中，即是否重复请求了
+    let MarkIndex = PendingRqesut.findIndex(item => {
+        return item.name === RequestMark;
+    });
+    //存在，说明重复了
+    if (MarkIndex > -1) {
+        // 取消上个重复的请求
+        PendingRqesut[MarkIndex].cancel();
+        // 删掉在pendingRequest中的请求标识
+        PendingRqesut.splice(MarkIndex, 1);
+    }
+    // （重新）新建针对这次请求的axios的cancelToken标识
+    const CancelToken = axios.CancelToken;
+    const Source = CancelToken.source();
+    config.cancelToken = Source.token;
+    // 设置自定义配置RequestMark项，主要用于响应拦截中
+    option.Mark = RequestMark;
+    // 记录本次请求的标识
+    PendingRqesut.push({
+        name: RequestMark,
+        cancel: Source.cancel,
+        routeChangeCancel: option.routeChangeCancel // 可能会有优先级高于默认设置的routeChangeCancel项值
+    });
+    let Head = JSON.parse(lzstring.decompressFromBase64(option.headers.Author));
+    if (!Head.Cross) {
+        //如果登录了就把cookie设置到头里
+        option.data.Global = cookie.get("Global");
+        option.headers["Authorization"] = cookie.get("Authorization");
+    }
+    option.data = JSON.stringify(option.data);
+    return option;
+}
+/**
+ * 响应拦截器
+ * @param {any} option
+ */
+const ResponseFilter = option => {
+    // 根据请求拦截里设置的RequestMark配置来寻找对应PendingRqesut里对应的请求标识
+    let MarkIndex = PendingRqesut.findIndex(item => {
+        return item.name === option.Mark;
+    });
+    // 找到了就删除该标识
+    if (MarkIndex > -1)
+        pendingRequest.splice(MarkIndex, 1);
+    let Head = JSON.parse(lzstring.decompressFromBase64(response.option.headers.Author));
+    if (Head.Cross) {
+        cookie.set("Global", lzstring.compressToBase64(response.data.Data.ResultData.Data.KeyId));
+        cookie.set("Authorization", response.data.Data.ResultData.AuthorToken);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
  *处理请求
