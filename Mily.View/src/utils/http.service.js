@@ -21,10 +21,33 @@ const service = () => {
     // 请求拦截
     instance.interceptors.request.use(ReqeustFilter, error => Promise.reject(error));
     // 响应拦截
-    instance.interceptors.response.use(res => {
-        handleResponseIntercept(res.config);
+    instance.interceptors.response.use(response => {
+        ResponseFilter(response);
         return response.data.Data;
-    }, error => { });
+    }, error => {
+            let ErrorFormat = {};
+            let Response = error.response;
+            // 请求已发出，但服务器响应的状态码不在 2xx 范围内
+            if (Response) {
+                handleResponseIntercept(Response.config);
+                // 设置返回的错误对象格式（按照自己项目实际需求）
+                errorFormat = {
+                    status: response.status,
+                    data: response.data.Data
+                };
+            }
+            // 如果是主动取消了请求，做个标识
+            if (axios.isCancel(error)) {
+                ErrorFormat.SelfCancel = true;
+            }
+            // 其实还有一个情况
+            // 在设置引发错误的请求时，error.message才是错误信息
+            // 但我觉得这个一般是脚本错误，我们项目提示也不应该提示脚本错误给用户看，一般都是我们自定义一些默认错误提示，如“创建成功！”
+            // 所以这里不针对此情况做处理。
+
+            return Promise.reject(errorFormat);
+    });
+    return Instance;
 }
 /**
  * 请求拦截器
@@ -71,59 +94,20 @@ const ReqeustFilter = option => {
  * 响应拦截器
  * @param {any} option
  */
-const ResponseFilter = option => {
+const ResponseFilter = setting => {
     // 根据请求拦截里设置的RequestMark配置来寻找对应PendingRqesut里对应的请求标识
     let MarkIndex = PendingRqesut.findIndex(item => {
-        return item.name === option.Mark;
+        return item.name === setting.config.Mark;
     });
     // 找到了就删除该标识
     if (MarkIndex > -1)
         pendingRequest.splice(MarkIndex, 1);
-    let Head = JSON.parse(lzstring.decompressFromBase64(response.option.headers.Author));
+    let Head = JSON.parse(lzstring.decompressFromBase64(setting.option.headers.Author));
     if (Head.Cross) {
-        cookie.set("Global", lzstring.compressToBase64(response.data.Data.ResultData.Data.KeyId));
-        cookie.set("Authorization", response.data.Data.ResultData.AuthorToken);
+        cookie.set("Global", lzstring.compressToBase64(setting.data.Data.ResultData.Data.KeyId));
+        cookie.set("Authorization", setting.data.Data.ResultData.AuthorToken);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*
