@@ -77,6 +77,9 @@
     <Content Include="src\utils\http.service.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="src\utils\Request.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\views\Menu\Handler\AddMenu.vue" />
     <Content Include="src\views\Menu\SysMenu.vue">
       <SubType>Code</SubType>
