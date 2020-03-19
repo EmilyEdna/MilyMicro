@@ -6,13 +6,12 @@ import { Router } from './ApiFactory';
 /**
  * 初始化路由
  * */
-const InitRouter = () => {
+const InitRouter = async () => {
     if (store.getters.IsLogin) {
         let Params = { "Key": store.state.USER.RolePermissionId };
-        Router(Params).then(res => {
-            InitRouterCollection(res.ResultData);
-            store.commit('ChangeUserRoleRouter', res.ResultData);
-        });
+        let res = await Router(Params);
+        InitRouterCollection(res.ResultData);
+        store.commit('ChangeUserRoleRouter', res.ResultData);
     }
 }
 

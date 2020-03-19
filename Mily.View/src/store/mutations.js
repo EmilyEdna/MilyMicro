@@ -12,7 +12,7 @@ const mutations = {
         sessionStorage.IsLogin = Object ? true : false;
     },
     /**
-     * 设置用户的权限菜单
+     * 设置用路由权限
      * @param {any} State
      * @param {any} Object
      */

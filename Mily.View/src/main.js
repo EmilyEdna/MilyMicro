@@ -25,7 +25,7 @@ Vue.use(ElementUI, {
 });
 
 if (Session.IsLogin && !store.getters.IsLogin) store.commit("ChangeUserLocalStorage", Local.USER);
-if (Session.IsLoadRouter && !store.getters.IsLoadRouter) store.commit("ChangeUserRoleRouter", Local.RoleMenu);
+if (Session.IsLoadRouter && !store.getters.IsLoadRouter) store.commit("ChangeUserRoleRouter", Local.RoleRouter);
 
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title}|后台管理系统`;
