@@ -34,7 +34,8 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
                 Item.StatusCode = (int)Response;
                 Item.ResultData = Result?.ToJson();
                 Item.Info = Response.ToDescription();
-                Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH：mm：ss：ffff");
+                Item.ServerDateStr = DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒ffff毫秒");
+                Item.ServerDateLong = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddhhmmssffff"));
             });
             Provider.DictionaryStringProvider = Condition.ToJson().ToModel<Dictionary<String, Object>>();
             RemoveInvoke(Provider);

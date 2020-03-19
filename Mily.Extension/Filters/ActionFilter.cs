@@ -40,7 +40,8 @@ namespace Mily.Extension.Filters
                 Item.StatusCode = Context.HttpContext.Response.StatusCode;
                 Item.ResultData = (Context.Result as ObjectResult).Value;
                 Item.Info = "执行成功!";
-                Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH：mm：ss：ffff");
+                Item.ServerDateStr = DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒ffff毫秒");
+                Item.ServerDateLong = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddhhmmssffff"));
             });
             ResultCondition Result = Condition;
             Context.Result = new ObjectResult(Result);

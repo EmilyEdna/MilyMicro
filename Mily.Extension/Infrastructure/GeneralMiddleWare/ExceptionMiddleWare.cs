@@ -61,7 +61,8 @@ namespace Mily.Extension.Infrastructure.GeneralMiddleWare
                             Item.Info = Ex.Message;
                             Item.StatusCode = Context.Response.StatusCode;
                             Item.ResultData = null;
-                            Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH：mm：ss：ffff");
+                            Item.ServerDateStr = DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒ffff毫秒");
+                            Item.ServerDateLong = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddhhmmssffff"));
                         });
                         Context.Response.ContentType = "application/json";
                         await Context.Response.WriteAsync(JsonConvert.SerializeObject(Result), Encoding.UTF8);

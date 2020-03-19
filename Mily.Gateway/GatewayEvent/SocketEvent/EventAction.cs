@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,10 +8,11 @@ using XExten.XCore;
 
 namespace Mily.Gateway.GatewayEvent.SocketEvent
 {
-    public class EventAction
+    public class EventAction 
     {
         private Dictionary<String, Object> ResponseResult;
-        private static readonly Dictionary<String, EventAction> Cache = new Dictionary<string, EventAction>();
+        private static readonly Dictionary<String, EventAction> Cache = new Dictionary<String, EventAction>();
+        private static readonly ConcurrentDictionary<String, Object> ThreadResult = new ConcurrentDictionary<String, Object>();
         /// <summary>
         /// 实例
         /// </summary>
@@ -59,9 +61,28 @@ namespace Mily.Gateway.GatewayEvent.SocketEvent
             }
             else
             {
-                ResponseResult["ResultData"] = ResponseResult["ResultData"]?.ToString().ToModel<Object>();
-                return ResponseResult;
+                Dispose();
+                var Key = ResponseResult["ServerDateStr"].ToString();
+                //判断有这个重复键则
+                if (ThreadResult.ContainsKey(Key))
+                {
+                    Thread.Sleep(100);
+                    return IsNull();
+                }
+                else
+                {
+                    ResponseResult["ResultData"] = ResponseResult["ResultData"]?.ToString().ToModel<Object>();
+                    ThreadResult.GetOrAdd(Key, ResponseResult["ServerDateLong"]);
+                    return ResponseResult;
+                }
             }
+        }
+        /// <summary>
+        /// 每次满足100则清理
+        /// </summary>
+        protected void Dispose() {
+            if (ThreadResult.Count > 100)
+                ThreadResult.Clear();
         }
     }
 }

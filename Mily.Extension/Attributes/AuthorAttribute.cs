@@ -39,7 +39,8 @@ namespace Mily.Extension.Attributes
                     Item.StatusCode = StatusCodes.Status401Unauthorized;
                     Item.ResultData = null;
                     Item.Info = ResponseEnum.Unauthorized.ToDescription();
-                    Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH：mm：ss：ffff");
+                    Item.ServerDateStr = DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒ffff毫秒");
+                    Item.ServerDateLong = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddhhmmssffff"));
                 });
                 context.Result = new ObjectResult(Result);
             }
