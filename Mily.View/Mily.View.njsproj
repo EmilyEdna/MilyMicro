@@ -68,14 +68,17 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\router\router.js" />
-    <Content Include="src\utils\ApiFactory.js">
+    <Content Include="src\functions\ApiFactory.js">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="src\utils\DynamicMenu.js">
+    <Content Include="src\functions\DynamicMenu.js">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="src\utils\http.service.js" />
-    <Content Include="src\utils\Request.js">
+    <Content Include="src\functions\http.service.js" />
+    <Content Include="src\functions\Request.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\validate\RouterValidate.js">
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\views\Menu\Handler\AddMenu.vue" />
@@ -95,9 +98,10 @@
     <Folder Include="src\components\Common\" />
     <Folder Include="src\components\Common\Js\" />
     <Folder Include="src\extension\" />
+    <Folder Include="src\validate\" />
     <Folder Include="src\store\" />
     <Folder Include="src\views\" />
-    <Folder Include="src\utils\" />
+    <Folder Include="src\functions\" />
     <Folder Include="src\router\" />
     <Folder Include="src\views\Menu\" />
     <Folder Include="src\views\Menu\Handler\" />

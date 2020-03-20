@@ -6,7 +6,7 @@ import store from './store/store'
 import cookie from 'js-cookie';
 import { Session } from './extension/session'
 import { Local } from './extension/local'
-import dynamic from './utils/DynamicMenu';
+import RouterCheck from './validate/RouterValidate'
 import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 import './assets/css/icon.css';
 /*
@@ -31,17 +31,11 @@ router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title}|后台管理系统`;
     const global = cookie.get("Global");
     //Cookie不存在未登录
-    if (!global && to.path !== '/login') {
-        next("/login");
-    } else {
-        if (!store.getters.IsLoadRouter) {
-            dynamic();
-        }
-        next();
-    }
+    if (!global && to.path !== '/login') next("/login");
+    else RouterCheck(next);
 })
 
-new Vue({
+ new Vue({
     router,
     store,
     render: h => h(App)

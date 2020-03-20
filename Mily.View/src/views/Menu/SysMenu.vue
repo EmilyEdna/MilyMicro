@@ -54,7 +54,6 @@
                                   :preview-src-list="[scope.row.thumb]"></el-image>
                     </template>
                 </el-table-column>-->
-                <el-table-column prop="Path" label="菜单地址" align="center"></el-table-column>
                 <el-table-column prop="RouterPath" label="路由地址" align="center"></el-table-column>
                 <el-table-column label="状态" align="center">
                     <template slot-scope="scope">
@@ -118,8 +117,8 @@
     }
 </style>
 <script>
-    import { SearchMenuPage } from '../../utils/ApiFactory';
-    import { DeleteMenu } from '../../utils/ApiFactory';
+    import { SearchMenuPage } from '../../functions/ApiFactory';
+    import { DeleteMenu } from '../../functions/ApiFactory';
     export default {
         data() {
             return {

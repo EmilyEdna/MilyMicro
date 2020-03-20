@@ -36,10 +36,10 @@ export const Menu = (param) => {
  * 获取路由
  * @param {any} param
  */
-export const Router = async (param) => {
+export const Router = (param) => {
     const target = Object.assign({}, param);
     const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
-    return await servcie({
+    return servcie({
         url: "Main/System/GetMenuRouter/ProxyMain",
         method: 'post',
         data: target,
