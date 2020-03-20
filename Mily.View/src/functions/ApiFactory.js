@@ -21,7 +21,7 @@ export const Login = (param) => {
  * 获取菜单
  * @param {any} param
  */
-export const Menu = (param) => {
+export const RoleMenu = (param) => {
     const target = Object.assign({}, param);
     const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
     return servcie({
@@ -36,7 +36,7 @@ export const Menu = (param) => {
  * 获取路由
  * @param {any} param
  */
-export const Router = (param) => {
+export const RoleRouter = (param) => {
     const target = Object.assign({}, param);
     const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
     return servcie({

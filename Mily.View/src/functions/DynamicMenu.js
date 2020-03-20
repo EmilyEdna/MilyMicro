@@ -1,14 +1,14 @@
 import store from '../store/store';
 import router from '../router/router';
 import dynamic from '../router/dynamic'
-import { Router } from './ApiFactory';
+import { RoleRouter } from './ApiFactory';
 import { Local } from '../extension/local'
 
 /**
  * 初始化路由
  * */
 const InitRouter = async () => {
-    let res = await Router({ "Key": store.state.USER.RolePermissionId });
+    let res = await RoleRouter({ "Key": store.state.USER.RolePermissionId });
     InitRouterCollection(res.ResultData);
     store.commit('ChangeUserRoleRouter', res.ResultData);
     return true;

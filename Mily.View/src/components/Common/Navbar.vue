@@ -42,7 +42,7 @@
 
 <script>
     import bus from './Js/bus';
-    import { Menu } from '../../functions/ApiFactory';
+    import { RoleMenu } from '../../functions/ApiFactory';
     export default {
         data() {
             return {
@@ -64,7 +64,7 @@
             });
         },
         mounted() {
-            Menu({ "Key": this.$store.state.USER.RolePermissionId }).then(res => {
+            RoleMenu({ "Key": this.$store.state.USER.RolePermissionId }).then(res => {
                 this.Menus = res.ResultData;
             })
         }
