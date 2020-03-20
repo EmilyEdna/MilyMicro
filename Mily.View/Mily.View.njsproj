@@ -74,7 +74,6 @@
     <Content Include="src\functions\DynamicMenu.js">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="src\functions\http.service.js" />
     <Content Include="src\functions\Request.js">
       <SubType>Code</SubType>
     </Content>

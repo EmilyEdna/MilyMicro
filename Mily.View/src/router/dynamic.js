@@ -1,7 +1,7 @@
 /**
  * 动态路由
  * */
-let DynamicRouter = {
+var DynamicRouter = {
     routes: [
         {
             path: '/',
