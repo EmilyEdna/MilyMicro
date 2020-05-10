@@ -23,7 +23,7 @@ var DynamicRouter = {
             path: '/login',
             name:"login",
             meta: { tilte: "后台登录" },
-            component: import('../components/Basic/Login.vue')
+            component:()=> import('../components/Basic/Login.vue')
         }
     ]
 }
