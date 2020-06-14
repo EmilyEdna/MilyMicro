@@ -1,7 +1,7 @@
 ﻿using EasyNetQ;
 using EasyNetQ.Topology;
 using Mily.DbCore;
-using Mily.DbCore.Model.SystemModel;
+using Mily.DbEntity.SystemView;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
