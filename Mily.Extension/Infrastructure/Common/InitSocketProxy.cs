@@ -47,7 +47,7 @@ namespace Mily.Extension.Infrastructure.Common
                 option.SockInfoPort = MilyConfig.SocketInternal.InternalIPV4Port;
                 option.ClientPath = MilyConfig.SocketInternal.ClientInternalIPV4;
                 option.ClientPort = MilyConfig.SocketInternal.ClientInternalIPV4Port;
-            }, false);
+            });
         }
     }
 }

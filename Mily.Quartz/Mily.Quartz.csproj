@@ -7,7 +7,7 @@
     <PackageReference Include="Quartz" Version="3.0.7" />
   </ItemGroup>
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" Version="3.0.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mily.Setting\Mily.Setting.csproj" />

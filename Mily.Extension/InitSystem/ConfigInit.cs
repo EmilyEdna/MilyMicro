@@ -5,7 +5,7 @@ using Mily.Extension.FileReader;
 using Mily.Extension.Infrastructure.Common;
 using Mily.Extension.Infrastructure.GeneralMiddleWare;
 using NLog;
-
+using XExten.Profile.AspNetCore.DependencyInject;
 
 namespace Mily.Extension.InitSystem
 {
@@ -15,10 +15,10 @@ namespace Mily.Extension.InitSystem
         {
             //Nlog
             LogManager.LoadConfiguration("Nlog.config");
-            //注册异常中间件
-            App.UseMiddleware<ExceptionMiddleWare>();
             //结果中间件
             App.UseMiddleware<ResultMiddleWare>();
+            //注册异常中间件
+            App.UseMiddleware<ExceptionMiddleWare>();
             App.UseSwagger();
             App.UseSwaggerUI(opt =>
             {
@@ -35,8 +35,10 @@ namespace Mily.Extension.InitSystem
                 endpoints.MapControllers();
             });
             App.Instruct(Environment, Builder);
+            //注册TraceUI功能
+            App.UseTraceUI();
             //初始化Socket相关组件
-            InitSocketProxy.InitSocketDependency();
+            InitSocketProxy.InitSocketDependency(false);
         }
     }
 }

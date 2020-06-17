@@ -53,19 +53,22 @@ namespace Mily.Extension.Infrastructure.GeneralMiddleWare
                     else
                         ErrorMsg = ExceptionMap[Context.Response.StatusCode];
                     Ex = new Exception(ErrorMsg);
-                    if (Ex != null)
+                    if (!Context.Request.Path.Value.Contains("swagger"))
                     {
-                        ResultCondition Result = ResultCondition.Instance(Item =>
+                        if (Ex != null)
                         {
-                            Item.IsSuccess = false;
-                            Item.Info = Ex.Message;
-                            Item.StatusCode = Context.Response.StatusCode;
-                            Item.ResultData = null;
-                            Item.ServerDateStr = DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒ffff毫秒");
-                            Item.ServerDateLong = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddhhmmssffff"));
-                        });
-                        Context.Response.ContentType = "application/json";
-                        await Context.Response.WriteAsync(JsonConvert.SerializeObject(Result), Encoding.UTF8);
+                            ResultCondition Result = ResultCondition.Instance(Item =>
+                            {
+                                Item.IsSuccess = false;
+                                Item.Info = Ex.Message;
+                                Item.StatusCode = Context.Response.StatusCode;
+                                Item.ResultData = null;
+                                Item.ServerDateStr = DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒ffff毫秒");
+                                Item.ServerDateLong = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddhhmmssffff"));
+                            });
+                            Context.Response.ContentType = "application/json";
+                            await Context.Response.WriteAsync(JsonConvert.SerializeObject(Result), Encoding.UTF8);
+                        }
                     }
                 }
             }

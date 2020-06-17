@@ -11,6 +11,7 @@ using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
+using XExten.Profile.AspNetCore.DependencyInject;
 
 namespace Mily.Extension.InitSystem
 {
@@ -19,6 +20,8 @@ namespace Mily.Extension.InitSystem
         public static IServiceCollection InitServCollection(IServiceCollection Services)
         {
             AutofocManage.CreateInstance().ServiceProvider(Services);
+            //注册Tracing服务
+            Services.RegistXExtenService();
             Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
             Services.Configure<ApiBehaviorOptions>(opt =>
             {
