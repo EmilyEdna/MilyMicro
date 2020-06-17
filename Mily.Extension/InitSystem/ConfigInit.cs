@@ -38,7 +38,7 @@ namespace Mily.Extension.InitSystem
             //注册TraceUI功能
             App.UseTraceUI();
             //初始化Socket相关组件
-            InitSocketProxy.InitSocketDependency(false);
+            InitSocketProxy.InitSocketDependency();
         }
     }
 }

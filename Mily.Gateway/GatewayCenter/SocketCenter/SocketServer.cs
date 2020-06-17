@@ -22,7 +22,7 @@ namespace Mily.Gateway.GatewayCenter.SocketCenter
         {
             server.HttpRequesting += (Obj, Event) =>
             {
-                Configuration.FuncArray.ForEach(Item =>
+                foreach (var Item in Configuration.FuncArray)
                 {
                     if (Event.Request.BaseUrl.Contains(Item))
                     {
@@ -33,8 +33,9 @@ namespace Mily.Gateway.GatewayCenter.SocketCenter
                         RouteConfiger.Method = UrlList[3];
                         string Route = Caches.MongoDBCacheGet<ServerCondition>(t => t.ServiceName == RouteConfiger.Server && t.Stutas == 1).Route;
                         Event.Request.UrlRewriteTo(Route.IsNullOrEmpty() ? $"/Proxy/{Item}" : $"/Proxy/{Route}");
+                        return;
                     }
-                });
+                }
             };
         }
 
