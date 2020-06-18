@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mily.Extension\Mily.Extension.csproj" />
     <ProjectReference Include="..\Mily.OhterLogic\Mily.OhterLogic.csproj" />
   </ItemGroup>
 

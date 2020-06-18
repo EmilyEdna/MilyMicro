@@ -8,6 +8,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mily.DbCore\Mily.DbCore.csproj" />
+    <ProjectReference Include="..\Mily.Extension\Mily.Extension.csproj" />
     <ProjectReference Include="..\Mily.Setting\Mily.Setting.csproj" />
   </ItemGroup>
 </Project>
