@@ -1,7 +1,7 @@
 ﻿using BeetleX;
 using BeetleX.Clients;
 using Mily.Extension.ClientRpc.RpcSetting;
-using Mily.Extension.ClientRpc.RpcSetting.Event;
+using XExten.Profile.AspNetCore.InvokeTracing;
 using Mily.Extension.ClientRpc.RpcSetting.Handler;
 using Mily.Extension.ClientRpc.RpcSetting.Send;
 using Mily.Extension.ClientRpc.RpcSetting.View;
@@ -59,7 +59,9 @@ namespace Mily.Extension.ClientRpc
             ClientAsnyc.Connect(out bool  Connect);
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
+                ClientAsnyc.Socket.ByTraceSocket(null);
                 ResultProvider Provider = ProxyHandler.Instance.InitProxy((ResultProvider)Data);
+                ClientAsnyc.Socket.ByTraceSocket(Provider);
                 if (Client.IsConnected && Provider != null)
                     ClientSend.Instance.SendInvoke(ClientAsnyc, Provider);
             };
