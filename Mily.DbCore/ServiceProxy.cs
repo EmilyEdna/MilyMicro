@@ -5,6 +5,7 @@ using Mily.Setting;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using XExten.Profile.AspNetCore.InvokeTracing;
 using XExten.XCore;
 
 namespace Mily.DbCore
@@ -21,7 +22,7 @@ namespace Mily.DbCore
         public override Object OnExcute(dynamic Dynamic)
         {
             IInvocation Invocation = (IInvocation)Dynamic;
-            dynamic Result = Invocation.Method.Invoke(Invocation.InvocationTarget, Invocation.Arguments);
+            dynamic Result = Invocation.Method.ByTraceInvoke(Invocation.InvocationTarget, Invocation.Arguments);
             if (Result.Exception != null)
             {
                 if (Result.Exception.GetType().Name.Contains("Exception"))

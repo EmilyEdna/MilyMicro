@@ -59,9 +59,8 @@ namespace Mily.Extension.ClientRpc
             ClientAsnyc.Connect(out bool  Connect);
             ClientAsnyc.PacketReceive = (Client, Data) =>
             {
-                ClientAsnyc.Socket.ByTraceSocket(null);
+                ClientAsnyc.Socket.ByTraceSocket(Data);
                 ResultProvider Provider = ProxyHandler.Instance.InitProxy((ResultProvider)Data);
-                ClientAsnyc.Socket.ByTraceSocket(Provider);
                 if (Client.IsConnected && Provider != null)
                     ClientSend.Instance.SendInvoke(ClientAsnyc, Provider);
             };
