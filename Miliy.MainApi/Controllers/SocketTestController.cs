@@ -28,8 +28,7 @@ namespace Miliy.MainApi.Controllers
 
 
             SocketSerializeData SSD1 = new SocketSerializeData(); ;
-            SSD1.AppendRoute("TestApi/other/GetTest1");
-            SSD1.AppendSerialized("Name", "lzh");
+            SSD1.AppendRoute("TestApi/other/GetTest1").AppendSerialized("Name", "lzh");
             Call.SendInternalInfo(SSD1, new SocketSessionDefault
             {
                 SessionAccount = "admin",
