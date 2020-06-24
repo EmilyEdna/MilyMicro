@@ -8,7 +8,7 @@ import servcie from './Request'
  */
 export const Login = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify({ "Cross": "Mily", "DataBase": 1 }));
+    const Author = lzstring.compressToBase64(JSON.stringify({ "Cross": "Mily", "DataBase": 1,"Method":2 }));
     return servcie({
         url: 'Main/System/Login/ProxyMain',
         method: 'post',
@@ -23,7 +23,7 @@ export const Login = (param) => {
  */
 export const RoleMenu = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
+    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1, "Method": 2 }));
     return servcie({
         url: "Main/System/GetMenuItem/ProxyMain",
         method: 'post',
@@ -38,7 +38,7 @@ export const RoleMenu = (param) => {
  */
 export const RoleRouter = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
+    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1, "Method": 2 }));
     return servcie({
         url: "Main/System/GetMenuRouter/ProxyMain",
         method: 'post',
@@ -53,7 +53,7 @@ export const RoleRouter = (param) => {
  */
 export const SearchMenuPage = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
+    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1, "Method": 2 }));
     return servcie({
         url: "Main/System/SearchMenuItemPage/ProxyMain",
         method: 'post',

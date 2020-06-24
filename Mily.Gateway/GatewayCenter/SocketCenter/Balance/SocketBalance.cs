@@ -55,7 +55,7 @@ namespace Mily.Gateway.GatewayCenter.SocketCenter.Balance
                         .Header("Global", (Request.ContainsKey("Global") ? Request["Global"].ToString().ToLzStringDec() : null));
                 if (!Configuration.Authorization.IsNullOrEmpty())
                     Header.Header("Authorization", Configuration.Authorization);
-                return Header.AddNode(Path, Param, RequestType.POST)
+                return Header.AddNode(Path, Param, Configuration.Heads.Method)
                          .Build().RunString().FirstOrDefault().ToModel<Object>();
             }, (Ex) => { return TCP(Request); });
         }
