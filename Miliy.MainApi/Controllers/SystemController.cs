@@ -23,15 +23,16 @@ namespace Miliy.MainApi.Controllers
         /// </summary>
         /// <param name="ViewModel"></param>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        //[AcceptVerbs("GET", "POST")]
+        [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<Object>> RegistAdmin(ResultProvider Provider) => await SysService.RegistAdmin(Provider);
+        public async Task<ActionResult<Object>> RegistAdmin([FromBody]ResultProvider Provider) => await SysService.RegistAdmin(Provider);
 
         /// <summary>
         /// 登录后台API
         /// </summary>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult<Object>> Login(ResultProvider Provider)
         {
@@ -60,7 +61,7 @@ namespace Miliy.MainApi.Controllers
         /// <param name="PageIndex"></param>
         /// <param name="PageSize"></param>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpGet]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
         public async Task<ActionResult<Object>> SearchAdminPage(PageQuery Page) => await SysService.SearchAdminPage(Page);
@@ -69,7 +70,7 @@ namespace Miliy.MainApi.Controllers
         /// 逻辑删除管理员
         /// </summary>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpDelete]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
         public async Task<ActionResult<Object>> DeleteAdmin(ResultProvider Provider) => await SysService.DeleteAdmin(Provider);
@@ -79,7 +80,7 @@ namespace Miliy.MainApi.Controllers
         /// </summary>
         /// <param name="Key"></param>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpDelete]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
         public async Task<ActionResult<Object>> RemoveAdmin(ResultProvider Provider) => await SysService.RemoveAdmin(Provider);
@@ -89,16 +90,16 @@ namespace Miliy.MainApi.Controllers
         /// </summary>
         /// <param name="ViewModel"></param>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpPut]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
-        public async Task<ActionResult<Object>> EditAdmin(ResultProvider Provider) => await SysService.EditAdmin(Provider);
+        public async Task<ActionResult<Object>> EditAdmin([FromBody] ResultProvider Provider) => await SysService.EditAdmin(Provider);
 
         /// <summary>
         /// 恢复管理员数据
         /// </summary>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpGet]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
         public async Task<ActionResult<Object>> RecoveryAdminData(ResultProvider Provider) => await SysService.RecoveryAdminData(Provider);
@@ -110,7 +111,7 @@ namespace Miliy.MainApi.Controllers
         /// 获取菜单
         /// </summary>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpGet]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
         public async Task<ActionResult<Object>> GetMenuItem(ResultProvider Provider) => await SysService.GetMenuItem(Provider);
@@ -120,7 +121,7 @@ namespace Miliy.MainApi.Controllers
         /// </summary>
         /// <param name="Provider"></param>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpGet]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
         public async Task<ActionResult<Object>> GetMenuFeatures(ResultProvider Provider) => await SysService.GetMenuFeatures(Provider);
@@ -130,10 +131,10 @@ namespace Miliy.MainApi.Controllers
         /// </summary>
         /// <param name="Provider"></param>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpGet]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
-        public async Task<ActionResult<Object>> GetMenuRouter(ResultProvider Provider)=> await SysService.GetMenuRouter(Provider);
+        public async Task<ActionResult<Object>> GetMenuRouter(ResultProvider Provider) => await SysService.GetMenuRouter(Provider);
 
         #region 新增
         /// <summary>
@@ -141,10 +142,10 @@ namespace Miliy.MainApi.Controllers
         /// </summary>
         /// <param name="Provider"></param>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpPost]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
-        public async Task<Object> InsertMenuItem(ResultProvider Provider) => await SysService.InsertMenuItem(Provider);
+        public async Task<Object> InsertMenuItem([FromBody] ResultProvider Provider) => await SysService.InsertMenuItem(Provider);
 
 
         /// <summary>
@@ -152,30 +153,30 @@ namespace Miliy.MainApi.Controllers
         /// </summary>
         /// <param name="Provider"></param>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpPost]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
-        public async Task<ActionResult<Object>> InsertMenuFeatures(ResultProvider Provider) => await SysService.InsertMenuFeatures(Provider);
+        public async Task<ActionResult<Object>> InsertMenuFeatures([FromBody] ResultProvider Provider) => await SysService.InsertMenuFeatures(Provider);
 
         /// <summary>
         /// 新增菜单路由
         /// </summary>
         /// <param name="Provider"></param>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpPost]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
-        public async Task<ActionResult<Object>> InsertMenuRouter(ResultProvider Provider) => await SysService.InsertMenuRouter(Provider);
+        public async Task<ActionResult<Object>> InsertMenuRouter([FromBody] ResultProvider Provider) => await SysService.InsertMenuRouter(Provider);
 
 
         /// <summary>
         /// 新增菜单功能路由
         /// </summary>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpPost]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
-        public async Task<ActionResult<Object>> InsertMenuFeatsRouter(ResultProvider Provider) => await SysService.InsertMenuFeatsRouter(Provider);
+        public async Task<ActionResult<Object>> InsertMenuFeatsRouter([FromBody]ResultProvider Provider) => await SysService.InsertMenuFeatsRouter(Provider);
         #endregion
 
         /// <summary>
@@ -183,7 +184,7 @@ namespace Miliy.MainApi.Controllers
         /// </summary>
         /// <param name="Provider"></param>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpDelete]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
         public async Task<ActionResult<Object>> DeleteMenuItem(ResultProvider Provider) => await SysService.DeleteMenuItem(Provider);
@@ -193,7 +194,7 @@ namespace Miliy.MainApi.Controllers
         /// </summary>
         /// <param name="Page"></param>
         /// <returns></returns>
-        [AcceptVerbs("GET", "POST")]
+        [HttpGet]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
         public async Task<ActionResult<Object>> SearchMenuItemPage(PageQuery Page) => await SysService.SearchMenuItemPage(Page);

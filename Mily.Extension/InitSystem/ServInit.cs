@@ -7,6 +7,7 @@ using Mily.Extension.Authentication.CookieAuthentication;
 using Mily.Extension.Authentication.JwtAuthentication;
 using Mily.Extension.AutofacIoc;
 using Mily.Extension.Filters;
+using Mily.WebClient;
 using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
 using System.Linq;
@@ -19,9 +20,11 @@ namespace Mily.Extension.InitSystem
     {
         public static IServiceCollection InitServCollection(IServiceCollection Services)
         {
-            AutofocManage.CreateInstance().ServiceProvider(Services);
+            //注册ClientApi
+            Services.RegiestClientApi();
             //注册Tracing服务
             Services.RegistXExtenService();
+            AutofocManage.CreateInstance().ServiceProvider(Services);
             Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
             Services.Configure<ApiBehaviorOptions>(opt =>
             {

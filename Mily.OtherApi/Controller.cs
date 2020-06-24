@@ -3,11 +3,13 @@ using Mily.Extension.AutofacIoc;
 using Mily.Extension.ClientRpc.RpcSetting.Handler;
 using Mily.OhterLogic.LogicInterface;
 using Mily.Socket.SocketInterface;
+using Mily.WebClient.MainApi;
 
 namespace Mily.OtherApi
 {
-    public abstract class Controller : ControllerBase, IClientGateWayService,ISocketDependency
+    public abstract class Controller : ControllerBase, IClientGateWayService, ISocketDependency
     {
-       public  IOtherLogic OtherService = AutofocManage.CreateInstance().Resolve<IOtherLogic>();
+        public IOtherLogic OtherService = AutofocManage.CreateInstance().Resolve<IOtherLogic>();
+        public IMainApi MainApi = AutofocManage.CreateInstance().Resolve<IMainApi>();
     }
 }

@@ -23,5 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Mily.Socket\Mily.Socket.csproj" />
     <ProjectReference Include="..\Mily.ViewModels\Mily.ViewModels.csproj" />
+    <ProjectReference Include="..\Mily.WebClient\Mily.WebClient.csproj" />
   </ItemGroup>
 </Project>

@@ -9,6 +9,7 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Mily.Extension.Infrastructure.Common;
 using Mily.Setting.ModelEnum;
+using XExten.XCore;
 
 namespace Mily.Extension.Filters
 {
@@ -54,6 +55,9 @@ namespace Mily.Extension.Filters
         public void OnActionExecuting(ActionExecutingContext Context)
         {
             Object ParamType = Context.ActionArguments.Values.FirstOrDefault();
+            var ContentType = Context.HttpContext.Request.ContentType;
+            if (!ContentType.IsNullOrEmpty() && ContentType.Contains("application/json"))
+                return;
             HttpRequest Request = Context.HttpContext.Request;
             InvokeHeader(Request);
             if (ParamType?.GetType() == typeof(ResultProvider))
