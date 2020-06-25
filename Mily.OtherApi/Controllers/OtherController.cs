@@ -20,6 +20,19 @@ namespace Mily.OtherApi.Controllers
         [SocketAuthor(false)]
         public async Task<ActionResult<Object>> GetTest(ResultProvider Param)
         {
+            Param.DictionaryStringProvider = new System.Collections.Generic.Dictionary<string, object> {
+                {"Account","admin" },{"password","123" }
+            };
+            await MainApi.Login(Param);
+
+            var page = new PageQuery
+            {
+                KeyWord = new System.Collections.Generic.Dictionary<string, object>()
+                {
+                    { "Title","123" },{ "MenuLv","123"}
+                }
+            };
+            await MainApi.SearchMenuItemPage(page);
             return await Task.FromResult("我是测测试");
         }
 

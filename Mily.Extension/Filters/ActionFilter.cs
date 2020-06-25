@@ -75,39 +75,22 @@ namespace Mily.Extension.Filters
                 {
                     Request.Query.ToList().ForEach(item =>
                     {
-                        DictionaryStringProvider.Add(item.Key, item.Value.ToString());
+                        if (!item.Key.Contains("Provider"))
+                            DictionaryStringProvider.Add(item.Key, item.Value.ToString());
                     });
                     ((ResultProvider)ParamType).DictionaryStringProvider = DictionaryStringProvider;
                 }
             }
             if (ParamType?.GetType() == typeof(PageQuery))
             {
-
                 Dictionary<String, Object> Query = new Dictionary<String, Object>();
-                if (Request.Method == "POST")
+                Request.Query.ToList().ForEach(item =>
                 {
-                    Request.Form.ToList().ForEach(item =>
-                    {
-                        if (item.Key.Contains("KeyWord"))
-                        {
-                            string Key = item.Key.Split("[")[1].Split("]")[0];
-                            Query.Add(Key, item.Value.ToString());
-                        }
-                    });
-                    ((PageQuery)ParamType).KeyWord = Query;
-                }
-                else
-                {
-                    Request.Query.ToList().ForEach(item =>
-                    {
-                        if (item.Key.Contains("KeyWord"))
-                        {
-                            string Key = item.Key.Split("[")[1].Split("]")[0];
-                            Query.Add(Key, item.Value.ToString());
-                        }
-                    });
-                    ((PageQuery)ParamType).KeyWord = Query;
-                }
+                    var Key = item.Key.ToLower();
+                    if (!Key.Contains("pagesize") && !Key.Contains("pageindex"))
+                        Query.Add(Key, item.Value.ToString());
+                });
+                ((PageQuery)ParamType).KeyWord = Query;
             }
         }
 
