@@ -33,6 +33,10 @@ namespace Mily.Setting
         /// </summary>
         public static String CacheKey { get; set; }
         /// <summary>
+        /// 使用WebClient时需求缓存的Key
+        /// </summary>
+        public static String MicroKey { get; set; }
+        /// <summary>
         /// 记录名称
         /// </summary>
         public static String Discovery { get; set; }

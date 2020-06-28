@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WebApiClientCore;
 using XExten.XPlus;
 
-namespace Mily.WebClient
+namespace Mily.Extension.WebClientCore
 {
     public static class WebClientServiceCollection
     {
@@ -18,7 +18,7 @@ namespace Mily.WebClient
         public static IServiceCollection RegiestClientApi(this IServiceCollection Services)
         {
             var Assemlies = XPlusEx.XAssembly();
-            var Types = Assemlies.SelectMany(t=>t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IHttpApi))));
+            var Types = Assemlies.SelectMany(t => t.ExportedTypes.Where(x => x.GetInterfaces().Contains(typeof(IHttpApi))));
             foreach (var Item in Types)
             {
                 Services.AddHttpApi(Item, opt =>

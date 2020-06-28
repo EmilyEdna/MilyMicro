@@ -7,7 +7,7 @@ using Mily.Extension.Authentication.CookieAuthentication;
 using Mily.Extension.Authentication.JwtAuthentication;
 using Mily.Extension.AutofacIoc;
 using Mily.Extension.Filters;
-using Mily.WebClient;
+using Mily.Extension.WebClientCore;
 using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
 using System.Linq;

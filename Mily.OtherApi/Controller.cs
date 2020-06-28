@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.AutofacIoc;
 using Mily.Extension.ClientRpc.RpcSetting.Handler;
+using Mily.Extension.WebClientCore.MainApi;
 using Mily.OhterLogic.LogicInterface;
 using Mily.Socket.SocketInterface;
-using Mily.WebClient.MainApi;
 
 namespace Mily.OtherApi
 {

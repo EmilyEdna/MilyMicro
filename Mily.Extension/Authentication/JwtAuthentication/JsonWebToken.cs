@@ -1,10 +1,12 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Mily.Setting;
 using Mily.Setting.ModelEnum;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using XExten.CacheFactory;
 using XExten.XPlus;
 
 namespace Mily.Extension.Authentication.JwtAuthentication
@@ -27,7 +29,10 @@ namespace Mily.Extension.Authentication.JwtAuthentication
         {
             JsonWebToken Author = new JsonWebToken();
             Action(Author);
-            return XPlusEx.XTry(() => Author.GetAuthorToken(), (Ex) => Ex.Message);
+            String Token = XPlusEx.XTry(() => Author.GetAuthorToken(), (Ex) => Ex.Message);
+            MilyConfig.MicroKey = $"{Author.KeyId}_{Author.UserName}";
+            Caches.RedisCacheSet(MilyConfig.MicroKey, Token, 120);
+            return Token;
         }
         private string GetAuthorToken()
         {
