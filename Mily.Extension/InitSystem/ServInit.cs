@@ -7,6 +7,7 @@ using Mily.Extension.Authentication.CookieAuthentication;
 using Mily.Extension.Authentication.JwtAuthentication;
 using Mily.Extension.AutofacIoc;
 using Mily.Extension.Filters;
+using Mily.Extension.Formatters;
 using Mily.Extension.WebClientCore;
 using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
@@ -53,6 +54,8 @@ namespace Mily.Extension.InitSystem
             {
                 opt.Filters.Add(typeof(ActionFilter));
                 opt.RespectBrowserAcceptHeader = true;
+                opt.InputFormatters.Clear();
+                opt.InputFormatters.Add(new ContentRequestFormatter());
             }).AddNewtonsoftJson(opt =>
             {
                 opt.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
