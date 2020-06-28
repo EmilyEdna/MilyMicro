@@ -2,13 +2,34 @@ import lzstring from 'lz-string'
 import servcie from './Request'
 
 
+
+
+/**
+ *  DataBase ->0 MSSQL
+ *           ->1 MSSQL
+ *           ->2 MYSQL
+ *           ->3 ORACLE
+ *           ->4 SQLITE
+ *           ->5 POSTGRESQL
+ *           
+ *  Method   ->1 POST
+ *           ->2 GET
+ *           ->3 DELETE
+ *           ->4 PUT
+ * 
+ * */
+var defaultOpt = {
+    DataBase: 1,
+    Method:2
+}
+
 /**
  * 登录
  * @param {any} param
  */
 export const Login = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify({"DataBase": 1,"Method":2 }));
+    const Author = lzstring.compressToBase64(JSON.stringify(defaultOpt));
     return servcie({
         url: 'Main/System/Login/ProxyMain',
         method: 'post',
@@ -23,7 +44,7 @@ export const Login = (param) => {
  */
 export const RoleMenu = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1, "Method": 2 }));
+    const Author = lzstring.compressToBase64(JSON.stringify(defaultOpt));
     return servcie({
         url: "Main/System/GetMenuItem/ProxyMain",
         method: 'post',
@@ -38,7 +59,7 @@ export const RoleMenu = (param) => {
  */
 export const RoleRouter = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1, "Method": 2 }));
+    const Author = lzstring.compressToBase64(JSON.stringify(defaultOpt));
     return servcie({
         url: "Main/System/GetMenuRouter/ProxyMain",
         method: 'post',
@@ -53,7 +74,7 @@ export const RoleRouter = (param) => {
  */
 export const SearchMenuPage = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1, "Method": 2 }));
+    const Author = lzstring.compressToBase64(JSON.stringify(defaultOpt));
     return servcie({
         url: "Main/System/SearchMenuItemPage/ProxyMain",
         method: 'post',
@@ -68,7 +89,8 @@ export const SearchMenuPage = (param) => {
  */
 export const DeleteMenu = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify({ "DataBase": 1 }));
+    defaultOpt.Method = 3;
+    const Author = lzstring.compressToBase64(JSON.stringify(defaultOpt));
     return servcie({
         url: "Main/System/DeleteMenuItem/ProxyMain",
         method: 'post',
