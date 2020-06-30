@@ -32,49 +32,6 @@ namespace Mily.DbCore
         public static readonly IDictionary<string, string> AdoSQL = MilyConfig.XmlSQL;
 
         /// <summary>
-        /// 获取连接客服端
-        /// </summary>
-        /// <returns></returns>
-        private static SqlSugarClient Emily
-        {
-            get
-            {
-
-                List<ConnectionConfig> Configs = new List<ConnectionConfig> {
-                    new ConnectionConfig() {
-                    ConfigId="MSSQL",
-                    ConnectionString =string.Format(MilyConfig.ConnectionStrings.ConnectionString1,TargetDbName),
-                    DbType = DbType.SqlServer,
-                    IsAutoCloseConnection = true,
-                    InitKeyType = InitKeyType.Attribute,
-                    IsShardSameThread=true,
-                    SlaveConnectionConfigs = new List<SlaveConnectionConfig>() { new SlaveConnectionConfig()  {
-                        HitRate =100, ConnectionString=MilyConfig.ConnectionStrings.ConnectionStringSlave}
-                    }},
-                    #if RELEASE
-                    new ConnectionConfig() {
-                    ConfigId="MYSQL",
-                    ConnectionString = string.Format(MilyConfig.ConnectionStrings.ConnectionString2,TargetDbName),
-                    DbType = DbType.MySql,
-                    IsAutoCloseConnection = true,
-                    InitKeyType = InitKeyType.Attribute,
-                    IsShardSameThread=true,
-                    SlaveConnectionConfigs = new List<SlaveConnectionConfig>() { new SlaveConnectionConfig()  {
-                        HitRate =100, ConnectionString=MilyConfig.ConnectionStrings.ConnectionStringSlave}
-                    }},
-                    #endif
-                };
-                SqlSugarClient Db = new SqlSugarClient(Configs);
-                return Db;
-            }
-        }
-
-        /// <summary>
-        /// 目标库
-        /// </summary>
-        private static string TargetDbName { get; set; }
-
-        /// <summary>
         /// 数据库类型切换
         /// </summary>
         public static DBTypeEnum TypeAttrbuite { get; set; }
@@ -84,75 +41,51 @@ namespace Mily.DbCore
         /// </summary>
         /// <param name="InitDbTable"></param>
         /// <returns></returns>
-        public static SqlSugarClient DbContext(string DbName = null, bool InitDbTable = false)
+        public static SqlSugarClient DbContext(string TargetDbName = null, bool InitDbTable = false)
         {
-            if (DbName.IsNullOrEmpty())
+            if (TargetDbName.IsNullOrEmpty())
                 TargetDbName = MilyConfig.Default;
-            else
-                TargetDbName = MilyConfig.DbName.Where(Name => Name.Equals(DbName)).FirstOrDefault().IsNullOrEmpty() ? MilyConfig.Default : MilyConfig.DbName.Where(Name => Name.Equals(DbName)).FirstOrDefault();
-            return TypeAttrbuite switch
-            {
-                DBTypeEnum.MSSQL => DB_MSSQL(InitDbTable),
-                DBTypeEnum.MYSQL => DB_MYSQL(InitDbTable),
-                _ => DB_MSSQL(InitDbTable)
+            List<ConnectionConfig> Configs = new List<ConnectionConfig> {
+               new ConnectionConfig() {
+               ConfigId="MSSQL",
+               ConnectionString =string.Format(MilyConfig.ConnectionStrings.ConnectionString1,TargetDbName),
+               DbType = DbType.SqlServer,
+               IsAutoCloseConnection = true,
+               InitKeyType = InitKeyType.Attribute,
+               IsShardSameThread=true,
+               AopEvents = new AopEvents(),
+               SlaveConnectionConfigs = new List<SlaveConnectionConfig>() { new SlaveConnectionConfig()  {
+                   HitRate =100, ConnectionString=MilyConfig.ConnectionStrings.ConnectionStringSlave}
+               }},
+               #if RELEASE
+               new ConnectionConfig() {
+               ConfigId="MYSQL",
+               ConnectionString = string.Format(MilyConfig.ConnectionStrings.ConnectionString2,TargetDbName),
+               DbType = DbType.MySql,
+               IsAutoCloseConnection = true,
+               InitKeyType = InitKeyType.Attribute,
+               IsShardSameThread=true,
+               AopEvents = new AopEvents(),
+               SlaveConnectionConfigs = new List<SlaveConnectionConfig>() { new SlaveConnectionConfig()  {
+                   HitRate =100, ConnectionString=MilyConfig.ConnectionStrings.ConnectionStringSlave}
+               }},
+               #endif
             };
-        }
-
-        /// <summary>
-        /// 切换数据为MYSQL
-        /// </summary>
-        /// <param name="InitDbTable"></param>
-        /// <returns></returns>
-        private static SqlSugarClient DB_MYSQL(bool InitDbTable)
-        {
-            Emily.ChangeDatabase("MYSQL");//切换数据库
-            Emily.DbMaintenance.CreateDatabase();//执行迁移
-            Emily.CurrentConnectionConfig.ConfigureExternalServices = new ConfigureExternalServices
+            SqlSugarClient Emily = new SqlSugarClient(Configs);
+            //切换数据库
+            switch (TypeAttrbuite)
             {
-                DataInfoCacheService = new DbCache()
-            };
-            #if RELEASE
-            Emily.Aop.OnError = (Ex) =>
-            {
-                var Logs = $"SQL语句：{Ex.Sql}[SQL参数：{Ex.Parametres}]";
-                //启用NLog
-                LogFactoryExtension.WriteSqlError(Logs);
-            };
-            Emily.Aop.OnLogExecuted = (Sql, Args) =>
-            {
-                var Logs = $"SQL语句：{Sql}[SQL参数：{Emily.Utilities.SerializeObject(Args.ToDictionary(t => t.ParameterName, t => t.Value))}][SQL执行时间：{Emily.Ado.SqlExecutionTime.TotalMilliseconds}毫秒]";
-                Emily.MappingTables.ToList().ForEach(t =>
-                {
-                    if (Sql.Contains($"[{t.DbTableName}]") && !Sql.Contains("ALTER TABLE"))
-                        //启用NLog
-                        LogFactoryExtension.WriteSqlWarn(Logs);
-                });
-            };
-            #endif
-            if (InitDbTable)
-            {
-                Type[] ModelTypes = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.BaseType == typeof(BaseEntity))).ToArray();
-                if (TargetDbName.Equals(MilyConfig.Default))
-                    Emily.CodeFirst.InitTables(ModelTypes);
-                else
-                {
-                    List<Type> Condition = ModelTypes.Where(Item => Item.CustomAttributes.Any(Attr => Attr.AttributeType == typeof(DataSliceAttribute))).ToList();
-                    Type[] Complete = Condition.Where(Item => (Item.GetCustomAttributes(typeof(DataSliceAttribute), false).FirstOrDefault() as DataSliceAttribute).DBName.Contains(TargetDbName)).ToArray();
-                    Emily.CodeFirst.InitTables(Complete);
-                }
+                case DBTypeEnum.MSSQL:
+                    Emily.ChangeDatabase("MSSQL");
+                    break;
+                case DBTypeEnum.MYSQL:
+                    Emily.ChangeDatabase("MYSQL");
+                    break;
+                default:
+                    Emily.ChangeDatabase("MSSQL");
+                    break;
             }
-            return Emily;
-        }
-
-        /// <summary>
-        /// 切换数据库为MSSQL
-        /// </summary>
-        /// <param name="InitDbTable"></param>
-        /// <returns></returns>
-        private static SqlSugarClient DB_MSSQL(bool InitDbTable)
-        {
-            Emily.ChangeDatabase("MSSQL");//切换数据库
-            Emily.DbMaintenance.CreateDatabase();//执行迁移
+            //设置缓存
             Emily.CurrentConnectionConfig.ConfigureExternalServices = new ConfigureExternalServices
             {
                 DataInfoCacheService = new DbCache()
@@ -175,6 +108,7 @@ namespace Mily.DbCore
                 });
             };
             #endif
+            //初始化表
             if (InitDbTable)
             {
                 Type[] ModelTypes = MilyConfig.Assembly.SelectMany(t => t.ExportedTypes.Where(x => x.BaseType == typeof(BaseEntity))).ToArray();

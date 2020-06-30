@@ -41,10 +41,6 @@ namespace Mily.Setting
         /// </summary>
         public static String Discovery { get; set; }
         /// <summary>
-        /// 数据库名集合
-        /// </summary>
-        public static  List<string> DbName { get; set; }
-        /// <summary>
         /// 默认数据库
         /// </summary>
         public static string Default { get; set; }
