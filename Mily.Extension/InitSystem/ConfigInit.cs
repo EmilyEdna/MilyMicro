@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Mily.Extension.FileReader;
 using Mily.Extension.Infrastructure.Common;
 using Mily.Extension.Infrastructure.GeneralMiddleWare;
+using Mily.Extension.LoadComponent;
 using NLog;
 using XExten.Profile.AspNetCore.DependencyInject;
 
@@ -37,6 +38,8 @@ namespace Mily.Extension.InitSystem
             App.Instruct(Environment, Builder);
             //注册TraceUI功能
             App.UseTraceUI();
+            //加载组件
+            App.LoadPlugins();
             //初始化Socket相关组件
             InitSocketProxy.InitSocketDependency();
         }
