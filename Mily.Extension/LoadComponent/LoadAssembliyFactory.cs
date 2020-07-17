@@ -15,11 +15,12 @@ namespace Mily.Extension.LoadComponent
         /// 加载组件
         /// </summary>
         /// <param name="App"></param>
-        /// <param name="AssemblyName">指定程序集的初始化类</param>
+        /// <param name="AssemblyName">指定程序集的初始化类 exp:Mily.Extension.LoadComponent.LoadAssembliyFactory.LoadPlugins</param>
         public static void LoadPlugins(this IApplicationBuilder App, params string[] AssemblyName)
         {
             LoadAssembliy loader = new LoadAssembliy();
             string ComponentPath = Path.Combine(AppContext.BaseDirectory, @"Component\");
+            if (!Directory.Exists(ComponentPath)) Directory.CreateDirectory(ComponentPath);
             //找到目录下所有组件
             string[] FullDllPath = Directory.GetFiles(ComponentPath, "*.dll");
             FullDllPath.ToEach<string>(Item =>

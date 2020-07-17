@@ -20,16 +20,21 @@ import servcie from './Request'
  * */
 var defaultOpt = {
     DataBase: 1,
-    Method:2
+    Method: 2
 }
-
+var LoginOpt = {
+    Cross: "Mily",
+    DataBase: 1,
+    Method: 2
+}
 /**
  * 登录
  * @param {any} param
  */
 export const Login = (param) => {
     const target = Object.assign({}, param);
-    const Author = lzstring.compressToBase64(JSON.stringify(defaultOpt));
+
+    const Author = lzstring.compressToBase64(JSON.stringify(LoginOpt));
     return servcie({
         url: 'Main/System/Login/ProxyMain',
         method: 'post',
