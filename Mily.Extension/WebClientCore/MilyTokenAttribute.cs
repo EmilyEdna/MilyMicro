@@ -22,7 +22,7 @@ namespace Mily.Extension.WebClientCore
             String WebToken = Caches.RedisCacheGet<String>(MilyConfig.MicroKey);
             context.HttpContext.RequestMessage.Headers.Add("Global", MilyConfig.MicroKey.Split("_")[0]);
             context.HttpContext.RequestMessage.Headers.Add("Authorization", WebToken);
-            context.HttpContext.RequestMessage.Headers.Add("ActionType", "1");
+            context.HttpContext.RequestMessage.Headers.Add("ActionType", MilyConfig.DbTypeAttribute.GetHashCode().ToString());
             await Task.CompletedTask;
         }
 

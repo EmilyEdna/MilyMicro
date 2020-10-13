@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Mily.Extension.Infrastructure.Common;
+using Mily.Setting;
 using Mily.Setting.ModelEnum;
 using Newtonsoft.Json;
 using System;
@@ -35,6 +36,9 @@ namespace Mily.Extension.Infrastructure.GeneralMiddleWare
             Exception Ex = null;
             try
             {
+                if (!Context.Request.Path.Value.Contains("Login"))
+                    MilyConfig.CacheKey = Context.Request.Headers["Global"].ToString().IsNullOrEmpty() ? String.Empty : Context.Request.Headers["Global"].ToString().ToLzStringDec();
+                Context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                 await RequestDelegate(Context);
             }
             catch (Exception ex)
@@ -51,8 +55,7 @@ namespace Mily.Extension.Infrastructure.GeneralMiddleWare
                     if (Context.Response.StatusCode == 500 && Ex != null)
                         ErrorMsg = $"状态信息:{ExceptionMap[Context.Response.StatusCode]}";
                     else
-                        ErrorMsg = ExceptionMap[Context.Response.StatusCode];
-                    Ex = new Exception(ErrorMsg);
+                        ErrorMsg = Context.Response.StatusCode == 200 ? string.Empty : ExceptionMap[Context.Response.StatusCode];
                     if (!Context.Request.Path.Value.Contains("swagger"))
                     {
                         if (Ex != null)
@@ -60,11 +63,10 @@ namespace Mily.Extension.Infrastructure.GeneralMiddleWare
                             ResultCondition Result = ResultCondition.Instance(Item =>
                             {
                                 Item.IsSuccess = false;
-                                Item.Info = Ex.Message;
+                                Item.Info = ErrorMsg;
                                 Item.StatusCode = Context.Response.StatusCode;
                                 Item.ResultData = null;
-                                Item.ServerDateStr = DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒ffff毫秒");
-                                Item.ServerDateLong = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddhhmmssffff"));
+                                Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                             });
                             Context.Response.ContentType = "application/json";
                             await Context.Response.WriteAsync(JsonConvert.SerializeObject(Result), Encoding.UTF8);

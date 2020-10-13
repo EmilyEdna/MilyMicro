@@ -16,8 +16,6 @@ namespace Mily.Extension.InitSystem
         {
             //Nlog
             LogManager.LoadConfiguration("Nlog.config");
-            //结果中间件
-            App.UseMiddleware<ResultMiddleWare>();
             //注册异常中间件
             App.UseMiddleware<ExceptionMiddleWare>();
             App.UseSwagger();
