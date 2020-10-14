@@ -1,4 +1,5 @@
 ﻿using NLog;
+using System;
 
 namespace Mily.Extension.LoggerFactory
 {
@@ -43,6 +44,15 @@ namespace Mily.Extension.LoggerFactory
         public static void WriteError(string Path, string MethodName, string Parameter, string Msg, string WebPath)
         {
             logger.Error($"错误位置：{Path}，调用方法名：{MethodName}，相关参数：{Parameter}，错误信息：{Msg}，请求路径：{WebPath}");
+        }
+
+        /// <summary>
+        /// 错误日志
+        /// </summary>
+        /// <param name="Msg"></param>
+        public static void WriteError(Exception Ex)
+        {
+            logger.Error(Ex);
         }
 
         /// <summary>

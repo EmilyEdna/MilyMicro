@@ -28,7 +28,8 @@ namespace Mily.Extension.WebClientCore
         {
             if (context.Exception != null)
             {
-                LogFactoryExtension.WriteError(typeof(MilyTokenAttribute).FullName, context.ApiAction.Name, context.Arguments.ToJson(),context.Exception.Message, context.HttpContext.RequestMessage.RequestUri.AbsolutePath);
+                LogFactoryExtension.WriteError(context.Exception);
+                //LogFactoryExtension.WriteError(typeof(MilyTokenAttribute).FullName, context.ApiAction.Name, context.Arguments.ToJson(),context.Exception.Message, context.HttpContext.RequestMessage.RequestUri.AbsolutePath);
                 throw context.Exception;
             }
             await Task.CompletedTask;

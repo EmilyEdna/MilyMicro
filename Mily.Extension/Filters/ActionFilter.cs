@@ -32,7 +32,7 @@ namespace Mily.Extension.Filters
                 {
                     Parameter += "[" + t.Name + "]";
                 });
-                LogFactoryExtension.WriteError(Path, MethodName, Parameter, Message, WebPath);
+                LogFactoryExtension.WriteError(Context.Exception);
                 return;
             }
             ResultCondition Condition = ResultCondition.Instance(Item =>
