@@ -21,7 +21,7 @@ namespace Mily.Service.MiddleHandler.IntegrationHandler
             Param.SendType = SendTypeEnum.RequestInfo;
             var Keys = PacketCache.Keys.Where(t => t.Contains(Router)).FirstOrDefault();
             var Event = PacketCache[Keys];
-           var NewEvent =  Event.SetInfo(Event.Session, Param);
+            var NewEvent = Event.SetInfo(Event.Session, Param);
             Event.Session.Server.Handler.SessionPacketDecodeCompleted(Event.Server, NewEvent);
         }
     }

@@ -25,7 +25,7 @@ namespace Mily.Gateway.GatewayEvent.MicroEvent
 
         public void Stop()
         {
-            throw new NotImplementedException();
+            Environment.Exit(1);
         }
     }
 }
