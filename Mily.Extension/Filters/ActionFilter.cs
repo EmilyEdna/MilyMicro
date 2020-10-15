@@ -35,16 +35,7 @@ namespace Mily.Extension.Filters
                 LogFactoryExtension.WriteError(Context.Exception);
                 return;
             }
-            ResultCondition Condition = ResultCondition.Instance(Item =>
-            {
-                Item.IsSuccess = true;
-                Item.StatusCode = Context.HttpContext.Response.StatusCode;
-                Item.ResultData = (Context.Result as ObjectResult).Value;
-                Item.Info = "执行成功!";
-                Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            });
-            ResultCondition Result = Condition;
-            Context.Result = new ObjectResult(Result);
+            Context.OnExcuted();
         }
 
         /// <summary>
@@ -91,6 +82,7 @@ namespace Mily.Extension.Filters
                 });
                 ((PageQuery)ParamType).KeyWord = Query;
             }
+            Context.OnExcuting();
         }
 
         internal void InvokeHeader(HttpRequest Request)

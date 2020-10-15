@@ -37,7 +37,7 @@ namespace Mily.Extension.Infrastructure.GeneralMiddleWare
             try
             {
                 if (!Context.Request.Path.Value.Contains("Login"))
-                    MilyConfig.CacheKey = Context.Request.Headers["Global"].ToString().IsNullOrEmpty() ? String.Empty : Context.Request.Headers["Global"].ToString().ToLzStringDec();
+                    MilyConfig.CacheKey = Context.Request.Headers["Global"].ToString().IsNullOrEmpty() ? String.Empty : Context.Request.Headers["Global"].ToString().ToLzStringDec().ToMD5();
                 Context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                 await RequestDelegate(Context);
             }

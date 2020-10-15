@@ -52,7 +52,7 @@ namespace Mily.MainLogic.LogicImplement
                     RoleName = Role.RoleName
                 }).FirstAsync();
             if (AdminRole != null)
-                await Caches.RedisCacheSetAsync(AdminRole.KeyId.ToString(), AdminRole, 120);
+                await Caches.RedisCacheSetAsync(AdminRole.KeyId.ToString().ToMD5(), AdminRole, 120);
             return AdminRole;
         }
 

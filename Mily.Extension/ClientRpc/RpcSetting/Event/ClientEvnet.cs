@@ -53,7 +53,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Event
         {
             if (Provider.DictionaryStringProvider.ContainsKey("Global"))
             {
-                MilyConfig.CacheKey = Provider.DictionaryStringProvider["Global"].ToString().ToLzStringDec();
+                MilyConfig.CacheKey = Provider.DictionaryStringProvider["Global"].ToString().ToLzStringDec().ToMD5();
                 Provider.DictionaryStringProvider.Remove("Global");
             }
         }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Linq;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Mily.Setting;
+using XExten.XCore;
 
 namespace Mily.Extension.Authentication.JwtAuthentication
 {
@@ -34,7 +35,7 @@ namespace Mily.Extension.Authentication.JwtAuthentication
             claimIdentity.AddClaim(new Claim("UserName", UserName));
             claimIdentity.AddClaim(new Claim("UserRole", UserRole));
             validatedToken = Token;
-            MilyConfig.MicroKey = $"{KeyId}_{UserName}";
+            MilyConfig.MicroKey = $"{KeyId.ToMD5()}_{UserName}";
             return new ClaimsPrincipal(claimIdentity);
         }
     }
