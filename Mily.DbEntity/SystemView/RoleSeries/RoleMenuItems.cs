@@ -9,7 +9,7 @@ namespace Mily.DbEntity.SystemView.RoleSeries
     /// <summary>
     /// 权限菜单表
     /// </summary>
-    [SugarTable("System_RoleMenuItems", "权限菜单表")]
+    [SugarTable("Sys_RoleMenuItems", "权限菜单表")]
     [DataSlice("Test")]
     public class RoleMenuItems : BaseEntity
     {
@@ -17,12 +17,12 @@ namespace Mily.DbEntity.SystemView.RoleSeries
         /// 权限许可ID
         /// </summary>
         [SugarColumn(IsNullable = true, ColumnDescription = "权限许可ID")]
-        public Guid? RolePermissionId { get; set; }
+        public int? RolePermissionId { get; set; }
 
         /// <summary>
         /// 菜单表ID
         /// </summary>
         [SugarColumn(IsNullable = true, ColumnDescription = "菜单表ID")]
-        public Guid? MenuItemsId { get; set; }
+        public int? MenuItemsId { get; set; }
     }
 }

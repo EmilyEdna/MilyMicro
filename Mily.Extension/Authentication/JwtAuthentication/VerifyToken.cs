@@ -25,7 +25,7 @@ namespace Mily.Extension.Authentication.JwtAuthentication
         public ClaimsPrincipal ValidateToken(string securityToken, TokenValidationParameters validationParameters, out SecurityToken validatedToken)
         {
             JwtSecurityToken Token = new JwtSecurityToken(securityToken);
-            String KeyId = Token.Claims.FirstOrDefault(t => t.Type == "KeyId").Value;
+            String KeyId = Token.Claims.FirstOrDefault(t => t.Type == "Id").Value;
             String RoleId = Token.Claims.FirstOrDefault(t => t.Type == "RoleId").Value;
             String UserName = Token.Claims.FirstOrDefault(t => t.Type == "UserName").Value;
             String UserRole = Token.Claims.FirstOrDefault(t => t.Type == "UserRole").Value;

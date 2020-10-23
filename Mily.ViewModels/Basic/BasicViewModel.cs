@@ -8,7 +8,7 @@ namespace Mily.ViewModels.Basic
         /// <summary>
         /// 主键
         /// </summary>
-        public Guid? KeyId { get; set; }
+        public int? Id { get; set; }
 
         /// <summary>
         /// 逻辑删除

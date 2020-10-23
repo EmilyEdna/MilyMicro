@@ -4,32 +4,32 @@
             <template v-for="(lv1,index) in Menus">
                 <!--一级菜单-->
                 <template v-if="!lv1.Parent">
-                    <el-menu-item :index="lv1.KeyId" :key="lv1.Path">
+                    <el-menu-item :index="lv1.Id" :key="lv1.Path">
                         <i :class="lv1.Icon"></i>
                         <span slot="title">{{ lv1.Title }}</span>
                     </el-menu-item>
                 </template>
                 <template v-else>
                     <!--二级菜单-->
-                    <el-submenu :key="lv1.KeyId" :index="lv1.KeyId">
+                    <el-submenu :key="lv1.Id" :index="lv1.Id">
                         <template slot="title">
                             <i :class="lv1.Icon"></i>
                             <span slot="title">{{ lv1.Title }}</span>
                         </template>
                         <!--子菜单-->
                         <template v-for="(lv2,index) in lv1.ChildMenus">
-                            <el-submenu :key="lv2.KeyId" :index="lv2.KeyId" v-if="lv2.Parent">
+                            <el-submenu :key="lv2.Id" :index="lv2.Id" v-if="lv2.Parent">
                                 <template slot="title">
                                     <i :class="lv2.Icon"></i>
                                     <span slot="title">{{ lv2.Title }}</span>
                                 </template>
                                 <!--三级菜单-->
-                                <el-menu-item v-for="(lv3,index) in lv2.ChildMenus" :index="lv3.Path" :key="lv3.KeyId">
+                                <el-menu-item v-for="(lv3,index) in lv2.ChildMenus" :index="lv3.Path" :key="lv3.Id">
                                     {{lv3.Title}}
                                 </el-menu-item>
                             </el-submenu>
                             <!--只有二级菜单无三级菜单-->
-                            <el-menu-item :key="lv2.KeyId" :index="lv2.Path" v-else>
+                            <el-menu-item :key="lv2.Id" :index="lv2.Path" v-else>
                                 <span slot="title">{{ lv2.Title }}</span>
                             </el-menu-item>
                         </template>

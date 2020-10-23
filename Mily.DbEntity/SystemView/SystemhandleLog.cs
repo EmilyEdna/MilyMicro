@@ -8,7 +8,7 @@ namespace Mily.DbEntity.SystemView
     /// <summary>
     ///操作日志表
     /// </summary>
-    [SugarTable("System_HandleLog", "操作日志表")]
+    [SugarTable("Sys_Log", "操作日志表")]
     [DataSlice("Test")]
     public class SystemhandleLog : BaseEntity
     {

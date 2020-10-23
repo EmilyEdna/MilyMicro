@@ -9,7 +9,7 @@ namespace Mily.DbEntity.SystemView.MenuSeries
     /// <summary>
     /// 系统菜单路由表
     /// </summary>
-    [SugarTable("System_MenuItemsRouter", "系统菜单路由表")]
+    [SugarTable("Sys_MenuItemsRouter", "系统菜单路由表")]
     [DataSlice("Test")]
     public class MenuItemsRouter: BaseEntity
     {
@@ -17,7 +17,7 @@ namespace Mily.DbEntity.SystemView.MenuSeries
         /// 菜单表ID
         /// </summary>
         [SugarColumn(IsNullable = true, ColumnDescription = "菜单表ID")]
-        public Guid? MenuItemId { get; set; }
+        public int? MenuItemId { get; set; }
 
         /// <summary>
         /// 路由名称

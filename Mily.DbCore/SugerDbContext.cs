@@ -310,7 +310,7 @@ namespace Mily.DbCore
             Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()
         {
             if (type == DbReturnEnum.RemoveEntities) return await Task.FromResult(false);
-            List<Guid> Ids = base.RemoveDataEvent(entity);
+            List<int> Ids = base.RemoveDataEvent(entity);
             SqlSugarClient Client = DbContext(DbName);
             IDeleteable<Entity> Delete = Client.Deleteable(entity);
             return await XPlusEx.XTry<Object>(async () =>
@@ -341,7 +341,7 @@ namespace Mily.DbCore
             Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()
         {
             if (type == DbReturnEnum.RemoveEntity) return await Task.FromResult(false);
-            List<Guid> Ids = base.RemoveDataEvent(entities.ToArray());
+            List<int> Ids = base.RemoveDataEvent(entities.ToArray());
             SqlSugarClient Client = DbContext(DbName);
             IDeleteable<Entity> Delete = Client.Deleteable(entities);
             return await XPlusEx.XTry<Object>(async () =>
@@ -369,7 +369,6 @@ namespace Mily.DbCore
         {
             SystemhandleLog Log = new SystemhandleLog
             {
-                KeyId = Guid.NewGuid(),
                 Deleted = false,
                 HandleTime = DateTime.Now,
                 Hnadler = SearchCache(),

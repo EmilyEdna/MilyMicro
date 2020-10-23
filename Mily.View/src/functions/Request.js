@@ -64,7 +64,7 @@ Request.interceptors.request.use(Config => {
 Request.interceptors.response.use(Response => {
     let Head = JSON.parse(lzstring.decompressFromBase64(Response.config.headers.Author));
     if (Head.Cross) {
-        cookie.set("Global", lzstring.compressToBase64(Response.data.Data.ResultData.Data.KeyId));
+        cookie.set("Global", lzstring.compressToBase64(Response.data.Data.ResultData.Data.Id));
         cookie.set("Authorization", Response.data.Data.ResultData.AuthorToken);
     }
     AllowRequest(Response.config.RequestURL);

@@ -145,7 +145,7 @@
             },
             AddMenu() { },
             DeleteSelected() {
-                let param = { KeyId: this.Linq.from(this.multipleSelection).select(item => item.KeyId).toJoinedString(",") }
+                let param = { Id: this.Linq.from(this.multipleSelection).select(item => item.KeyId).toJoinedString(",") }
                 DeleteMenu(param).then(res => {
                     if (res.ResultData >= 0) this.SearchMenu();
                 });

@@ -13,7 +13,7 @@ namespace Mily.ViewModels
         /// <summary>
         /// 菜单表Id
         /// </summary>
-        public Guid? MenuItemId { get; set; }
+        public int? MenuItemId { get; set; }
 
         /// <summary>
         /// 名称

@@ -10,7 +10,7 @@ namespace Mily.DbEntity.SystemView.MenuSeries
     /// <summary>
     /// 系统菜单表
     /// </summary>
-    [SugarTable("System_MenuItems", "系统菜单表")]
+    [SugarTable("Sys_MenuItems", "系统菜单表")]
     [DataSlice("Test")]
     public class MenuItems : BaseEntity
     {
@@ -42,6 +42,6 @@ namespace Mily.DbEntity.SystemView.MenuSeries
         /// 父菜单标识
         /// </summary>
         [SugarColumn(IsNullable = true, ColumnDescription = "父菜单")]
-        public Guid? ParentId { get; set; }
+        public int? ParentId { get; set; }
     }
 }

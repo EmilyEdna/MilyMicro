@@ -11,8 +11,8 @@ namespace Mily.DbEntity
         /// <summary>
         /// 主键
         /// </summary>
-        [SugarColumn(IsNullable = false, IsPrimaryKey = true, ColumnDescription = "主键")]
-        public Guid KeyId { get; set; }
+        [SugarColumn(IsNullable = false, IsPrimaryKey = true, ColumnDescription = "主键", IsIdentity = true)]
+        public int Id { get; set; }
 
         /// <summary>
         /// 逻辑删除

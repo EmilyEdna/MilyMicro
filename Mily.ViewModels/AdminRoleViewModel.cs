@@ -30,7 +30,7 @@ namespace Mily.ViewModels
         /// <summary>
         /// 权限许可ID
         /// </summary>
-        public Guid? RolePermissionId { get; set; }
+        public int? RolePermissionId { get; set; }
 
         /// <summary>
         /// 角色名称

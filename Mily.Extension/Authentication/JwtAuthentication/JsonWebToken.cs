@@ -17,8 +17,8 @@ namespace Mily.Extension.Authentication.JwtAuthentication
     /// </summary>
     public class JsonWebToken
     {
-        public Guid KeyId { get; set; }
-        public Guid RoleId { get; set; }
+        public int Id { get; set; }
+        public int RoleId { get; set; }
         public string UserName { get; set; }
         public RoleTypeEnum? RoleType { get; set; }
         /// <summary>
@@ -31,7 +31,7 @@ namespace Mily.Extension.Authentication.JwtAuthentication
             JsonWebToken Author = new JsonWebToken();
             Action(Author);
             String Token = XPlusEx.XTry(() => Author.GetAuthorToken(), (Ex) => Ex.Message);
-            MilyConfig.MicroKey = $"{Author.KeyId.ToString().ToMD5()}_{Author.UserName}";
+            MilyConfig.MicroKey = $"{Author.Id.ToString().ToMD5()}_{Author.UserName}";
             Caches.RedisCacheSet(MilyConfig.MicroKey, Token, 120);
             return Token;
         }
@@ -39,7 +39,7 @@ namespace Mily.Extension.Authentication.JwtAuthentication
         {
             Claim[] Claims = new Claim[]
             {
-              new Claim("KeyId",KeyId.ToString()),
+              new Claim("Id",Id.ToString()),
               new Claim("RoleId",RoleId.ToString()),
               new Claim("UserName",UserName),
               new Claim("UserRole",RoleType.ToString())

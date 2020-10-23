@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Mily.Extension.Attributes;
 using Mily.Extension.Authentication.JwtAuthentication;
+using Mily.MainLogic.LogicImplement;
 using Mily.Setting.ModelEnum;
 using System;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace Miliy.MainApi.Controllers
         //[AcceptVerbs("GET", "POST")]
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<Object>> RegistAdmin([FromBody]ResultProvider Provider) => await SysService.RegistAdmin(Provider);
+        public async Task<ActionResult<Object>> RegistAdmin([FromBody] ResultProvider Provider) => await SysService.RegistAdmin(Provider);
 
         /// <summary>
         /// 登录后台API
@@ -43,7 +44,7 @@ namespace Miliy.MainApi.Controllers
             else
                 AuthorToken = JsonWebToken.InitToken(option =>
                  {
-                     option.KeyId = RoleAdmin.KeyId.Value;
+                     option.Id = RoleAdmin.Id.Value;
                      option.RoleId = RoleAdmin.RolePermissionId.Value;
                      option.UserName = RoleAdmin.AdminName;
                      option.RoleType = RoleAdmin.RoleType;
@@ -176,7 +177,7 @@ namespace Miliy.MainApi.Controllers
         [HttpPost]
         [Author(RoleTypeEnum.Administrator)]
         [Authorize]
-        public async Task<ActionResult<Object>> InsertMenuFeatsRouter([FromBody]ResultProvider Provider) => await SysService.InsertMenuFeatsRouter(Provider);
+        public async Task<ActionResult<Object>> InsertMenuFeatsRouter([FromBody] ResultProvider Provider) => await SysService.InsertMenuFeatsRouter(Provider);
         #endregion
 
         /// <summary>
@@ -199,5 +200,13 @@ namespace Miliy.MainApi.Controllers
         [Authorize]
         public async Task<ActionResult<Object>> SearchMenuItemPage(PageQuery Page) => await SysService.SearchMenuItemPage(Page);
         #endregion
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult> Init()
+        {
+            await SysService.InitDbData();
+            return null;
+        }
     }
 }

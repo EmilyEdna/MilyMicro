@@ -58,7 +58,7 @@ namespace Mily.Extension.Infrastructure.GeneralMiddleWare
                         ErrorMsg = Context.Response.StatusCode == 200 ? string.Empty : ExceptionMap[Context.Response.StatusCode];
                     if (!Context.Request.Path.Value.Contains("swagger"))
                     {
-                        if (Ex != null)
+                        if (Ex != null|| !ErrorMsg.IsNullOrEmpty())
                         {
                             ResultCondition Result = ResultCondition.Instance(Item =>
                             {

@@ -24,7 +24,6 @@ namespace Mily.DbCore
             {
                 Dictionary<String, Object> DataValue = new Dictionary<String, Object>
                 {
-                     { "KeyId", Guid.NewGuid() },
                      { "Created",DateTime.Now },
                      { "Deleted", false }
                  };
@@ -117,13 +116,13 @@ namespace Mily.DbCore
         /// <typeparam name="Entity"></typeparam>
         /// <param name="entity"></param>
         /// <returns></returns>
-        internal virtual List<Guid> RemoveDataEvent<Entity>(params Entity[] entity) where Entity : class, new()
+        internal virtual List<int> RemoveDataEvent<Entity>(params Entity[] entity) where Entity : class, new()
         {
-            List<Guid> Id = new List<Guid>();
+            List<int> Id = new List<int>();
             foreach (var Item in entity)
             {
                 var EntityMap = Item.ToDic();
-                Id.Add(Guid.Parse(EntityMap["KeyId"].ToString()));
+                Id.Add(EntityMap["Id"].ObjToInt());
             }
             return Id;
         }
@@ -138,7 +137,7 @@ namespace Mily.DbCore
         /// <param name="BoolExp"></param>
         /// <param name="ObjExp"></param>
         /// <returns></returns>
-        internal virtual async Task<Object> ExecuteRemove<Entity>(IDeleteable<Entity> Delete,List<Guid> Keys, Entity entity, DbReturnEnum type,
+        internal virtual async Task<Object> ExecuteRemove<Entity>(IDeleteable<Entity> Delete,List<int> Keys, Entity entity, DbReturnEnum type,
             Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()
         {
             return type switch
@@ -160,7 +159,7 @@ namespace Mily.DbCore
         /// <param name="BoolExp"></param>
         /// <param name="ObjExp"></param>
         /// <returns></returns>
-        internal virtual async Task<Object> ExecuteRemove<Entity>(IDeleteable<Entity> Delete, List<Guid> Keys, List<Entity> entities, DbReturnEnum type,
+        internal virtual async Task<Object> ExecuteRemove<Entity>(IDeleteable<Entity> Delete, List<int> Keys, List<Entity> entities, DbReturnEnum type,
             Expression<Func<Entity, bool>> BoolExp = null, Expression<Func<Entity, Object>> ObjExp = null) where Entity : class, new()
         {
             return type switch

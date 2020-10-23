@@ -34,7 +34,7 @@ namespace Mily.ViewModels
         /// <summary>
         /// 父菜单标识
         /// </summary>
-        public Guid? ParentId { get; set; }
+        public int? ParentId { get; set; }
 
         /// <summary>
         /// 路径

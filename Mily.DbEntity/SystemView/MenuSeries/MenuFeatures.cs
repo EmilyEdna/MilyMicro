@@ -9,7 +9,7 @@ namespace Mily.DbEntity.SystemView.MenuSeries
     /// <summary>
     /// 系统菜单功能表
     /// </summary>
-    [SugarTable("System_MenuFeatures", "系统菜单功能表")]
+    [SugarTable("Sys_MenuFeatures", "系统菜单功能表")]
     [DataSlice("Test")]
     public class MenuFeatures: BaseEntity
     {
@@ -17,7 +17,7 @@ namespace Mily.DbEntity.SystemView.MenuSeries
         /// 菜单表ID
         /// </summary>
         [SugarColumn(IsNullable = true, ColumnDescription = "菜单表ID")]
-        public Guid? MenuItemId { get; set; }
+        public int? MenuItemId { get; set; }
 
         /// <summary>
         /// 功能名称

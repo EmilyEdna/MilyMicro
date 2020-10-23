@@ -7,7 +7,7 @@ namespace Mily.DbEntity.SystemView
     /// <summary>
     /// 系统用户表
     /// </summary>
-    [SugarTable("System_Administrator", "系统用户表")]
+    [SugarTable("Sys_Admin", "系统用户表")]
     [DataSlice("Test")]
     public class Administrator : BaseEntity
     {
@@ -33,6 +33,6 @@ namespace Mily.DbEntity.SystemView
         /// 权限许可ID
         /// </summary>
         [SugarColumn(IsNullable = true, ColumnDescription = "权限许可ID")]
-        public Guid? RolePermissionId { get; set; }
+        public int? RolePermissionId { get; set; }
     }
 }

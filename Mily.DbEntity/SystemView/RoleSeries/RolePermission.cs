@@ -10,7 +10,7 @@ namespace Mily.DbEntity.SystemView.RoleSeries
     /// <summary>
     /// 权限许可表
     /// </summary>
-    [SugarTable("System_RolePermission", "权限许可表")]
+    [SugarTable("Sys_RolePermission", "权限许可表")]
     [DataSlice("Test")]
     public class RolePermission : BaseEntity
     {

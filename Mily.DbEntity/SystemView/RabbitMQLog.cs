@@ -6,7 +6,7 @@ namespace Mily.DbEntity.SystemView
     /// <summary>
     /// 消费记录日志表
     /// </summary>
-    [SugarTable("System_RabbitMQLog", "消费记录日志表")]
+    [SugarTable("Sys_MQLog", "消费记录日志表")]
     [DataSlice("Test")]
     public class RabbitMQLog : BaseEntity
     {

@@ -39,12 +39,12 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<AdminRoleViewModel> Login(ResultProvider Provider)
         {
             AdminRoleViewModel ViewModel = Provider.DictionaryStringProvider.ToJson().ToModel<AdminRoleViewModel>();
-            AdminRoleViewModel AdminRole = await DbContext().Queryable<Administrator, RolePermission>((Admin, Role) => new Object[] { JoinType.Left, Admin.RolePermissionId == Role.KeyId })
+            AdminRoleViewModel AdminRole = await DbContext().Queryable<Administrator, RolePermission>((Admin, Role) => new Object[] { JoinType.Left, Admin.RolePermissionId == Role.Id })
                 .Where(Admin => Admin.Account.Equals(ViewModel.Account))
                 .Where(Admin => Admin.PassWord.Equals(ViewModel.PassWord))
                 .Select((Admin, Role) => new AdminRoleViewModel
                 {
-                    KeyId = Admin.KeyId,
+                    Id = Admin.Id,
                     Account = Admin.Account,
                     AdminName = Admin.AdminName,
                     RolePermissionId = Admin.RolePermissionId,
@@ -52,7 +52,7 @@ namespace Mily.MainLogic.LogicImplement
                     RoleName = Role.RoleName
                 }).FirstAsync();
             if (AdminRole != null)
-                await Caches.RedisCacheSetAsync(AdminRole.KeyId.ToString().ToMD5(), AdminRole, 120);
+                await Caches.RedisCacheSetAsync(AdminRole.Id.ToString().ToMD5(), AdminRole, 120);
             return AdminRole;
         }
 
@@ -83,7 +83,7 @@ namespace Mily.MainLogic.LogicImplement
         {
             string Key = Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString();
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
-                .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString())).Where(t => t.Deleted == false).ToList();
+                .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.Id.ToString())).Where(t => t.Deleted == false).ToList();
             return await base.LogicDeleteOrRecovery<Administrator>(administrator, true);
         }
 
@@ -96,7 +96,7 @@ namespace Mily.MainLogic.LogicImplement
         {
             string Key = Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString();
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
-                .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString())).ToList();
+                .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.Id.ToString())).ToList();
             return await base.RemoveData<Administrator>(administrator);
         }
 
@@ -108,7 +108,7 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<Object> EditAdmin(ResultProvider Provider)
         {
             Administrator Admin = Provider.DictionaryStringProvider.ToJson().ToModel<AdminRoleViewModel>().ToAutoMapper<Administrator>();
-            return await base.AlterData(Admin, null, DbReturnEnum.AlterDefault, null, t => t.KeyId == Admin.KeyId);
+            return await base.AlterData(Admin, null, DbReturnEnum.AlterDefault, null, t => t.Id == Admin.Id);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Mily.MainLogic.LogicImplement
         {
             string Key = Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString();
             List<Administrator> administrator = DbContext().Queryable<Administrator>()
-                .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString()))
+                .WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.Id.ToString()))
                 .Where(t => t.Deleted == true).ToList();
             return await base.LogicDeleteOrRecovery<Administrator>(administrator, false);
         }
@@ -135,13 +135,13 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> GetMenuItem(ResultProvider Provider)
         {
-            Guid RoleId = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
+            int RoleId = Provider.DictionaryStringProvider.Values.FirstOrDefault().ObjToInt();
             return await DbContext().Queryable<RoleMenuItems, MenuItems, MenuItemsRouter>((Role, Menu, Router) => new Object[] {
-                JoinType.Left, Role.MenuItemsId == Menu.KeyId ,
-                JoinType.Left,Menu.KeyId==Router.MenuItemId
+                JoinType.Left, Role.MenuItemsId == Menu.Id ,
+                JoinType.Left,Menu.Id==Router.MenuItemId
             }).Where(Role => Role.RolePermissionId == RoleId).Select((Role, Menu, Router) => new RoleMenuItemViewModel
             {
-                KeyId = Menu.KeyId,
+                Id = Menu.Id,
                 Lv = Menu.Lv,
                 Icon = Menu.Icon,
                 Title = Menu.Title,
@@ -152,13 +152,13 @@ namespace Mily.MainLogic.LogicImplement
             {
                 //二级菜单
                 Item.ChildMenus = DbContext().Queryable<MenuItems, MenuItemsRouter>((Items, Router) => new Object[]{
-                    JoinType.Left,Items.KeyId==Router.MenuItemId
+                    JoinType.Left,Items.Id==Router.MenuItemId
                 })
                 .Where(Items => Items.Lv == MenuItemEnum.Lv2)
-                .Where(Items => Items.ParentId == Item.KeyId)
+                .Where(Items => Items.ParentId == Item.Id)
                 .Select((Items, Router) => new RoleMenuItemViewModel
                 {
-                    KeyId = Items.KeyId,
+                    Id = Items.Id,
                     Lv = Items.Lv,
                     Icon = Items.Icon,
                     Title = Items.Title,
@@ -170,19 +170,19 @@ namespace Mily.MainLogic.LogicImplement
                 {
                     //三级菜单
                     Menus.ChildMenus = DbContext().Queryable<MenuItems, MenuItemsRouter>((Items, Router) => new Object[] {
-                       JoinType.Left,Items.KeyId==Router.MenuItemId
+                       JoinType.Left,Items.Id==Router.MenuItemId
                     })
                     .Where(Items => Items.Lv == MenuItemEnum.Lv3)
-                    .Where(Items => Items.ParentId == Menus.KeyId)
+                    .Where(Items => Items.ParentId == Menus.Id)
                     .Select((Items, Router) => new RoleMenuItemViewModel
                     {
-                       KeyId = Items.KeyId,
-                       Lv = Items.Lv,
-                       Icon = Items.Icon,
-                       Title = Items.Title,
-                       ParentId = Items.ParentId,
-                       Path = Router.PathRoad,
-                       Parent = Items.Parent
+                        Id = Items.Id,
+                        Lv = Items.Lv,
+                        Icon = Items.Icon,
+                        Title = Items.Title,
+                        ParentId = Items.ParentId,
+                        Path = Router.PathRoad,
+                        Parent = Items.Parent
                     }).ToList();
                 });
             }).ToListAsync();
@@ -195,11 +195,11 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> GetMenuFeatures(ResultProvider Provider)
         {
-            Guid MenuId = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
-            return await DbContext().Queryable<MenuItems, MenuFeatures>((Items, Feats) => new Object[] { JoinType.Left, Items.KeyId == Feats.MenuItemId })
-                .Where(Items => Items.KeyId == MenuId).Select((Items, Feats) => new RoleMenuFeatsViewModel
+            int MenuId = Provider.DictionaryStringProvider.Values.FirstOrDefault().ObjToInt();
+            return await DbContext().Queryable<MenuItems, MenuFeatures>((Items, Feats) => new Object[] { JoinType.Left, Items.Id == Feats.MenuItemId })
+                .Where(Items => Items.Id == MenuId).Select((Items, Feats) => new RoleMenuFeatsViewModel
                 {
-                    KeyId = Feats.KeyId,
+                    Id = Feats.Id,
                     MenuItemId = Feats.MenuItemId,
                     FeatName = Feats.FeatName,
                     EnableOrDisable = Feats.EnableOrDisable,
@@ -213,7 +213,7 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> GetMenuRouter(ResultProvider Provider)
         {
-            Guid RoleId = Guid.Parse(Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString());
+            int RoleId = Provider.DictionaryStringProvider.Values.FirstOrDefault().ObjToInt();
             return await DbContext().Queryable<RoleMenuItems, MenuItemsRouter>((Item, ItemRouter) => new Object[] { JoinType.Left, Item.MenuItemsId == ItemRouter.MenuItemId })
                  .Where(Item => Item.RolePermissionId == RoleId).Select((Item, ItemRouter) => new RoleMenuRouterViewModel
                  {
@@ -286,7 +286,7 @@ namespace Mily.MainLogic.LogicImplement
         public async Task<Object> DeleteMenuItem(ResultProvider Provider)
         {
             string Key = Provider.DictionaryStringProvider.Values.FirstOrDefault().ToString();
-            List<MenuItems> Items = DbContext().Queryable<MenuItems>().WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.KeyId.ToString())).ToList();
+            List<MenuItems> Items = DbContext().Queryable<MenuItems>().WhereIF(!Key.IsNullOrEmpty(), t => Key.Contains(t.Id.ToString())).ToList();
             return await base.LogicDeleteOrRecovery(Items, true, null, null, t => t.Deleted == false);
         }
 
@@ -299,14 +299,14 @@ namespace Mily.MainLogic.LogicImplement
         {
             var Title = "Title".ToLower();
             var MenuLv = "MenuLv".ToLower();
-            return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.KeyId })
+            return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.Id })
                      .Where((Role, Menu) => Role.Deleted == false && Menu.Deleted == false)
                      .OrderBy((Role, Menu) => Menu.Lv, OrderByType.Asc)
                      .WhereIF(!Page.KeyWord[Title].IsNullOrEmpty(), (Role, Menu) => Menu.Title.Contains(Page.KeyWord[Title].ToString()))
                      .WhereIF(!Page.KeyWord[MenuLv].IsNullOrEmpty(), (Role, Menu) => Menu.Lv == (MenuItemEnum)Page.KeyWord[MenuLv])
                      .Select((Role, Menu) => new RoleMenuItemViewModel
                      {
-                         KeyId = Menu.KeyId,
+                         Id = Menu.Id,
                          Lv = Menu.Lv,
                          Icon = Menu.Icon,
                          Title = Menu.Title,
@@ -317,5 +317,156 @@ namespace Mily.MainLogic.LogicImplement
                      }).ToPageListAsync(Page.PageIndex, Page.PageSize);
         }
         #endregion
+
+        public async Task<object> InitDbData()
+        {
+            DbContext(null, true).Queryable<Administrator>().ToList();
+            #region 权限
+            RolePermission rolePermission = new RolePermission
+            {
+                RoleType = RoleTypeEnum.Administrator,
+                RoleName = "超级管理员"
+            };
+
+            var role = await base.InsertData(rolePermission, null, DbReturnEnum.Integer);
+            #endregion
+            #region 用户
+            Administrator admin = new Administrator
+            {
+                AdminName = "admin",
+                Account = "lzh",
+                PassWord = "123",
+                RolePermissionId = role.ObjToInt()
+            };
+
+            var ad = await base.InsertData(admin, null, DbReturnEnum.Integer);
+            #endregion
+            #region 菜单
+            MenuItems menu1 = new MenuItems
+            {
+                Icon = "el-icon-lx-home",
+                Title = "系统管理",
+                Lv = MenuItemEnum.Lv1,
+                Parent = true,
+            };
+
+            var m1 = await base.InsertData(menu1, null, DbReturnEnum.Integer);
+
+            MenuItems menu2 = new MenuItems
+            {
+                Icon = "el-icon-lx-settings",
+                Title = "菜单管理",
+                Lv = MenuItemEnum.Lv2,
+                Parent = true,
+                ParentId = m1.ObjToInt()
+            };
+
+            var m2 = await base.InsertData(menu2, null, DbReturnEnum.Integer);
+
+            MenuItems menu3 = new MenuItems
+            {
+                Title = "后台菜单",
+                Lv = MenuItemEnum.Lv3,
+                Parent = false,
+                ParentId = m2.ObjToInt()
+            };
+
+            var m3 = await base.InsertData(menu3, null, DbReturnEnum.Integer);
+            #endregion
+            #region 功能
+            List<MenuFeatures> features = new List<MenuFeatures>
+            {
+                new MenuFeatures{
+                    EnableOrDisable = true,
+                    FeatName = "新增",
+                    Icon = "el-icon-plus",
+                    MenuItemId = m3.ObjToInt()
+                },
+                new MenuFeatures{
+                    EnableOrDisable = true,
+                    FeatName = "编辑",
+                    Icon = "el-icon-edit",
+                    MenuItemId = m3.ObjToInt()
+                },
+                new MenuFeatures{
+                    EnableOrDisable = true,
+                    FeatName = "删除",
+                    Icon = "el-icon-delete",
+                    MenuItemId = m3.ObjToInt()
+                },
+                new MenuFeatures{
+                    EnableOrDisable = true,
+                    FeatName = "批量删除",
+                    Icon = "el-icon-delete",
+                    MenuItemId = m3.ObjToInt()
+                },
+            };
+
+            await base.InsertData(features);
+
+            MenuFeaturesRouter frouter = new MenuFeaturesRouter
+            {
+                PathRoad = "Menu/AddMenu",
+                PathRouter = "Menu/Handler/AddMenu.vue",
+                MenuFeatId = 0,
+                Title = "新增"
+            };
+            await base.InsertData(frouter);
+            #endregion
+            #region 菜单权限
+            List<RoleMenuFeatures> roleMenus = new List<RoleMenuFeatures>
+            {
+                 new RoleMenuFeatures{
+                     MenuItemId=m3.ObjToInt(),
+                     RolePermissionId=role.ObjToInt(),
+                     MenuFeatId=1
+                 },
+                 new RoleMenuFeatures{
+                     MenuItemId=m3.ObjToInt(),
+                     RolePermissionId=role.ObjToInt(),
+                     MenuFeatId=2
+                 },
+                 new RoleMenuFeatures{
+                     MenuItemId=m3.ObjToInt(),
+                     RolePermissionId=role.ObjToInt(),
+                     MenuFeatId=3
+                 },
+                 new RoleMenuFeatures{
+                     MenuItemId=m3.ObjToInt(),
+                     RolePermissionId=role.ObjToInt(),
+                     MenuFeatId=4
+                 }
+            };
+            await base.InsertData(roleMenus);
+            #endregion
+            #region 路由
+            MenuItemsRouter router = new MenuItemsRouter
+            {
+                MenuItemId = m3.ObjToInt(),
+                Title = "后台菜单",
+                PathRoad = "SysMenu",
+                PathRouter = "Menu/SysMenu.vue"
+            };
+            await base.InsertData(router);
+            #endregion
+            #region 菜单权限
+            List<RoleMenuItems> roleMenu = new List<RoleMenuItems>
+            {
+                new RoleMenuItems{
+                    MenuItemsId =1,
+                    RolePermissionId=1,
+                },
+                new RoleMenuItems{
+                    MenuItemsId =2,
+                    RolePermissionId=1,
+                },
+                new RoleMenuItems{
+                    MenuItemsId =3,
+                    RolePermissionId=1,
+                },
+            };
+            return await base.InsertData(roleMenu);
+            #endregion
+        }
     }
 }
