@@ -200,13 +200,5 @@ namespace Miliy.MainApi.Controllers
         [Authorize]
         public async Task<ActionResult<Object>> SearchMenuItemPage(PageQuery Page) => await SysService.SearchMenuItemPage(Page);
         #endregion
-
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<ActionResult> Init()
-        {
-            await SysService.InitDbData();
-            return null;
-        }
     }
 }

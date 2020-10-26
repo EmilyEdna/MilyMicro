@@ -8,8 +8,6 @@ namespace Mily.MainLogic.LogicInterface
 {
     public interface IMainLogic : IService
     {
-        Task<Object> InitDbData();
-
         #region 登录注册
 
         Task<AdminRoleViewModel> Login(ResultProvider Provider);
