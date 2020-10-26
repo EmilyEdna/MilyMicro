@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Mily.Extension.Infrastructure.Common;
+using Mily.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +56,7 @@ namespace Mily.Extension.Filters
                 Item.StatusCode = Context.HttpContext.Response.StatusCode;
                 Item.ResultData = (Context.Result as ObjectResult).Value;
                 Item.Info = "执行成功!";
-                Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                Item.ServerDate = DateTime.Now.ToFmtDate(1);
             });
             if (Req.Headers.ContainsKey("Cache"))
             {

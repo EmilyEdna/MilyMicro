@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Mily.Extension.Authentication.CookieAuthentication;
 using Mily.Extension.Infrastructure.Common;
 using Mily.Setting.ModelEnum;
+using Mily.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,7 @@ namespace Mily.Extension.Attributes
                     Item.StatusCode = StatusCodes.Status401Unauthorized;
                     Item.ResultData = null;
                     Item.Info = ResponseEnum.Unauthorized.ToDescription();
-                    Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    Item.ServerDate = DateTime.Now.ToFmtDate(1);
                 });
                 context.Result = new ObjectResult(Result);
             }

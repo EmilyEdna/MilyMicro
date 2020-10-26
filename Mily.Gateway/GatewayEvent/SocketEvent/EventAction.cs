@@ -62,7 +62,7 @@ namespace Mily.Gateway.GatewayEvent.SocketEvent
             else
             {
                 Dispose();
-                var Key = ResponseResult["ServerDateStr"].ToString();
+                var Key = ResponseResult["ServerDate"].ToString();
                 //判断有这个重复键则
                 if (ThreadResult.ContainsKey(Key))
                 {
@@ -72,7 +72,7 @@ namespace Mily.Gateway.GatewayEvent.SocketEvent
                 else
                 {
                     ResponseResult["ResultData"] = ResponseResult["ResultData"]?.ToString().ToModel<Object>();
-                    ThreadResult.GetOrAdd(Key, ResponseResult["ServerDateLong"]);
+                    ThreadResult.GetOrAdd(Key, Key);
                     return ResponseResult;
                 }
             }
@@ -81,7 +81,7 @@ namespace Mily.Gateway.GatewayEvent.SocketEvent
         /// 每次满足100则清理
         /// </summary>
         protected void Dispose() {
-            if (ThreadResult.Count > 100)
+            if (ThreadResult.Count > 50)
                 ThreadResult.Clear();
         }
     }

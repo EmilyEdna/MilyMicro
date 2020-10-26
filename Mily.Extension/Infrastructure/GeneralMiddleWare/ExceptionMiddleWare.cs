@@ -2,6 +2,7 @@
 using Mily.Extension.Infrastructure.Common;
 using Mily.Setting;
 using Mily.Setting.ModelEnum;
+using Mily.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -66,7 +67,7 @@ namespace Mily.Extension.Infrastructure.GeneralMiddleWare
                                 Item.Info = ErrorMsg;
                                 Item.StatusCode = Context.Response.StatusCode;
                                 Item.ResultData = null;
-                                Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                                Item.ServerDate = DateTime.Now.ToFmtDate(1);
                             });
                             Context.Response.ContentType = "application/json";
                             await Context.Response.WriteAsync(JsonConvert.SerializeObject(Result), Encoding.UTF8);

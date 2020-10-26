@@ -1,82 +1,165 @@
 ﻿-- ----------------------------
--- Records of [System_Administrator]
+-- Records of [Sys_Admin]
 -- ----------------------------
-INSERT INTO [dbo].[System_Administrator]  VALUES (N'9490009D-FE18-45C6-A113-D059167EA608', N'lzh', N'admin', N'123', N'D3DCAE43-77D0-4D53-83CD-63099C7F9D39', N'0', NULL)
+SET IDENTITY_INSERT [dbo].[Sys_Admin] ON
 GO
 
--- ----------------------------
--- Records of [System_MenuFeatures]
--- ----------------------------
-INSERT INTO [dbo].[System_MenuFeatures]  VALUES (N'07C1F0A2-28A6-48DC-98C3-2A4F32E183E9', N'C078B6E0-F762-4783-8143-1F921ECD3ED9', N'新增', N'el-icon-plus', N'1', N'0', NULL)
+INSERT INTO [dbo].[Sys_Admin] ([Id], [AdminName], [Account], [PassWord], [RolePermissionId], [Deleted], [Created]) VALUES (N'1', N'admin', N'lzh', N'123', N'1', N'0', N'2020-10-23 18:10:59.003')
 GO
 
-INSERT INTO [dbo].[System_MenuFeatures]  VALUES (N'36872190-4A83-4C83-9BCC-54787936CFD5', N'C078B6E0-F762-4783-8143-1F921ECD3ED9', N'编辑', N'el-icon-edit', N'1', N'0', NULL)
-GO
-
-INSERT INTO [dbo].[System_MenuFeatures]  VALUES (N'0729C15A-4DA2-433E-9691-AC47AFECAC6D', N'C078B6E0-F762-4783-8143-1F921ECD3ED9', N'删除', N'el-icon-delete', N'1', N'0', NULL)
-GO
-
-INSERT INTO [dbo].[System_MenuFeatures]  VALUES (N'5BFD1062-EBA8-4059-B118-F56AFC01175E', N'C078B6E0-F762-4783-8143-1F921ECD3ED9', N'批量删除', N'el-icon-delete', N'1', N'0', NULL)
-GO
-
--- ----------------------------
--- Records of [System_MenuFeaturesRouter]
--- ----------------------------
-INSERT INTO [dbo].[System_MenuFeaturesRouter]  VALUES (N'B4E59939-3A23-4414-9658-1DA5034E0529', N'07C1F0A2-28A6-48DC-98C3-2A4F32E183E9', N'新增', N'Menu/AddMenu', N'Menu/Handler/AddMenu.vue', N'0', NULL)
+SET IDENTITY_INSERT [dbo].[Sys_Admin] OFF
 GO
 
 
 -- ----------------------------
--- Records of [System_MenuItems]
+-- Records of [Sys_Log]
 -- ----------------------------
-INSERT INTO [dbo].[System_MenuItems]  VALUES (N'C078B6E0-F762-4783-8143-1F921ECD3ED9', NULL, N'后台菜单', N'3', N'747CFFD2-6F45-4BF0-8D50-7D7469AE9F6C', N'0', N'0', NULL)
+SET IDENTITY_INSERT [dbo].[Sys_Log] ON
 GO
 
-INSERT INTO [dbo].[System_MenuItems]  VALUES (N'747CFFD2-6F45-4BF0-8D50-7D7469AE9F6C', N'el-icon-lx-settings', N'菜单管理', N'2', N'95332CD5-8159-45B8-83C8-A540F3279B0E', N'1', N'0', NULL)
+INSERT INTO [dbo].[Sys_Log] ([Id], [Hnadler], [HandleType], [HandleTime], [HandleObject], [HandleName], [HandleObvious], [Deleted], [Created]) VALUES (N'1', N'*', N'1', N'2020-10-23 18:10:58.817', N'RolePermission', N'新增操作', N'【*】对【RolePermission】表进行了【新增操作】，操作时间为：【2020/10/23 18:10:58】', N'0', N'2020-10-23 18:10:58.883')
 GO
 
-INSERT INTO [dbo].[System_MenuItems]  VALUES (N'95332CD5-8159-45B8-83C8-A540F3279B0E', N'el-icon-lx-home', N'系统管理', N'1', NULL, N'1', N'0', NULL)
+INSERT INTO [dbo].[Sys_Log] ([Id], [Hnadler], [HandleType], [HandleTime], [HandleObject], [HandleName], [HandleObvious], [Deleted], [Created]) VALUES (N'2', N'*', N'1', N'2020-10-23 18:10:59.023', N'Administrator', N'新增操作', N'【*】对【Administrator】表进行了【新增操作】，操作时间为：【2020/10/23 18:10:59】', N'0', N'2020-10-23 18:10:59.023')
 GO
 
-
--- ----------------------------
--- Records of [System_MenuItemsRouter]
--- ----------------------------
-INSERT INTO [dbo].[System_MenuItemsRouter]  VALUES (N'9766B4C6-FBDF-4819-BCF1-71A06AAF1395', N'C078B6E0-F762-4783-8143-1F921ECD3ED9', N'后台菜单', N'SysMenu', N'Menu/SysMenu.vue', N'0', NULL)
+INSERT INTO [dbo].[Sys_Log] ([Id], [Hnadler], [HandleType], [HandleTime], [HandleObject], [HandleName], [HandleObvious], [Deleted], [Created]) VALUES (N'3', N'*', N'1', N'2020-10-23 18:10:59.113', N'MenuItems', N'新增操作', N'【*】对【MenuItems】表进行了【新增操作】，操作时间为：【2020/10/23 18:10:59】', N'0', N'2020-10-23 18:10:59.113')
 GO
 
-
--- ----------------------------
--- Records of [System_RoleMenuFeatures]
--- ----------------------------
-INSERT INTO [dbo].[System_RoleMenuFeatures]  VALUES (N'9995BA04-18F9-4C50-B6BA-9627D6168B6F', N'D3DCAE43-77D0-4D53-83CD-63099C7F9D39',N'C078B6E0-F762-4783-8143-1F921ECD3ED9', N'36872190-4A83-4C83-9BCC-54787936CFD5', N'0', NULL)
+INSERT INTO [dbo].[Sys_Log] ([Id], [Hnadler], [HandleType], [HandleTime], [HandleObject], [HandleName], [HandleObvious], [Deleted], [Created]) VALUES (N'4', N'*', N'1', N'2020-10-23 18:10:59.207', N'MenuItems', N'新增操作', N'【*】对【MenuItems】表进行了【新增操作】，操作时间为：【2020/10/23 18:10:59】', N'0', N'2020-10-23 18:10:59.207')
 GO
 
-INSERT INTO [dbo].[System_RoleMenuFeatures]  VALUES (N'4AD785D9-2ED8-4414-850F-BAFC61544940', N'D3DCAE43-77D0-4D53-83CD-63099C7F9D39',N'C078B6E0-F762-4783-8143-1F921ECD3ED9', N'0729C15A-4DA2-433E-9691-AC47AFECAC6D', N'0', NULL)
+INSERT INTO [dbo].[Sys_Log] ([Id], [Hnadler], [HandleType], [HandleTime], [HandleObject], [HandleName], [HandleObvious], [Deleted], [Created]) VALUES (N'5', N'*', N'1', N'2020-10-23 18:10:59.310', N'MenuItems', N'新增操作', N'【*】对【MenuItems】表进行了【新增操作】，操作时间为：【2020/10/23 18:10:59】', N'0', N'2020-10-23 18:10:59.310')
 GO
 
-INSERT INTO [dbo].[System_RoleMenuFeatures]  VALUES (N'0A0796AC-B942-48E6-80AE-C2A8DD137C6A', N'D3DCAE43-77D0-4D53-83CD-63099C7F9D39',N'C078B6E0-F762-4783-8143-1F921ECD3ED9', N'5BFD1062-EBA8-4059-B118-F56AFC01175E', N'0', NULL)
+INSERT INTO [dbo].[Sys_Log] ([Id], [Hnadler], [HandleType], [HandleTime], [HandleObject], [HandleName], [HandleObvious], [Deleted], [Created]) VALUES (N'6', N'*', N'1', N'2020-10-23 18:10:59.407', N'MenuFeatures', N'新增操作', N'【*】对【MenuFeatures】表进行了【新增操作】，操作时间为：【2020/10/23 18:10:59】', N'0', N'2020-10-23 18:10:59.407')
 GO
 
-INSERT INTO [dbo].[System_RoleMenuFeatures]  VALUES (N'1F273FEF-2008-48E0-BDEE-D13A31274026', N'D3DCAE43-77D0-4D53-83CD-63099C7F9D39',N'C078B6E0-F762-4783-8143-1F921ECD3ED9', N'07C1F0A2-28A6-48DC-98C3-2A4F32E183E9', N'0', NULL)
+INSERT INTO [dbo].[Sys_Log] ([Id], [Hnadler], [HandleType], [HandleTime], [HandleObject], [HandleName], [HandleObvious], [Deleted], [Created]) VALUES (N'7', N'*', N'1', N'2020-10-23 18:10:59.510', N'MenuFeaturesRouter', N'新增操作', N'【*】对【MenuFeaturesRouter】表进行了【新增操作】，操作时间为：【2020/10/23 18:10:59】', N'0', N'2020-10-23 18:10:59.510')
 GO
 
-
--- ----------------------------
--- Records of [System_RoleMenuItems]
--- ----------------------------
-INSERT INTO [dbo].[System_RoleMenuItems]  VALUES (N'CBBC787F-C724-41EF-8108-261265BB1DA3', N'D3DCAE43-77D0-4D53-83CD-63099C7F9D39', N'747CFFD2-6F45-4BF0-8D50-7D7469AE9F6C', N'0', NULL)
+INSERT INTO [dbo].[Sys_Log] ([Id], [Hnadler], [HandleType], [HandleTime], [HandleObject], [HandleName], [HandleObvious], [Deleted], [Created]) VALUES (N'8', N'*', N'1', N'2020-10-23 18:10:59.607', N'RoleMenuFeatures', N'新增操作', N'【*】对【RoleMenuFeatures】表进行了【新增操作】，操作时间为：【2020/10/23 18:10:59】', N'0', N'2020-10-23 18:10:59.607')
 GO
 
-INSERT INTO [dbo].[System_RoleMenuItems]  VALUES (N'1B108D3D-C360-4CE8-9330-4C1902635D14', N'D3DCAE43-77D0-4D53-83CD-63099C7F9D39', N'C078B6E0-F762-4783-8143-1F921ECD3ED9', N'0', NULL)
+INSERT INTO [dbo].[Sys_Log] ([Id], [Hnadler], [HandleType], [HandleTime], [HandleObject], [HandleName], [HandleObvious], [Deleted], [Created]) VALUES (N'9', N'*', N'1', N'2020-10-23 18:10:59.707', N'MenuItemsRouter', N'新增操作', N'【*】对【MenuItemsRouter】表进行了【新增操作】，操作时间为：【2020/10/23 18:10:59】', N'0', N'2020-10-23 18:10:59.707')
 GO
 
-INSERT INTO [dbo].[System_RoleMenuItems]  VALUES (N'C3A9AE9C-AF25-4BDC-AB2E-8F0705F25DA1', N'D3DCAE43-77D0-4D53-83CD-63099C7F9D39', N'95332CD5-8159-45B8-83C8-A540F3279B0E', N'0', NULL)
+INSERT INTO [dbo].[Sys_Log] ([Id], [Hnadler], [HandleType], [HandleTime], [HandleObject], [HandleName], [HandleObvious], [Deleted], [Created]) VALUES (N'10', N'*', N'1', N'2020-10-23 18:10:59.803', N'RoleMenuItems', N'新增操作', N'【*】对【RoleMenuItems】表进行了【新增操作】，操作时间为：【2020/10/23 18:10:59】', N'0', N'2020-10-23 18:10:59.803')
 GO
 
+SET IDENTITY_INSERT [dbo].[Sys_Log] OFF
+GO
 
 -- ----------------------------
--- Records of [System_RolePermission]
+-- Records of [Sys_MenuFeatures]
 -- ----------------------------
-INSERT INTO [dbo].[System_RolePermission]  VALUES (N'D3DCAE43-77D0-4D53-83CD-63099C7F9D39', N'超级管理员', N'0', NULL, N'0')
+SET IDENTITY_INSERT [dbo].[Sys_MenuFeatures] ON
+GO
+
+INSERT INTO [dbo].[Sys_MenuFeatures] ([Id], [MenuItemId], [FeatName], [Icon], [EnableOrDisable], [Deleted], [Created]) VALUES (N'1', N'3', N'新增', N'el-icon-plus', N'1', N'0', N'2020-10-23 18:10:59.383')
+GO
+
+INSERT INTO [dbo].[Sys_MenuFeatures] ([Id], [MenuItemId], [FeatName], [Icon], [EnableOrDisable], [Deleted], [Created]) VALUES (N'2', N'3', N'编辑', N'el-icon-edit', N'1', N'0', N'2020-10-23 18:10:59.383')
+GO
+
+INSERT INTO [dbo].[Sys_MenuFeatures] ([Id], [MenuItemId], [FeatName], [Icon], [EnableOrDisable], [Deleted], [Created]) VALUES (N'3', N'3', N'删除', N'el-icon-delete', N'1', N'0', N'2020-10-23 18:10:59.383')
+GO
+
+INSERT INTO [dbo].[Sys_MenuFeatures] ([Id], [MenuItemId], [FeatName], [Icon], [EnableOrDisable], [Deleted], [Created]) VALUES (N'4', N'3', N'批量删除', N'el-icon-delete', N'1', N'0', N'2020-10-23 18:10:59.387')
+GO
+
+SET IDENTITY_INSERT [dbo].[Sys_MenuFeatures] OFF
+GO
+
+-- ----------------------------
+-- Records of [Sys_MenuFeaturesRouter]
+-- ----------------------------
+SET IDENTITY_INSERT [dbo].[Sys_MenuFeaturesRouter] ON
+GO
+
+INSERT INTO [dbo].[Sys_MenuFeaturesRouter] ([Id], [MenuFeatId], [Title], [PathRoad], [PathRouter], [Deleted], [Created]) VALUES (N'1', N'0', N'新增', N'Menu/AddMenu', N'Menu/Handler/AddMenu.vue', N'0', N'2020-10-23 18:10:59.490')
+GO
+
+SET IDENTITY_INSERT [dbo].[Sys_MenuFeaturesRouter] OFF
+GO
+
+-- ----------------------------
+-- Records of [Sys_MenuItems]
+-- ----------------------------
+SET IDENTITY_INSERT [dbo].[Sys_MenuItems] ON
+GO
+
+INSERT INTO [dbo].[Sys_MenuItems] ([Id], [Icon], [Title], [Lv], [Parent], [ParentId], [Deleted], [Created]) VALUES (N'1', N'el-icon-lx-home', N'系统管理', N'1', N'1', NULL, N'0', N'2020-10-23 18:10:59.093')
+GO
+
+INSERT INTO [dbo].[Sys_MenuItems] ([Id], [Icon], [Title], [Lv], [Parent], [ParentId], [Deleted], [Created]) VALUES (N'2', N'el-icon-lx-settings', N'菜单管理', N'2', N'1', N'1', N'0', N'2020-10-23 18:10:59.190')
+GO
+
+INSERT INTO [dbo].[Sys_MenuItems] ([Id], [Icon], [Title], [Lv], [Parent], [ParentId], [Deleted], [Created]) VALUES (N'3', NULL, N'后台菜单', N'3', N'0', N'2', N'0', N'2020-10-23 18:10:59.290')
+GO
+
+SET IDENTITY_INSERT [dbo].[Sys_MenuItems] OFF
+GO
+
+-- ----------------------------
+-- Records of [Sys_MenuItemsRouter]
+-- ----------------------------
+SET IDENTITY_INSERT [dbo].[Sys_MenuItemsRouter] ON
+GO
+
+INSERT INTO [dbo].[Sys_MenuItemsRouter] ([Id], [MenuItemId], [Title], [PathRoad], [PathRouter], [Deleted], [Created]) VALUES (N'1', N'3', N'后台菜单', N'SysMenu', N'Menu/SysMenu.vue', N'0', N'2020-10-23 18:10:59.683')
+GO
+
+SET IDENTITY_INSERT [dbo].[Sys_MenuItemsRouter] OFF
+GO
+
+-- ----------------------------
+-- Records of [Sys_RoleMenuFeatures]
+-- ----------------------------
+SET IDENTITY_INSERT [dbo].[Sys_RoleMenuFeatures] ON
+GO
+
+INSERT INTO [dbo].[Sys_RoleMenuFeatures] ([Id], [RolePermissionId], [MenuItemId], [MenuFeatId], [Deleted], [Created]) VALUES (N'1', N'1', N'3', N'1', N'0', N'2020-10-23 18:10:59.587')
+GO
+
+INSERT INTO [dbo].[Sys_RoleMenuFeatures] ([Id], [RolePermissionId], [MenuItemId], [MenuFeatId], [Deleted], [Created]) VALUES (N'2', N'1', N'3', N'2', N'0', N'2020-10-23 18:10:59.587')
+GO
+
+INSERT INTO [dbo].[Sys_RoleMenuFeatures] ([Id], [RolePermissionId], [MenuItemId], [MenuFeatId], [Deleted], [Created]) VALUES (N'3', N'1', N'3', N'3', N'0', N'2020-10-23 18:10:59.587')
+GO
+
+INSERT INTO [dbo].[Sys_RoleMenuFeatures] ([Id], [RolePermissionId], [MenuItemId], [MenuFeatId], [Deleted], [Created]) VALUES (N'4', N'1', N'3', N'4', N'0', N'2020-10-23 18:10:59.587')
+GO
+
+SET IDENTITY_INSERT [dbo].[Sys_RoleMenuFeatures] OFF
+GO
+
+-- ----------------------------
+-- Records of [Sys_RoleMenuItems]
+-- ----------------------------
+SET IDENTITY_INSERT [dbo].[Sys_RoleMenuItems] ON
+GO
+
+INSERT INTO [dbo].[Sys_RoleMenuItems] ([Id], [RolePermissionId], [MenuItemsId], [Deleted], [Created]) VALUES (N'1', N'1', N'1', N'0', N'2020-10-23 18:10:59.783')
+GO
+
+INSERT INTO [dbo].[Sys_RoleMenuItems] ([Id], [RolePermissionId], [MenuItemsId], [Deleted], [Created]) VALUES (N'2', N'1', N'2', N'0', N'2020-10-23 18:10:59.783')
+GO
+
+INSERT INTO [dbo].[Sys_RoleMenuItems] ([Id], [RolePermissionId], [MenuItemsId], [Deleted], [Created]) VALUES (N'3', N'1', N'3', N'0', N'2020-10-23 18:10:59.783')
+GO
+
+SET IDENTITY_INSERT [dbo].[Sys_RoleMenuItems] OFF
+GO
+
+-- ----------------------------
+-- Records of [Sys_RolePermission]
+-- ----------------------------
+SET IDENTITY_INSERT [dbo].[Sys_RolePermission] ON
+GO
+
+INSERT INTO [dbo].[Sys_RolePermission] ([Id], [RoleName], [RoleType], [Deleted], [Created]) VALUES (N'1', N'超级管理员', N'0', N'0', N'2020-10-23 18:10:58.790')
+GO
+
+SET IDENTITY_INSERT [dbo].[Sys_RolePermission] OFF
 GO

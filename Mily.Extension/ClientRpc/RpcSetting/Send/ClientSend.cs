@@ -4,6 +4,7 @@ using Mily.Extension.ClientRpc.RpcSetting.View;
 using Mily.Extension.Infrastructure.Common;
 using Mily.Setting;
 using Mily.Setting.ModelEnum;
+using Mily.Utils;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -34,7 +35,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
                 Item.StatusCode = (int)Response;
                 Item.ResultData = Result?.ToJson();
                 Item.Info = Response.ToDescription();
-                Item.ServerDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                Item.ServerDate = DateTime.Now.ToFmtDate(1);
             });
             Provider.DictionaryStringProvider = Condition.ToJson().ToModel<Dictionary<String, Object>>();
             RemoveInvoke(Provider);
@@ -96,7 +97,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
             var BaseException = PreResult.Exception?.GetBaseException();
             if (BaseException != null)
             {
-                Console.WriteLine($"Exception Message：{BaseException.Message}");
+                LoggerFactory.LogFactoryExtension.WriteError(BaseException);
                 return Invoke(Provider, ResponseEnum.InternalServerError);
             }
             else
@@ -119,7 +120,7 @@ namespace Mily.Extension.ClientRpc.RpcSetting.Send
             var BaseException = PreResult.Exception?.GetBaseException();
             if (BaseException != null)
             {
-                Console.WriteLine($"Exception Message：{BaseException.Message}");
+                LoggerFactory.LogFactoryExtension.WriteError(BaseException);
                 return Invoke(Provider, ResponseEnum.InternalServerError);
             }
             else
