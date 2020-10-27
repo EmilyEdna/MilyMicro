@@ -68,7 +68,9 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> SearchAdminPage(PageQuery Page)
         {
-            return await DbContext().Queryable<Administrator>().AnalysisIF(Page)
+            object Name = DynamicLogic.GetField("AdminName", Page);
+            return await DbContext().Queryable<Administrator>()
+                .WhereIF(!Name.IsNullOrEmpty(),t=>t.AdminName.Contains(Name.ToString()))
                 .Where(t => t.Deleted == false).ToPageListAsync(Page.PageIndex, Page.PageSize);
         }
 
