@@ -1,6 +1,7 @@
 ﻿using Mily.Extension.Attributes;
 using SqlSugar;
 using System;
+using XExten.XExpres;
 
 namespace Mily.DbEntity.SystemView
 {
@@ -15,6 +16,7 @@ namespace Mily.DbEntity.SystemView
         /// 管理员
         /// </summary>
         [SugarColumn(IsNullable = true, ColumnDataType = "NVARCHAR", ColumnDescription = "管理员", Length = 50)]
+        [QueryType(QType.Like, "AdminName")]
         public string AdminName { get; set; }
 
         /// <summary>

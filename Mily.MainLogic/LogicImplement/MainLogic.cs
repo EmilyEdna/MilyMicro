@@ -1,5 +1,4 @@
-﻿using Mily.DbCore;
-using Mily.MainLogic.LogicInterface;
+﻿using Mily.MainLogic.LogicInterface;
 using Mily.Setting.ModelEnum;
 using Mily.ViewModels;
 using SqlSugar;
@@ -13,6 +12,7 @@ using System.Linq;
 using Mily.DbEntity.SystemView;
 using Mily.DbEntity.SystemView.RoleSeries;
 using Mily.DbEntity.SystemView.MenuSeries;
+using Mily.DbCore;
 
 namespace Mily.MainLogic.LogicImplement
 {
@@ -68,9 +68,7 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> SearchAdminPage(PageQuery Page)
         {
-            var Key = "AdminName".ToLower();
-            return await DbContext().Queryable<Administrator>()
-                .WhereIF(!Page.KeyWord[Key].IsNullOrEmpty(), t => t.AdminName == Page.KeyWord[Key].ToString())
+            return await DbContext().Queryable<Administrator>().AnalysisIF(Page)
                 .Where(t => t.Deleted == false).ToPageListAsync(Page.PageIndex, Page.PageSize);
         }
 
@@ -297,13 +295,13 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> SearchMenuItemPage(PageQuery Page)
         {
-            var Title = "Title".ToLower();
-            var MenuLv = "MenuLv".ToLower();
+            object Title = DynamicLogic.GetField("Title", Page);
+            object MenuLv = DynamicLogic.GetField("MenuLv", Page);
             return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.Id })
                      .Where((Role, Menu) => Role.Deleted == false && Menu.Deleted == false)
                      .OrderBy((Role, Menu) => Menu.Lv, OrderByType.Asc)
-                     .WhereIF(!Page.KeyWord[Title].IsNullOrEmpty(), (Role, Menu) => Menu.Title.Contains(Page.KeyWord[Title].ToString()))
-                     .WhereIF(!Page.KeyWord[MenuLv].IsNullOrEmpty(), (Role, Menu) => Menu.Lv == (MenuItemEnum)Page.KeyWord[MenuLv])
+                     .WhereIF(!Title.IsNullOrEmpty(), (Role, Menu) => Menu.Title.Contains(Title.ToString()))
+                     .WhereIF(!MenuLv.IsNullOrEmpty(), (Role, Menu) => Menu.Lv == (MenuItemEnum)MenuLv)
                      .Select((Role, Menu) => new RoleMenuItemViewModel
                      {
                          Id = Menu.Id,
