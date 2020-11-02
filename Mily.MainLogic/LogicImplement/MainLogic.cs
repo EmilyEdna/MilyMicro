@@ -68,9 +68,9 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> SearchAdminPage(PageQuery Page)
         {
-            object Name = DynamicLogic.GetField("AdminName", Page);
+            Administrator admin = Page.KeyWord.ToJson().ToModel<Administrator>();
             return await DbContext().Queryable<Administrator>()
-                .WhereIF(!Name.IsNullOrEmpty(),t=>t.AdminName.Contains(Name.ToString()))
+                .WhereIF(!admin.AdminName.IsNullOrEmpty(),t=>t.AdminName.Contains(admin.AdminName))
                 .Where(t => t.Deleted == false).ToPageListAsync(Page.PageIndex, Page.PageSize);
         }
 
@@ -297,13 +297,12 @@ namespace Mily.MainLogic.LogicImplement
         /// <returns></returns>
         public async Task<Object> SearchMenuItemPage(PageQuery Page)
         {
-            object Title = DynamicLogic.GetField("Title", Page);
-            object MenuLv = DynamicLogic.GetField("MenuLv", Page);
+            MenuItems search = Page.KeyWord.ToJson().ToModel<MenuItems>();
             return await DbContext().Queryable<RoleMenuItems, MenuItems>((Role, Menu) => new Object[] { JoinType.Left, Role.MenuItemsId == Menu.Id })
                      .Where((Role, Menu) => Role.Deleted == false && Menu.Deleted == false)
                      .OrderBy((Role, Menu) => Menu.Lv, OrderByType.Asc)
-                     .WhereIF(!Title.IsNullOrEmpty(), (Role, Menu) => Menu.Title.Contains(Title.ToString()))
-                     .WhereIF(!MenuLv.IsNullOrEmpty(), (Role, Menu) => Menu.Lv == (MenuItemEnum)MenuLv)
+                     .WhereIF(!search.Title.IsNullOrEmpty(), (Role, Menu) => Menu.Title.Contains(search.Title))
+                     .WhereIF(!search.Lv.IsNullOrEmpty(), (Role, Menu) => Menu.Lv == search.Lv)
                      .Select((Role, Menu) => new RoleMenuItemViewModel
                      {
                          Id = Menu.Id,
