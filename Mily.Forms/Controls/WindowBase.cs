@@ -9,8 +9,12 @@ namespace Mily.Forms.Controls
 {
     public partial class WindowBase : Window
     {
-
-
+        public WindowBase() 
+        {
+            //ResourceDictionary dic = new ResourceDictionary { Source = new Uri(@"Style.xaml", UriKind.Relative) };
+            //Resources.MergedDictionaries.Add(dic);
+            //Style = (Style)dic["MainWindows"];
+        }
 
         #region 窗体属性
         /// <summary>

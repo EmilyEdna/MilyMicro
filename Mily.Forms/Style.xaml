@@ -42,8 +42,35 @@
         </Setter>
     </Style>
     <!--#endregion-->
-    
+
     <!--#region 窗体-->
-    
+    <Style x:Key="MainWindows" TargetType="{x:Type Ctrl:WindowBase}">
+        <Setter Property="AllowsTransparency" Value="True"/>
+        <Setter Property="WindowStyle" Value="None"/>
+        <Setter Property="BorderThickness" Value="20"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="{Binding RelativeSource={RelativeSource Mode=FindAncestor ,AncestorType={x:Type Ctrl:WindowBase}},Path=WindowShadowSize}"
+                                  Opacity="{Binding RelativeSource={RelativeSource Mode=FindAncestor ,AncestorType={x:Type Ctrl:WindowBase}},Path=WindowShadowOpacity}"
+                                  ShadowDepth="0"
+                                  Color="{Binding RelativeSource={RelativeSource Mode=FindAncestor ,AncestorType={x:Type Ctrl:WindowBase}},Path=WindowShadowColor}"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Ctrl:WindowBase}">
+                    <Border
+                        Padding="{TemplateBinding Margin}"
+                        Panel.ZIndex="0"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>              
+            </Setter.Value>
+        </Setter>
+    </Style>
     <!--#endregion-->
 </ResourceDictionary>
