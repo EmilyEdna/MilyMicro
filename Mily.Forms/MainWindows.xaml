@@ -13,7 +13,7 @@
         Height="300" 
         Width="600"
         Style="{StaticResource MainWindows}">
-    <Grid>
+    <Grid x:Name="Gload">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
@@ -41,7 +41,7 @@
                         Stretch="Uniform"/>
 
                 </Border>
-                <TextBlock Text="网易云音乐"
+                <TextBlock Text="网易云图片"
                            Foreground="White" 
                            Margin="4,0,0,0" 
                            FontSize="12"
@@ -68,6 +68,9 @@
                 </Ctrl:CloseBtn>
 
             </StackPanel>
+        </Grid>
+        <Grid Background="White" Grid.Row="1">
+            
         </Grid>
     </Grid>
 </Ctrl:WindowBase>

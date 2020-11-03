@@ -20,6 +20,7 @@ namespace Mily.Forms
         public MainWindows()
         {
             InitializeComponent();
+            Gloads = Gload;
         }
     }
 }

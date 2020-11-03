@@ -1,20 +1,112 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 
 namespace Mily.Forms.Controls
 {
     public partial class WindowBase : Window
     {
-        public WindowBase() 
+        public Grid Gloads;
+        private readonly Dictionary<string, ContextMenu> Ioc = new Dictionary<string, ContextMenu>();
+        private readonly List<string> Data;
+        public WindowBase()
         {
-            //ResourceDictionary dic = new ResourceDictionary { Source = new Uri(@"Style.xaml", UriKind.Relative) };
-            //Resources.MergedDictionaries.Add(dic);
-            //Style = (Style)dic["MainWindows"];
+            Data = new List<string>{
+                "下载",
+                "打开目录",
+            };
+            InitEvent();
+
         }
+
+        #region 公用
+
+        private ContextMenu GetRightMenu()
+        {
+            if (Ioc.ContainsKey("Right")) return Ioc["Right"];
+            else
+            {
+                ContextMenu Menu = new ContextMenu();
+                CreateMenu(Menu, Data);
+                Ioc.Add("Right", Menu);
+                return Menu;
+            }
+        }
+
+        private void CreateMenu(ContextMenu Menu, List<string> Title)
+        {
+            Title.ForEach(t =>
+            {
+                MenuItem Item = new MenuItem();
+                Item.Header = t;
+                Item.Click += Item_Click;
+                Menu.Items.Add(Item);
+            });
+        }
+
+        private void Item_Click(object sender, RoutedEventArgs e)
+        {
+            var Item = (sender as MenuItem);
+            if (Item.Header.ToString().Equals("打开目录"))
+            {
+                string Path = AppDomain.CurrentDomain.BaseDirectory + "SaveImg";
+                if (Directory.Exists(Path) == false)
+                    Directory.CreateDirectory(Path);
+                Process.Start("explorer.exe", Path);
+            }
+            else if (Item.Header.ToString().Equals("下载"))
+            {
+
+            }
+        }
+        #endregion
+
+        #region 事件
+        IntPtr Prt = IntPtr.Zero;
+        private void InitEvent()
+        {
+
+            SourceInitialized += WindowBase_SourceInitialized;
+            MouseLeftButtonDown += WindowBase_MouseLeftButtonDown;
+            MouseRightButtonDown += WindowBase_MouseRightButtonDown;
+        }
+
+        private void WindowBase_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.OriginalSource is Grid || e.OriginalSource is Window || e.OriginalSource is Border)
+            {
+                Gloads.ContextMenu = GetRightMenu();
+            }
+        }
+
+        private void WindowBase_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.OriginalSource is Grid || e.OriginalSource is Window || e.OriginalSource is Border)
+            {
+                SendMessage(Prt, 0x00A1, (IntPtr)2, IntPtr.Zero);
+                return;
+            }
+        }
+
+        private void WindowBase_SourceInitialized(object sender, EventArgs e)
+        {
+            Prt = new WindowInteropHelper(this).Handle;
+        }
+        [DllImport("user32.dll")]
+
+        public static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wparam, IntPtr lparam);
+        #endregion
 
         #region 窗体属性
         /// <summary>
@@ -51,7 +143,7 @@ namespace Mily.Forms.Controls
             set { SetValue(WindowShadowColorProperty, value); }
         }
         public static readonly DependencyProperty WindowShadowColorProperty =
-            DependencyProperty.Register("WindowShadowColor", typeof(Color), typeof(WindowBase), new PropertyMetadata(Color.FromArgb(255,200,200,200)));
+            DependencyProperty.Register("WindowShadowColor", typeof(Color), typeof(WindowBase), new PropertyMetadata(Color.FromArgb(255, 200, 200, 200)));
 
         /// <summary>
         /// 窗体阴影透明度
