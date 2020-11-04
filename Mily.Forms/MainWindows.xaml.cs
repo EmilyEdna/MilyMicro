@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mily.Forms.Core;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -23,4 +24,5 @@ namespace Mily.Forms
             Gloads = Gload;
         }
     }
+
 }

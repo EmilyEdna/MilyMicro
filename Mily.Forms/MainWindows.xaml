@@ -10,8 +10,11 @@
         WindowShadowColor="#888888"
         WindowShadowOpacity="1"
         WindowShadowSize="20"
-        Height="300" 
-        Width="600"
+        Height="500" 
+        Width="800"
+        Title="网易云图片"
+        FontFamily="微软雅黑,SimSun"
+        Foreground="#5C5C5C"
         Style="{StaticResource MainWindows}">
     <Grid x:Name="Gload">
         <Grid.RowDefinitions>
@@ -45,11 +48,10 @@
                            Foreground="White" 
                            Margin="4,0,0,0" 
                            FontSize="12"
-                           FontFamily="微软雅黑"
                            VerticalAlignment="Center"/>
             </WrapPanel>
             <StackPanel Grid.Column="1">
-                <TextBlock Text="测试"
+                <TextBlock Text="search"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Center"
                            Margin="0,5,0,0"/>
@@ -59,18 +61,35 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
+                <Ctrl:MinSizeBtn  
+                    ButtonSize="22"
+                    ButtonHoverColor="Transparent"
+                    ButtonHoverForeground="White"
+                    ButtonForeground="#EEC1C1"
+                    Icon="{StaticResource Icon_Min}"/>
                 <Ctrl:CloseBtn
                     ButtonSize="22"
                     ButtonHoverColor="Transparent"
                     ButtonHoverForeground="White"
                     ButtonForeground="#EEC1C1"
-                    Cursor="Hand">
-                </Ctrl:CloseBtn>
-
+                    Cursor="Hand"/>
             </StackPanel>
         </Grid>
         <Grid Background="White" Grid.Row="1">
-            
+            <ItemsControl x:Name="CustomerTemplate"
+                          BorderBrush="Black"
+                          BorderThickness="1"
+                          Cursor="Hand">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Pink" BorderThickness="1" Margin="5,5,0,0" Height="150" Width="150">
+                            <WrapPanel>
+                                <TextBlock Text="214354"/>
+                            </WrapPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Grid>
 </Ctrl:WindowBase>
