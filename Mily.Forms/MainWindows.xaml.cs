@@ -22,6 +22,7 @@ namespace Mily.Forms
         {
             InitializeComponent();
             Gloads = Gload;
+            CustomerTemplate.ItemsSource = Konachan.GetPic().Post;
         }
     }
 

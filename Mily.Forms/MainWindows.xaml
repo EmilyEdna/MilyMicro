@@ -10,8 +10,8 @@
         WindowShadowColor="#888888"
         WindowShadowOpacity="1"
         WindowShadowSize="20"
-        Height="500" 
-        Width="800"
+        Height="430" 
+        Width="666"
         Title="网易云图片"
         FontFamily="微软雅黑,SimSun"
         Foreground="#5C5C5C"
@@ -76,20 +76,40 @@
             </StackPanel>
         </Grid>
         <Grid Background="White" Grid.Row="1">
-            <ItemsControl x:Name="CustomerTemplate"
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <ItemsControl x:Name="CustomerTemplate"
                           BorderBrush="Black"
                           BorderThickness="1"
-                          Cursor="Hand">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="Pink" BorderThickness="1" Margin="5,5,0,0" Height="150" Width="150">
-                            <WrapPanel>
-                                <TextBlock Text="214354"/>
-                            </WrapPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                          Cursor="Hand"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
+                          Height="320"
+                          Width="666">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Pink" BorderThickness="1" Margin="5,5,0,0" Height="150" Width="150">
+                                <WrapPanel ItemHeight="150" ItemWidth="150" Orientation="Horizontal">
+                                    <Image Source="{Binding FileURL}"/>
+                                </WrapPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <WrapPanel Grid.Row="1" Margin="0,2,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Height="30" Width="50" Content="上一页" Margin="5,0,5,0"/>
+                    <Button Height="30" Width="50" Content="下一页" Margin="5,0,5,0"/>
+                </WrapPanel>
+                
+            </Grid>
         </Grid>
     </Grid>
 </Ctrl:WindowBase>

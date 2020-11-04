@@ -13,10 +13,10 @@ namespace Mily.Forms.Core
         private const string BaseURL = "https://konachan.com/";
         private const string Tag = "tag.xml";
         private const string Pic = "post.xml?page=1&limit=8";
-        public static void GetPic()
+        public static Root GetPic()
         {
             var XmlData = HttpMultiClient.HttpMulti.AddNode(BaseURL + Pic, UseCache: true).Build().CacheTime(10).RunString();
-            var data = XPlusEx.XmlDeserialize<Root>(XmlData.FirstOrDefault());
+            return XPlusEx.XmlDeserialize<Root>(XmlData.FirstOrDefault());
         }
         public void GetTag()
         {
