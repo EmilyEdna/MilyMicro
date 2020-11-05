@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mily.Forms"
         xmlns:Ctrl="clr-namespace:Mily.Forms.Controls"
+        xmlns:view="clr-namespace:Mily.Forms.DataModel"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         WindowShadowColor="#888888"
@@ -16,6 +17,12 @@
         FontFamily="微软雅黑,SimSun"
         Foreground="#5C5C5C"
         Style="{StaticResource MainWindows}">
+    <Window.DataContext>
+        <view:ModelView/>
+    </Window.DataContext>
+    <Window.Resources>
+        <view:ObjectConvter x:Key="obj"/>
+    </Window.Resources>
     <Grid x:Name="Gload">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -88,6 +95,7 @@
                           HorizontalAlignment="Left"
                           VerticalAlignment="Top"
                           Height="320"
+                          ItemsSource="{Binding RootData.Post}"
                           Width="666">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -98,17 +106,44 @@
                         <DataTemplate>
                             <Border BorderBrush="Pink" BorderThickness="1" Margin="5,5,0,0" Height="150" Width="150">
                                 <WrapPanel ItemHeight="150" ItemWidth="150" Orientation="Horizontal">
-                                    <Image Source="{Binding FileURL}"/>
+                                    <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                              Command="{Binding Path=DataContext.CheckPic, RelativeSource={RelativeSource AncestorType=Window}}">
+                                        <CheckBox.CommandParameter>
+                                            <MultiBinding Mode="TwoWay" Converter="{StaticResource obj}">
+                                                <Binding Path="Id" />
+                                                <Binding Path="FileURL" />
+                                            </MultiBinding>
+                                        </CheckBox.CommandParameter>
+                                        <Grid>
+                                            <Image Source="{Binding PreviewURL}"/>
+                                        </Grid>
+                                    </CheckBox>
                                 </WrapPanel>
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <WrapPanel Grid.Row="1" Margin="0,2,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Height="30" Width="50" Content="上一页" Margin="5,0,5,0"/>
-                    <Button Height="30" Width="50" Content="下一页" Margin="5,0,5,0"/>
-                </WrapPanel>
-                
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,5,0,0">
+                        <TextBlock Text="总量:"/>
+                        <TextBlock Text="{Binding RootData.Total}" Foreground="Red"/>
+                    </WrapPanel>
+                    <WrapPanel Grid.Column="1" Margin="0,2,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Height="30" Width="50" Content="上一页" Margin="5,0,5,0" Style="{StaticResource PageBtn}" Command="{Binding PrePage}"/>
+                        <WrapPanel Orientation="Horizontal" Margin="0,5,0,0">
+                            <TextBlock Text="{Binding CurrentPage}" Foreground="Red"/>
+                            <TextBlock Text="/"/>
+                            <TextBlock Text="{Binding RootData.PageNo}" Foreground="Red"/>
+                        </WrapPanel>
+                        <Button Height="30" Width="50" Content="下一页" Margin="5,0,5,0" Style="{StaticResource PageBtn}" Command="{Binding NextPage}"/>
+                    </WrapPanel>
+                </Grid>
+
+
             </Grid>
         </Grid>
     </Grid>

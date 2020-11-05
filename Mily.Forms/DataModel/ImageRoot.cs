@@ -14,6 +14,10 @@ namespace Mily.Forms.DataModel
     public class Root
     {
         /// <summary>
+        /// 总页数
+        /// </summary>
+        public double PageNo => Math.Ceiling(Total / 8.0);
+        /// <summary>
         /// 总数
         /// </summary>
         [XmlAttribute("count")]
@@ -25,6 +29,11 @@ namespace Mily.Forms.DataModel
     [Serializable]
     public class Elements
     {
+        /// <summary>
+        /// Id
+        /// </summary>
+        [XmlAttribute("id")]
+        public long Id { get; set; }
         /// <summary>
         /// 预览地址
         /// </summary>
