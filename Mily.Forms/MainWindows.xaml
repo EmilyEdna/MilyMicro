@@ -115,7 +115,19 @@
                                             </MultiBinding>
                                         </CheckBox.CommandParameter>
                                         <Grid>
-                                            <Image Source="{Binding PreviewURL}"/>
+                                            <Image Source="{Binding PreviewURL}">
+                                                <Image.ToolTip>
+                                                    <ToolTip Placement="Center">
+                                                        <ToolTip.Template>
+                                                            <ControlTemplate>
+                                                                <WrapPanel Width="800" Height="600" Orientation="Horizontal">
+                                                                    <Image Source="{Binding FileURL}"/>
+                                                                </WrapPanel>
+                                                            </ControlTemplate>
+                                                        </ToolTip.Template>
+                                                    </ToolTip>
+                                                </Image.ToolTip>
+                                            </Image>
                                         </Grid>
                                     </CheckBox>
                                 </WrapPanel>
