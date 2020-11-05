@@ -54,9 +54,5 @@ namespace Mily.Forms.Controls
         }
         public static readonly DependencyProperty IconProperty =
             DependencyProperty.Register("Icon", typeof(Geometry), typeof(ButtonControl), new PropertyMetadata(null));
-
-
-
-
     }
 }

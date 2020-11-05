@@ -17,7 +17,7 @@ namespace Mily.Forms.DataModel
             CurrentPage = 1;
         }
 
-        private readonly Dictionary<long, string> Path = new Dictionary<long, string>();
+        public static readonly Dictionary<long, string> Path = new Dictionary<long, string>();
 
         #region Property
         private Root _RootDate;

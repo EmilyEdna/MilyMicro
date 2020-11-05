@@ -1,9 +1,11 @@
 ﻿using Microsoft.Win32;
+using Mily.Forms.DataModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
@@ -12,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using XExten.XPlus;
 
 namespace Mily.Forms.Controls
 {
@@ -67,7 +70,15 @@ namespace Mily.Forms.Controls
             }
             else if (Item.Header.ToString().Equals("下载"))
             {
-
+                foreach (var item in ModelView.Path)
+                {
+                    string NewName = Guid.NewGuid()+Path.GetExtension(item.Value);
+                    string Paths = AppDomain.CurrentDomain.BaseDirectory + "SaveImg\\";
+                    if (Directory.Exists(Paths) == false)
+                        Directory.CreateDirectory(Paths);
+                    new WebClient().DownloadFile(item.Value, Paths + NewName);
+                }
+                MessageBox.Show("下载完成！", "通知", MessageBoxButton.OK);
             }
         }
         #endregion
