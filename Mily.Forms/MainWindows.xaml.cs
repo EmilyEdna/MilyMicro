@@ -1,15 +1,6 @@
-﻿using Mily.Forms.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using Mily.Forms.DataModel;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System;
 
 namespace Mily.Forms
 {
@@ -22,6 +13,22 @@ namespace Mily.Forms
         {
             InitializeComponent();
             Gloads = Gload;
+        }
+
+        private void Next_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                var data = ModelView.GetChildObjects<CheckBox>(CustomerTemplate, "");
+            });
+        }
+
+        private void Pre_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                var data = ModelView.GetChildObjects<CheckBox>(CustomerTemplate, "");
+            });
         }
     }
 

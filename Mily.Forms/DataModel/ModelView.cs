@@ -2,9 +2,14 @@
 using Mily.Forms.DataModel.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Threading;
 using XExten.XCore;
 
 namespace Mily.Forms.DataModel
@@ -50,19 +55,18 @@ namespace Mily.Forms.DataModel
         #endregion
 
         #region Command
-        public Commands<string> NextPage
+        public Commands<object> NextPage
         {
             get
             {
-                return new Commands<string>(GoNext, CanRun);
+                return new Commands<object>(GoNext, CanRun);
             }
         }
-
-        public Commands<string> PrePage
+        public Commands<object> PrePage
         {
             get
             {
-                return new Commands<string>(GoPre, CanRun);
+                return new Commands<object>(GoPre, CanRun);
             }
         }
         public Commands<Dictionary<long, string>> CheckPic
@@ -72,7 +76,19 @@ namespace Mily.Forms.DataModel
                 return new Commands<Dictionary<long, string>>(Check, CanRun);
             }
         }
-
+        public Commands<string> ReturnPage
+        {
+            get
+            {
+                return new Commands<string>(PageGo, CanRun);
+            }
+        }
+        private void PageGo(string No)
+        {
+            int.TryParse(No, out int Page);
+            CurrentPage = Page == 0 ? 1 : Page;
+            RootData = Konachan.GetPic(CurrentPage);
+        }
         private void Check(Dictionary<long, string> param)
         {
             foreach (var item in param)
@@ -83,12 +99,14 @@ namespace Mily.Forms.DataModel
                     Path.Add(item.Key, item.Value);
             }
         }
-        private void GoNext(string param)
+        private void GoNext(object param)
         {
+
             CurrentPage += 1;
             RootData = Konachan.GetPic(CurrentPage);
+           
         }
-        private void GoPre(string param)
+        private void GoPre(object param)
         {
             if (CurrentPage > 1)
             {
@@ -99,5 +117,31 @@ namespace Mily.Forms.DataModel
         private bool CanRun() => true;
         #endregion
 
+        #region Common
+
+
+        /// <summary>
+        /// 获取子控件
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static List<T> GetChildObjects<T>(DependencyObject obj, string name) where T : FrameworkElement
+        {
+            DependencyObject child = null;
+            List<T> childList = new List<T>();
+            for (int i = 0; i <= VisualTreeHelper.GetChildrenCount(obj) - 1; i++)
+            {
+                child = VisualTreeHelper.GetChild(obj, i);
+                if (child is T && (((T)child).Name == name || string.IsNullOrEmpty(name)))
+                {
+                    childList.Add((T)child);
+                }
+                childList.AddRange(GetChildObjects<T>(child, ""));//指定集合的元素添加到List队尾  
+            }
+            return childList;
+        }
+        #endregion
     }
 }

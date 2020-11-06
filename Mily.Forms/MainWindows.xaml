@@ -106,8 +106,8 @@
                         <DataTemplate>
                             <Border BorderBrush="Pink" BorderThickness="1" Margin="5,5,0,0" Height="150" Width="150">
                                 <WrapPanel ItemHeight="150" ItemWidth="150" Orientation="Horizontal">
-                                    <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" 
-                                              Command="{Binding Path=DataContext.CheckPic, RelativeSource={RelativeSource AncestorType=Window}}">
+                                    <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top"
+                                              Command="{Binding DataContext.CheckPic, RelativeSource={RelativeSource AncestorType=Window}}">
                                         <CheckBox.CommandParameter>
                                             <MultiBinding Mode="TwoWay" Converter="{StaticResource obj}">
                                                 <Binding Path="Id" />
@@ -115,13 +115,13 @@
                                             </MultiBinding>
                                         </CheckBox.CommandParameter>
                                         <Grid>
-                                            <Image Source="{Binding PreviewURL}">
+                                            <Image Source="{Binding FileSizeMB}">
                                                 <Image.ToolTip>
                                                     <ToolTip Placement="Center" HorizontalOffset="100" VerticalOffset="100">
                                                         <ToolTip.Template>
                                                             <ControlTemplate>
                                                                 <WrapPanel Width="800" Height="600" Orientation="Horizontal">
-                                                                    <Image Source="{Binding FileURL}"/>
+                                                                    <Image Source="{Binding FileSizeMB}"/>
                                                                 </WrapPanel>
                                                             </ControlTemplate>
                                                         </ToolTip.Template>
@@ -145,13 +145,28 @@
                         <TextBlock Text="{Binding RootData.Total}" Foreground="Red"/>
                     </WrapPanel>
                     <WrapPanel Grid.Column="1" Margin="0,2,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Height="30" Width="50" Content="上一页" Margin="5,0,5,0" Style="{StaticResource PageBtn}" Command="{Binding PrePage}"/>
+                        <Button Height="30"
+                                Width="50"
+                                Content="上一页" 
+                                Margin="5,0,5,0" 
+                                Style="{StaticResource PageBtn}"
+                                Command="{Binding PrePage}"
+                                Click="Pre_Click"/>
                         <WrapPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBox Text="{Binding CurrentPage}" Foreground="Red" Width="10"/>
+                            <TextBox Text="{Binding CurrentPage}" Foreground="Red" Style="{StaticResource PageBox}">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Enter" Command="{Binding ReturnPage}" CommandParameter="{Binding Text, RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TextBox}}"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
                             <TextBlock Text="/"/>
                             <TextBlock Text="{Binding RootData.PageNo}" Foreground="Red"/>
                         </WrapPanel>
-                        <Button Height="30" Width="50" Content="下一页" Margin="5,0,5,0" Style="{StaticResource PageBtn}" Command="{Binding NextPage}"/>
+                        <Button Height="30" Width="50" 
+                                Content="下一页" 
+                                Margin="5,0,5,0" 
+                                Style="{StaticResource PageBtn}" 
+                                Command="{Binding NextPage}" 
+                                Click="Next_Click"/>
                     </WrapPanel>
                 </Grid>
             </Grid>

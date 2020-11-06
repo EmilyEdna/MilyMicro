@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using Mily.Forms.DataModel;
+﻿using Mily.Forms.DataModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,14 +6,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using XExten.XPlus;
 
 namespace Mily.Forms.Controls
 {
@@ -30,7 +26,6 @@ namespace Mily.Forms.Controls
                 "打开目录",
             };
             InitEvent();
-
         }
 
         #region 公用
