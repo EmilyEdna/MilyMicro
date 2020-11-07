@@ -98,4 +98,11 @@ namespace Mily.Forms.DataModel
 
 
     }
+
+    public class JsonTag
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
+        public DateTime AddTime { get; set; }
+    }
 }

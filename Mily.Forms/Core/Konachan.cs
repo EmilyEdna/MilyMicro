@@ -12,7 +12,7 @@ namespace Mily.Forms.Core
     {
         private const string BaseURL = "https://konachan.com/";
         private const string Tag = "tag.xml";
-        private const string Pic = "post.xml?page={0}&limit=2";
+        private const string Pic = "post.xml?page={0}&limit=8";
         public static Root GetPic(int Page)
         {
             var XmlData = HttpMultiClient.HttpMulti.AddNode(BaseURL + string.Format(Pic, Page), UseCache: true).Build().CacheTime().RunString();

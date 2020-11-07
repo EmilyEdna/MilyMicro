@@ -101,15 +101,19 @@ namespace Mily.Forms.DataModel
         }
         private void GoNext(object param)
         {
-
+            if (Path.Count != 0)
+                Path.Clear();
             CurrentPage += 1;
             RootData = Konachan.GetPic(CurrentPage);
-           
+
+
         }
         private void GoPre(object param)
         {
             if (CurrentPage > 1)
             {
+                if (Path.Count != 0)
+                    Path.Clear();
                 CurrentPage -= 1;
                 RootData = Konachan.GetPic(CurrentPage);
             }

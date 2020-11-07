@@ -14,22 +14,5 @@ namespace Mily.Forms
             InitializeComponent();
             Gloads = Gload;
         }
-
-        private void Next_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                var data = ModelView.GetChildObjects<CheckBox>(CustomerTemplate, "");
-            });
-        }
-
-        private void Pre_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                var data = ModelView.GetChildObjects<CheckBox>(CustomerTemplate, "");
-            });
-        }
     }
-
 }

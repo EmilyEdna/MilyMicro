@@ -115,13 +115,13 @@
                                             </MultiBinding>
                                         </CheckBox.CommandParameter>
                                         <Grid>
-                                            <Image Source="{Binding FileSizeMB}">
+                                            <Image Source="{Binding PreviewURL}">
                                                 <Image.ToolTip>
                                                     <ToolTip Placement="Center" HorizontalOffset="100" VerticalOffset="100">
                                                         <ToolTip.Template>
                                                             <ControlTemplate>
                                                                 <WrapPanel Width="800" Height="600" Orientation="Horizontal">
-                                                                    <Image Source="{Binding FileSizeMB}"/>
+                                                                    <Image Source="{Binding PreviewURL}"/>
                                                                 </WrapPanel>
                                                             </ControlTemplate>
                                                         </ToolTip.Template>
@@ -150,8 +150,7 @@
                                 Content="上一页" 
                                 Margin="5,0,5,0" 
                                 Style="{StaticResource PageBtn}"
-                                Command="{Binding PrePage}"
-                                Click="Pre_Click"/>
+                                Command="{Binding PrePage}"/>
                         <WrapPanel Orientation="Horizontal" Margin="0,5,0,0">
                             <TextBox Text="{Binding CurrentPage}" Foreground="Red" Style="{StaticResource PageBox}">
                                 <TextBox.InputBindings>
@@ -165,8 +164,7 @@
                                 Content="下一页" 
                                 Margin="5,0,5,0" 
                                 Style="{StaticResource PageBtn}" 
-                                Command="{Binding NextPage}" 
-                                Click="Next_Click"/>
+                                Command="{Binding NextPage}" />
                     </WrapPanel>
                 </Grid>
             </Grid>

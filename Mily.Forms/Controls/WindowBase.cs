@@ -24,6 +24,7 @@ namespace Mily.Forms.Controls
             Data = new List<string>{
                 "下载",
                 "打开目录",
+                "自定义标签"
             };
             InitEvent();
         }
@@ -65,15 +66,31 @@ namespace Mily.Forms.Controls
             }
             else if (Item.Header.ToString().Equals("下载"))
             {
-                foreach (var item in ModelView.Path)
+                MessageBox.Show("下载时候软件会进进入假死状态！请不要关闭！", "通知", MessageBoxButton.OK);
+                if (ModelView.Path.Count == 0)
+                    MessageBox.Show("你还未选择需要下载的图片！", "通知", MessageBoxButton.OK);
+                else
                 {
-                    string NewName = Guid.NewGuid()+Path.GetExtension(item.Value);
-                    string Paths = AppDomain.CurrentDomain.BaseDirectory + "SaveImg\\";
-                    if (Directory.Exists(Paths) == false)
-                        Directory.CreateDirectory(Paths);
-                    new WebClient().DownloadFile(item.Value, Paths + NewName);
+                    foreach (var item in ModelView.Path)
+                    {
+                        string NewName = Guid.NewGuid() + Path.GetExtension(item.Value);
+                        string Paths = AppDomain.CurrentDomain.BaseDirectory + "SaveImg\\";
+                        if (Directory.Exists(Paths) == false)
+                            Directory.CreateDirectory(Paths);
+                        new WebClient().DownloadFile(item.Value, Paths + NewName);
+                    }
+                    MessageBox.Show("下载完成！", "通知", MessageBoxButton.OK);
                 }
-                MessageBox.Show("下载完成！", "通知", MessageBoxButton.OK);
+            }
+            else
+            {
+                SourceWindow win = new SourceWindow();
+                win.Width = 400;
+                win.Height = 265;
+                WindowStartupLocation = WindowStartupLocation.Manual;
+                win.Left = SystemParameters.PrimaryScreenWidth / 3;
+                win.Top = SystemParameters.PrimaryScreenHeight / 3;
+                win.ShowDialog();
             }
         }
         #endregion
