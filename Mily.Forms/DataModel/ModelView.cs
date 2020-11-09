@@ -1,7 +1,9 @@
 ﻿using Mily.Forms.Core;
 using Mily.Forms.DataModel.ViewModel;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,10 +18,14 @@ namespace Mily.Forms.DataModel
 {
     public class ModelView : BaseView
     {
+        public static Dictionary<string, ModelView> Ioc = new Dictionary<string, ModelView>();
         public ModelView()
         {
             RootData = Konachan.GetPic(1);
             CurrentPage = 1;
+            Json = Read(out _);
+            if (!Ioc.ContainsKey(GetType().Name))
+                Ioc.Add(GetType().Name, this);
         }
 
         public static readonly Dictionary<long, string> Path = new Dictionary<long, string>();
@@ -50,6 +56,44 @@ namespace Mily.Forms.DataModel
             {
                 _CurrentPage = value;
                 OnPropertyChanged("CurrentPage");
+            }
+        }
+
+        private List<JsonTag> _Json;
+        public List<JsonTag> Json
+        {
+            get
+            {
+                return _Json.OrderByDescending(t => t.AddTime).ToList();
+            }
+            set
+            {
+                _Json = value;
+                OnPropertyChanged("Json");
+            }
+        }
+        private JsonTag _SelectItem;
+        public JsonTag SelectItem
+        {
+            get
+            {
+                return _SelectItem;
+            }
+            set
+            {
+                _SelectItem = value;
+                OnPropertyChanged("SelectItem");
+            }
+        }
+
+        private string _SelectValue;
+        public string SelectedValue
+        {
+            get { return _SelectValue; }
+            set
+            {
+                _SelectValue = value;
+                OnPropertyChanged("SelectedValue");
             }
         }
         #endregion
@@ -83,6 +127,20 @@ namespace Mily.Forms.DataModel
                 return new Commands<string>(PageGo, CanRun);
             }
         }
+        public Commands<object> Search
+        {
+            get
+            {
+                return new Commands<object>((obj) =>
+                {
+                    if (!SelectedValue.IsNullOrEmpty() && SelectItem != null) 
+                    {
+                        RootData = Konachan.GetPic(1, SelectedValue);
+                    }
+
+                }, () => true);
+            }
+        }
         private void PageGo(string No)
         {
             int.TryParse(No, out int Page);
@@ -104,9 +162,10 @@ namespace Mily.Forms.DataModel
             if (Path.Count != 0)
                 Path.Clear();
             CurrentPage += 1;
-            RootData = Konachan.GetPic(CurrentPage);
-
-
+            if (!SelectedValue.IsNullOrEmpty() && SelectItem != null)
+                RootData = Konachan.GetPic(CurrentPage, SelectedValue);
+            else
+                RootData = Konachan.GetPic(CurrentPage);
         }
         private void GoPre(object param)
         {
@@ -115,14 +174,33 @@ namespace Mily.Forms.DataModel
                 if (Path.Count != 0)
                     Path.Clear();
                 CurrentPage -= 1;
-                RootData = Konachan.GetPic(CurrentPage);
+                if (!SelectedValue.IsNullOrEmpty() && SelectItem != null)
+                    RootData = Konachan.GetPic(CurrentPage, SelectedValue);
+                else
+                    RootData = Konachan.GetPic(CurrentPage);
             }
         }
         private bool CanRun() => true;
         #endregion
 
         #region Common
-
+        /// <summary>
+        /// 读取
+        /// </summary>
+        /// <param name="Path"></param>
+        /// <returns></returns>
+        private List<JsonTag> Read(out string Path)
+        {
+            var BasePath = AppDomain.CurrentDomain.BaseDirectory + "config.cof";
+            Path = BasePath;
+            if (!File.Exists(BasePath))
+                File.Create(BasePath).Dispose();
+            using StreamReader reader = new StreamReader(BasePath);
+            var res = reader.ReadToEnd();
+            reader.Close();
+            reader.Dispose();
+            return !res.IsNullOrEmpty() ? res.ToLzStringDec().ToModel<List<JsonTag>>() : new List<JsonTag>();
+        }
 
         /// <summary>
         /// 获取子控件

@@ -81,11 +81,13 @@ namespace Mily.Forms.DataModel
         /// 创建配置
         /// </summary>
         private void CreateConfig()
-        {
+        { 
+            if (Key.IsNullOrEmpty() || Val.IsNullOrEmpty()) return;
             List<JsonTag> Datas;
             Datas = Read(out string BasePath);
             Datas.Add(new JsonTag { Key = Key, Value = Val, AddTime = DateTime.Now });
             Write(Datas, BasePath);
+            ModelView.Ioc.Values.FirstOrDefault().Json = Datas;
         }
 
         /// <summary>
@@ -97,6 +99,7 @@ namespace Mily.Forms.DataModel
             Datas = Read(out string BasePath);
             Datas.RemoveAll(t => t.Key.Equals(key));
             Write(Datas, BasePath);
+            ModelView.Ioc.Values.FirstOrDefault().Json = Datas;
         }
 
         #region 读写

@@ -24,6 +24,7 @@ namespace Mily.Forms.Controls
             Data = new List<string>{
                 "下载",
                 "打开目录",
+                "标签查询",
                 "自定义标签"
             };
             InitEvent();
@@ -82,11 +83,24 @@ namespace Mily.Forms.Controls
                     MessageBox.Show("下载完成！", "通知", MessageBoxButton.OK);
                 }
             }
+            else if (Item.Header.ToString().Equals("标签查询")) {
+                TagSearch win = new TagSearch
+                {
+                    Width = 400,
+                    Height = 265
+                };
+                WindowStartupLocation = WindowStartupLocation.Manual;
+                win.Left = SystemParameters.PrimaryScreenWidth / 3;
+                win.Top = SystemParameters.PrimaryScreenHeight / 3;
+                win.ShowDialog();
+            }
             else
             {
-                SourceWindow win = new SourceWindow();
-                win.Width = 400;
-                win.Height = 265;
+                SourceWindow win = new SourceWindow
+                {
+                    Width = 400,
+                    Height = 265
+                };
                 WindowStartupLocation = WindowStartupLocation.Manual;
                 win.Left = SystemParameters.PrimaryScreenWidth / 3;
                 win.Top = SystemParameters.PrimaryScreenHeight / 3;

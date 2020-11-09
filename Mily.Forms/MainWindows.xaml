@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Mily.Forms"
         xmlns:Ctrl="clr-namespace:Mily.Forms.Controls"
-        xmlns:view="clr-namespace:Mily.Forms.DataModel"
+        xmlns:local="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
+        xmlns:view="clr-namespace:Mily.Forms.DataModel" 
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         WindowShadowColor="#888888"
@@ -57,12 +57,37 @@
                            FontSize="12"
                            VerticalAlignment="Center"/>
             </WrapPanel>
-            <StackPanel Grid.Column="1">
-                <TextBlock Text="search"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Margin="0,5,0,0"/>
-            </StackPanel>
+            <Border Grid.Column="1" Width="120">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="20" />
+                    </Grid.ColumnDefinitions>
+                    <local:AutoCompleteComboBox
+                    SelectedValuePath="Value"
+                    TextSearch.TextPath="Key"
+                    ItemsSource="{Binding Json}"
+                    SelectedItem="{Binding SelectItem}"
+                    SelectedValue="{Binding SelectedValue}"
+                    Width="100"
+                    BorderThickness="0"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Margin="0,5,0,0"
+                    Background="#00FFFFFF">
+                        <local:AutoCompleteComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Key}" FontFamily="{StaticResource font}" Foreground="DeepPink"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </local:AutoCompleteComboBox.ItemTemplate>
+                    </local:AutoCompleteComboBox>
+                    <Button Grid.Column="1" Background="#00FFFFFF" BorderThickness="0" Style="{StaticResource Search}" Command="{Binding Search}" Margin="0,5,0,0">
+                        <Path Width="12" Height="12" Data="{StaticResource Icon_Serach}" Fill="White" Stretch="Fill" />
+                    </Button>
+                </Grid>
+            </Border>
             <StackPanel Grid.Column="2"
                         Margin="0,0,12,0"
                         HorizontalAlignment="Right"
@@ -115,13 +140,13 @@
                                             </MultiBinding>
                                         </CheckBox.CommandParameter>
                                         <Grid>
-                                            <Image Source="{Binding PreviewURL}">
+                                            <Image Source="{Binding FileSizeMB}">
                                                 <Image.ToolTip>
                                                     <ToolTip Placement="Center" HorizontalOffset="100" VerticalOffset="100">
                                                         <ToolTip.Template>
                                                             <ControlTemplate>
                                                                 <WrapPanel Width="800" Height="600" Orientation="Horizontal">
-                                                                    <Image Source="{Binding PreviewURL}"/>
+                                                                    <Image Source="{Binding FileSizeMB}"/>
                                                                 </WrapPanel>
                                                             </ControlTemplate>
                                                         </ToolTip.Template>
