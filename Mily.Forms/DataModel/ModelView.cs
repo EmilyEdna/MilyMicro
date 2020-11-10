@@ -133,11 +133,16 @@ namespace Mily.Forms.DataModel
             {
                 return new Commands<object>((obj) =>
                 {
-                    if (!SelectedValue.IsNullOrEmpty() && SelectItem != null) 
+                    if (!SelectedValue.IsNullOrEmpty() && SelectItem != null)
                     {
+                        CurrentPage = 1;
                         RootData = Konachan.GetPic(1, SelectedValue);
                     }
-
+                    else
+                    {
+                        CurrentPage = 1;
+                        RootData = Konachan.GetPic(1);
+                    }
                 }, () => true);
             }
         }

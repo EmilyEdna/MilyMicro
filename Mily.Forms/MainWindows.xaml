@@ -140,7 +140,7 @@
                                             </MultiBinding>
                                         </CheckBox.CommandParameter>
                                         <Grid>
-                                            <Image Source="{Binding PreviewURL}">
+                                            <Image Source="{Binding FileSizeMB}">
                                                 <Image.ToolTip>
                                                     <ToolTip Placement="Center" HorizontalOffset="100" VerticalOffset="100">
                                                         <ToolTip.Template>
