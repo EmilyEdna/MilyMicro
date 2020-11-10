@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -74,11 +75,14 @@ namespace Mily.Forms.Controls
                 {
                     foreach (var item in ModelView.Path)
                     {
-                        string NewName = Guid.NewGuid() + Path.GetExtension(item.Value);
-                        string Paths = AppDomain.CurrentDomain.BaseDirectory + "SaveImg\\";
-                        if (Directory.Exists(Paths) == false)
-                            Directory.CreateDirectory(Paths);
-                        new WebClient().DownloadFile(item.Value, Paths + NewName);
+                        Task.Factory.StartNew(() =>
+                        {
+                            string NewName = Guid.NewGuid() + Path.GetExtension(item.Value);
+                            string Paths = AppDomain.CurrentDomain.BaseDirectory + "SaveImg\\";
+                            if (Directory.Exists(Paths) == false)
+                                Directory.CreateDirectory(Paths);
+                            new WebClient().DownloadFile(item.Value, Paths + NewName);
+                        });
                     }
                     MessageBox.Show("下载完成！", "通知", MessageBoxButton.OK);
                 }
