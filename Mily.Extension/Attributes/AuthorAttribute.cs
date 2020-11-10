@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Mily.Extension.Authentication.CookieAuthentication;
 using Mily.Extension.Infrastructure.Common;
 using Mily.Setting.ModelEnum;
-using Mily.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;

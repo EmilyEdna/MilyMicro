@@ -23,7 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mily.Socket\Mily.Socket.csproj" />
-    <ProjectReference Include="..\Mily.Utils\Mily.Utils.csproj" />
     <ProjectReference Include="..\Mily.ViewModels\Mily.ViewModels.csproj" />
   </ItemGroup>
 </Project>
