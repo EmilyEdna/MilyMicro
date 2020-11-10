@@ -5,6 +5,11 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <PackageId>Konochan</PackageId>
+    <Authors>EmilyEdna</Authors>
+    <Company />
+    <Product>KonochanPreview</Product>
+    <PackageReleaseNotes>禁止发布论坛和网站</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
