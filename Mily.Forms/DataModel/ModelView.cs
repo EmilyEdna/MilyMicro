@@ -144,7 +144,7 @@ namespace Mily.Forms.DataModel
         private void PageGo(string No)
         {
             int.TryParse(No, out int Page);
-            CurrentPage = Page == 0 ? 1 : Page;
+            CurrentPage = Page <= 0 ? 1 : Page;
             RootData = Konachan.GetPic(CurrentPage);
         }
         private void Check(Dictionary<long, string> param)

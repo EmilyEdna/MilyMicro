@@ -1,6 +1,10 @@
 ﻿using Mily.Forms.DataModel;
 using System.Windows.Controls;
 using System;
+using System.Threading.Tasks;
+using Mily.Forms.Core;
+using XExten.XPlus;
+using System.IO;
 
 namespace Mily.Forms
 {
@@ -13,6 +17,7 @@ namespace Mily.Forms
         {
             InitializeComponent();
             Gloads = Gload;
+            Task.Factory.StartNew(() => Konachan.LoadTagToLocal());
         }
     }
 }

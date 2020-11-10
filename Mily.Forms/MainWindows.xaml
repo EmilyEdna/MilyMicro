@@ -140,13 +140,13 @@
                                             </MultiBinding>
                                         </CheckBox.CommandParameter>
                                         <Grid>
-                                            <Image Source="{Binding FileSizeMB}">
+                                            <Image Source="{Binding PreviewURL}">
                                                 <Image.ToolTip>
                                                     <ToolTip Placement="Center" HorizontalOffset="100" VerticalOffset="100">
                                                         <ToolTip.Template>
                                                             <ControlTemplate>
                                                                 <WrapPanel Width="800" Height="600" Orientation="Horizontal">
-                                                                    <Image Source="{Binding FileSizeMB}"/>
+                                                                    <Image Source="{Binding PreviewURL}"/>
                                                                 </WrapPanel>
                                                             </ControlTemplate>
                                                         </ToolTip.Template>

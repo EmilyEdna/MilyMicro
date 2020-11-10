@@ -1,6 +1,7 @@
 ﻿using Mily.Forms.DataModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using XExten.HttpFactory;
@@ -13,7 +14,7 @@ namespace Mily.Forms.Core
     public class Konachan
     {
         private const string BaseURL = "https://konachan.com/";
-        private const string Tag = "tag.xml?order=date&limit={0}";
+        private const string Tag = "tag.xml?order=date&limit=0";
         private const string Pic = "post.xml?page={0}&limit=8";
         public static Root GetPic(int Page, string Tag = "")
         {
@@ -23,14 +24,65 @@ namespace Mily.Forms.Core
             var XmlData = HttpMultiClient.HttpMulti.AddNode(BaseURL + Hosts, UseCache: true).Build().CacheTime().RunString();
             return XPlusEx.XmlDeserialize<Root>(XmlData.FirstOrDefault());
         }
-        public static long GetTotalTag()
+        public static Tags GetTag()
         {
-            var XmlData = HttpMultiClient.HttpMulti.AddNode(BaseURL + string.Format(Tag, 1)).Build().CacheTime().RunString();
-            return XPlusEx.XmlDeserialize<Tags>(XmlData.FirstOrDefault()).Post.FirstOrDefault().Id;
+            var XmlData = HttpMultiClient.HttpMulti.AddNode(BaseURL + Tag).Build().RunString();
+            return XPlusEx.XmlDeserialize<Tags>(XmlData.FirstOrDefault());
         }
-        public void GetTag()
+        private static List<TagElements> Cache { get; set; }
+        public static void LoadTagToLocal()
         {
+            var BasePath = AppDomain.CurrentDomain.BaseDirectory + "tags.xml";
+            if (!File.Exists(BasePath))
+            {
+                File.Create(BasePath).Dispose();
+                var data = XPlusEx.XmlSerializer(GetTag());
+                using StreamWriter writer = new StreamWriter(BasePath, false);
+                XPlusEx.XTry(() =>
+                {
+                    writer.Write(data);
+                }, ex => throw ex, () =>
+                {
+                    writer.Close();
+                    writer.Dispose();
+                });
+            }
+            else {
 
+                List<int> Days = new List<int> 
+                {
+                    1,5,10,15,20,25,30
+                };
+                if (Days.Contains(DateTime.Now.Day)) 
+                {
+                    var data = XPlusEx.XmlSerializer(GetTag());
+                    using StreamWriter writer = new StreamWriter(BasePath, false);
+                    XPlusEx.XTry(() =>
+                    {
+                        writer.Write(data);
+                    }, ex => throw ex, () =>
+                    {
+                        writer.Close();
+                        writer.Dispose();
+                    });
+                }
+            }
+        }
+        public static IEnumerable<TagElements> LoadLocalTag(int PageNo,out int Total)
+        {
+            if (Cache != null)
+            {
+                Total = Cache.Count();
+                return Cache.Skip((PageNo - 1) * 20).Take(20);
+            }
+            var BasePath = AppDomain.CurrentDomain.BaseDirectory + "tags.xml";
+            using StreamReader reader = new StreamReader(BasePath);
+            var res = reader.ReadToEnd();
+            reader.Close();
+            reader.Dispose();
+            Cache = XPlusEx.XmlDeserialize<Tags>(res).Post;
+            Total = Cache.Count();
+            return XPlusEx.XmlDeserialize<Tags>(res).Post.Skip((PageNo - 1) * 20).Take(20);
         }
     }
 }

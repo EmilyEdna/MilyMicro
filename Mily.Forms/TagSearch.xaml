@@ -9,7 +9,10 @@
         mc:Ignorable="d"
         Height="265" 
         Style="{StaticResource MainWindows}"
-        Width="400">
+        Width="500">
+    <Window.DataContext>
+        <view:TagView/>
+    </Window.DataContext>
     <Grid x:Name="Gload">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -65,9 +68,64 @@
             </StackPanel>
         </Grid>
         <Grid Background="White" Grid.Row="1">
-            <ListBox>
-                
-            </ListBox>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <ListView ItemsSource="{Binding CustomerTag}" x:Name="TName">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="编号" Width="60" DisplayMemberBinding="{Binding Id}"/>
+                            <GridViewColumn Header="标签名称" Width="250" DisplayMemberBinding="{Binding TagName}"/>
+                            <GridViewColumn Header="标签数量" Width="60" DisplayMemberBinding="{Binding Count}"/>
+                            <GridViewColumn Header="操作" Width="63">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <WrapPanel>
+                                            <Button Style="{StaticResource PageBtn}" Content="复制" Command="{Binding ElementName=TName,Path=DataContext.Copy}" CommandParameter="{Binding TagName}"/>
+                                        </WrapPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <Grid Grid.Row="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,5,0,0">
+                            <TextBlock Text="总量:"/>
+                            <TextBlock Text="{Binding Count}" Foreground="Red"/>
+                        </WrapPanel>
+                        <WrapPanel Grid.Column="1" Margin="0,2,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Height="30"
+                                Width="50"
+                                Content="上一页" 
+                                Margin="5,0,5,0" 
+                                Style="{StaticResource PageBtn}"
+                                Command="{Binding PrePage}"/>
+                            <WrapPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBox Text="{Binding CurrentPage}" Foreground="Red" Style="{StaticResource PageBox}">
+                                    <TextBox.InputBindings>
+                                        <KeyBinding Key="Enter" Command="{Binding ReturnPage}" CommandParameter="{Binding Text, RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TextBox}}"/>
+                                    </TextBox.InputBindings>
+                                </TextBox>
+                                <TextBlock Text="/"/>
+                                <TextBlock Text="{Binding TotalPage}" Foreground="Red"/>
+                            </WrapPanel>
+                            <Button Height="30" Width="50" 
+                                Content="下一页" 
+                                Margin="5,0,5,0" 
+                                Style="{StaticResource PageBtn}" 
+                                Command="{Binding NextPage}" />
+                        </WrapPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
         </Grid>
     </Grid>
 </Ctrl:WindowBase>

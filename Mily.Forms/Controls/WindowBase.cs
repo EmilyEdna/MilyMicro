@@ -86,7 +86,7 @@ namespace Mily.Forms.Controls
             else if (Item.Header.ToString().Equals("标签查询")) {
                 TagSearch win = new TagSearch
                 {
-                    Width = 400,
+                    Width = 500,
                     Height = 265
                 };
                 WindowStartupLocation = WindowStartupLocation.Manual;
