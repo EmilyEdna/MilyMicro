@@ -26,8 +26,8 @@ namespace Mily.Forms.UI.PageUI
         private readonly Dictionary<string, ContextMenu> Ioc = new Dictionary<string, ContextMenu>();
         public KonachanPage()
         {
-            MouseRightButtonDown += KonachanPage_MouseRightButtonDown;
             InitializeComponent();
+            MouseRightButtonDown += KonachanPage_MouseRightButtonDown;
             Data = new List<string>{
                 "下载",
                 "打开目录",
@@ -35,7 +35,6 @@ namespace Mily.Forms.UI.PageUI
                 "自定义标签"
             };
         }
-
         private void KonachanPage_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             KonaPage.ContextMenu = GetRightMenu();
@@ -77,11 +76,11 @@ namespace Mily.Forms.UI.PageUI
             else if (Item.Header.ToString().Equals("下载"))
             {
                 MessageBox.Show("下载时候软件会进进入假死状态！请不要关闭！", "通知", MessageBoxButton.OK);
-                if (konachanMainView.Path.Count == 0)
+                if (KonachanMainView.Path.Count == 0)
                     MessageBox.Show("你还未选择需要下载的图片！", "通知", MessageBoxButton.OK);
                 else
                 {
-                    foreach (var item in konachanMainView.Path)
+                    foreach (var item in KonachanMainView.Path)
                     {
                         Task.Factory.StartNew(() =>
                         {
@@ -110,7 +109,7 @@ namespace Mily.Forms.UI.PageUI
             {
                 CustomerTag win = new CustomerTag
                 {
-                    Width = 550,
+                    Width = 400,
                     Height = 265
                 };
                 win.Left = SystemParameters.PrimaryScreenWidth / 3;

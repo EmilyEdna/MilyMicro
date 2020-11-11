@@ -16,7 +16,6 @@ namespace Mily.Forms.ViewModel
         public CustomerTagView()
         {
             Json = Read();
-            Type = Help.Boxs;
         }
 
         #region Property
@@ -45,20 +44,6 @@ namespace Mily.Forms.ViewModel
             {
                 _Val = value;
                 OnPropertyChanged("Val");
-            }
-        }
-
-        private Dictionary<string,int> _Type;
-        public Dictionary<string, int> Type
-        {
-            get
-            {
-                return _Type;
-            }
-            set
-            {
-                _Type = value;
-                OnPropertyChanged("Type");
             }
         }
 
@@ -105,7 +90,7 @@ namespace Mily.Forms.ViewModel
             Datas.Add(new CustomerTag { Key = Key, Value = Val, AddTime = DateTime.Now });
             Help.Write(Help.Config_cof, Datas.Count == 0 ? "" : Datas.ToJson().ToLzStringEnc());
             Json = Datas;
-            //konachanMainView.Ioc.Values.FirstOrDefault().Json = Datas;
+            HomeView.Ioc.Values.FirstOrDefault().Json = Datas;
         }
 
         /// <summary>
@@ -118,7 +103,7 @@ namespace Mily.Forms.ViewModel
             Datas.RemoveAll(t => t.Key.Equals(key));
             Help.Write(Help.Config_cof, Datas.Count == 0 ? "" : Datas.ToJson().ToLzStringEnc());
             Json = Datas;
-            //konachanMainView.Ioc.Values.FirstOrDefault().Json = Datas;
+            HomeView.Ioc.Values.FirstOrDefault().Json = Datas;
         }
 
         #region 读

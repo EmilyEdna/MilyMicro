@@ -3,11 +3,66 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:Mily.Forms.UI.PageUI"
+      xmlns:local="clr-namespace:Mily.Forms.UI.PageUI" 
+      xmlns:locals="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
+      xmlns:view="clr-namespace:Mily.Forms.ViewModel"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="WelCome">
+    <Page.DataContext>
+        <view:HomeView/>
+    </Page.DataContext>
     <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-        <TextBlock Text="WelCome!" FontSize="36"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,10">
+                <TextBlock Text="类型：" Margin="0,2,0,0"/>
+                <ComboBox Background="#00FFFFFF" 
+                              Width="250"
+                              Style="{StaticResource ComboBoxStyle}" 
+                              ItemsSource="{Binding DropData}"
+                              SelectedItem="{Binding CurrentDropData}"/>
+            </WrapPanel>
+            <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" Margin="0,10,0,0">
+                <TextBlock Text="搜索：" Margin="0,2,0,0"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="20" />
+                    </Grid.ColumnDefinitions>
+                    <locals:AutoCompleteComboBox 
+                                    SelectedValuePath="Value"
+                                    TextSearch.TextPath="Key"
+                                    ItemsSource="{Binding Json}"
+                                    SelectedItem="{Binding SelectItem}"
+                                    SelectedValue="{Binding SelectedValue}"
+                                    Width="230"
+                                    BorderThickness="0"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,0"
+                                    Background="#00FFFFFF">
+                        <locals:AutoCompleteComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Key}" FontFamily="{StaticResource font}" Foreground="DeepPink"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </locals:AutoCompleteComboBox.ItemTemplate>
+                    </locals:AutoCompleteComboBox>
+                    <Button Grid.Column="1" 
+                            Background="#00FFFFFF"
+                            BorderThickness="0" 
+                            Style="{StaticResource Search}" 
+                            Command="{Binding Search}" 
+                            Margin="0,5,0,0">
+                        <Path Width="12" Height="12" Data="{StaticResource Icon_Serach}" Fill="Black" Stretch="Fill" />
+                    </Button>
+                </Grid>
+            </WrapPanel>
+        </Grid>
     </WrapPanel>
 </Page>

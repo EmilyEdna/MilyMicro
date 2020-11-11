@@ -15,7 +15,8 @@ namespace Mily.Forms.Utils
         public static string Config_cof = AppDomain.CurrentDomain.BaseDirectory + "config.cof";
         public static string Tags_xml = AppDomain.CurrentDomain.BaseDirectory + "tags.xml";
         public static string Config_json = AppDomain.CurrentDomain.BaseDirectory + "config.json";
-        public static bool FileCreater(string Path, Action action = null) {
+        public static bool FileCreater(string Path, Action action = null)
+        {
             bool Flag = !File.Exists(Path);
             if (Flag)
             {
@@ -24,7 +25,7 @@ namespace Mily.Forms.Utils
             }
             return Flag;
         }
-        public static string Read(string Path) 
+        public static string Read(string Path)
         {
             using StreamReader reader = new StreamReader(Path);
             var res = reader.ReadToEnd();
@@ -45,6 +46,7 @@ namespace Mily.Forms.Utils
                 writer.Dispose();
             });
         }
+
         /// <summary>
         /// 获取子控件
         /// </summary>
@@ -68,12 +70,12 @@ namespace Mily.Forms.Utils
             return childList;
         }
 
+        public static List<string> Boxs()
+        {
+            return new List<string> { "图片","视频" };
+        }
+
         public static WelCome WelComePage = new WelCome();
         public static KonachanPage KonachanPage = new KonachanPage();
-        public static Dictionary<string,int> Boxs= new Dictionary<string, int>
-        {
-            { "图片",1},
-            { "视频",2}
-        };
     }
 }

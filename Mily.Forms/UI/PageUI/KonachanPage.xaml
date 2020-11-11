@@ -10,7 +10,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="KonochanPage">
     <Page.DataContext>
-        <view:konachanMainView/>
+        <view:KonachanMainView/>
     </Page.DataContext>
     <Page.Resources>
         <conver:DictionaryConverter x:Key="obj"/>
@@ -37,7 +37,7 @@
                     <Border BorderBrush="Pink" BorderThickness="1" Margin="5,5,0,0" Height="150" Width="150">
                         <WrapPanel ItemHeight="150" ItemWidth="150" Orientation="Horizontal">
                             <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top"
-                                              Command="{Binding DataContext.CheckPic, RelativeSource={RelativeSource AncestorType=Window}}">
+                                              Command="{Binding DataContext.CheckPic, RelativeSource={RelativeSource AncestorType=Page}}">
                                 <CheckBox.CommandParameter>
                                     <MultiBinding Mode="TwoWay" Converter="{StaticResource obj}">
                                         <Binding Path="Id" />
@@ -45,7 +45,7 @@
                                     </MultiBinding>
                                 </CheckBox.CommandParameter>
                                 <Grid>
-                                    <Image Source="{Binding FileSize}">
+                                    <Image Source="{Binding PreviewURL}">
                                         <Image.ToolTip>
                                             <ToolTip Placement="Center" HorizontalOffset="100" VerticalOffset="100">
                                                 <ToolTip.Template>
