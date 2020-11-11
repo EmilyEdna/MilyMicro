@@ -15,9 +15,9 @@ namespace Mily.Forms
     {
         public MainWindows()
         {
+            Task.Factory.StartNew(() => Konachan.LoadTagToLocal());
             InitializeComponent();
             Gloads = Gload;
-            Task.Factory.StartNew(() => Konachan.LoadTagToLocal());
         }
     }
 }

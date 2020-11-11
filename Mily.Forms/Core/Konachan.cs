@@ -30,14 +30,24 @@ namespace Mily.Forms.Core
             }
             catch (Exception)
             {
-                MessageBox.Show("请等待线程加载完成！", "通知", MessageBoxButton.OK);
+                MessageBox.Show("多线程初始化中！请稍等！", "通知", MessageBoxButton.OK);
                 return new Root();
             }
+
         }
         public static Tags GetTag()
         {
-            var XmlData = HttpMultiClient.HttpMulti.AddNode(BaseURL + Tag).Build().RunString();
-            return XPlusEx.XmlDeserialize<Tags>(XmlData.FirstOrDefault());
+            try
+            {
+                var XmlData = HttpMultiClient.HttpMulti.AddNode(BaseURL + Tag).Build().RunString();
+                return XPlusEx.XmlDeserialize<Tags>(XmlData.FirstOrDefault());
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("多线程初始化中！请稍等！", "通知", MessageBoxButton.OK);
+                return GetTag();
+            }
+
         }
         private static List<TagElements> Cache { get; set; }
         public static void LoadTagToLocal()
@@ -47,35 +57,35 @@ namespace Mily.Forms.Core
             {
                 File.Create(BasePath).Dispose();
                 var data = XPlusEx.XmlSerializer(GetTag());
-                using StreamWriter writer = new StreamWriter(BasePath, false);
-                XPlusEx.XTry(() =>
-                {
-                    writer.Write(data);
-                }, ex => throw ex, () =>
-                {
-                    writer.Close();
-                    writer.Dispose();
-                });
+                Write(BasePath, data);
             }
             else
             {
-
-                List<int> Days = new List<int>
+                var Config = AppDomain.CurrentDomain.BaseDirectory + "config.json";
+                if (!File.Exists(Config))
+                    File.Create(Config).Dispose();
+                var search = Read(Config)?.ToModel<Dictionary<string, string>>();
+                if (search == null)
                 {
-                    1,5,10,15,20,25,30
-                };
-                if (Days.Contains(DateTime.Now.Day))
+                    List<int> Days = new List<int>
+                    {
+                        1,5,10,15,20,25,30
+                     };
+                    if (Days.Contains(DateTime.Now.Day))
+                    {
+                        var data = XPlusEx.XmlSerializer(GetTag());
+                        Write(BasePath, data);
+                        Write(Config, (new { Key = DateTime.Now.ToFmtDate(4, "yyyy-MM-dd") }).ToJson());
+                    }
+                }
+                else
                 {
-                    var data = XPlusEx.XmlSerializer(GetTag());
-                    using StreamWriter writer = new StreamWriter(BasePath, false);
-                    XPlusEx.XTry(() =>
+                    if (DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd")) != DateTime.Parse(search.Values.FirstOrDefault()))
                     {
-                        writer.Write(data);
-                    }, ex => throw ex, () =>
-                    {
-                        writer.Close();
-                        writer.Dispose();
-                    });
+                        var data = XPlusEx.XmlSerializer(GetTag());
+                        Write(BasePath, data);
+                        Write(Config, (new { Key = DateTime.Now.ToFmtDate(4, "yyyy-MM-dd") }).ToJson());
+                    }
                 }
             }
         }
@@ -87,13 +97,31 @@ namespace Mily.Forms.Core
                 return Cache.Skip((PageNo - 1) * 20).Take(20);
             }
             var BasePath = AppDomain.CurrentDomain.BaseDirectory + "tags.xml";
-            using StreamReader reader = new StreamReader(BasePath);
-            var res = reader.ReadToEnd();
-            reader.Close();
-            reader.Dispose();
+            var res = Read(BasePath);
             Cache = XPlusEx.XmlDeserialize<Tags>(res).Post;
             Total = Cache.Count();
             return XPlusEx.XmlDeserialize<Tags>(res).Post.Skip((PageNo - 1) * 20).Take(20);
+        }
+        public static string Read(string Path)
+        {
+            using StreamReader reader = new StreamReader(Path);
+            var res = reader.ReadToEnd();
+            reader.Close();
+            reader.Dispose();
+            return res;
+        }
+        public static void Write(string Path, string data, Action action = null)
+        {
+            using StreamWriter writer = new StreamWriter(Path, false);
+            XPlusEx.XTry(() =>
+            {
+                action?.Invoke();
+                writer.Write(data);
+            }, ex => throw ex, () =>
+            {
+                writer.Close();
+                writer.Dispose();
+            });
         }
     }
 }

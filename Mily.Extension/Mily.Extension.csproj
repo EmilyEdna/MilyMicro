@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.0.0" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.0.2" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
     <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.0" />
     <PackageReference Include="BeetleX" Version="1.5.5.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
@@ -15,15 +15,14 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.5" />
     <PackageReference Include="Polly" Version="7.2.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
-    <PackageReference Include="XExten.Profile" Version="1.0.4.4" />
-	<PackageReference Include="WebApiClientCore.Extensions.OAuths" Version="1.1.0" />
+    <PackageReference Include="XExten.Profile" Version="1.0.4.5" />
+	<PackageReference Include="WebApiClientCore.Extensions.OAuths" Version="1.1.2" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mily.Socket\Mily.Socket.csproj" />
-    <ProjectReference Include="..\Mily.Utils\Mily.Utils.csproj" />
     <ProjectReference Include="..\Mily.ViewModels\Mily.ViewModels.csproj" />
   </ItemGroup>
 </Project>

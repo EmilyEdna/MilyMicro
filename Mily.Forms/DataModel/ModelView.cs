@@ -103,28 +103,63 @@ namespace Mily.Forms.DataModel
         {
             get
             {
-                return new Commands<object>(GoNext, CanRun);
+                return new Commands<object>((obj) =>
+                {
+                    if (Path.Count != 0)
+                        Path.Clear();
+                    CurrentPage += 1;
+                    if (!SelectedValue.IsNullOrEmpty() && SelectItem != null)
+                        RootData = Konachan.GetPic(CurrentPage, SelectedValue);
+                    else
+                        RootData = Konachan.GetPic(CurrentPage);
+                }, () => true);
             }
         }
         public Commands<object> PrePage
         {
             get
             {
-                return new Commands<object>(GoPre, CanRun);
+                return new Commands<object>((obj) =>
+                {
+                    if (CurrentPage > 1)
+                    {
+                        if (Path.Count != 0)
+                            Path.Clear();
+                        CurrentPage -= 1;
+                        if (!SelectedValue.IsNullOrEmpty() && SelectItem != null)
+                            RootData = Konachan.GetPic(CurrentPage, SelectedValue);
+                        else
+                            RootData = Konachan.GetPic(CurrentPage);
+                    }
+                }, () => true);
             }
         }
         public Commands<Dictionary<long, string>> CheckPic
         {
             get
             {
-                return new Commands<Dictionary<long, string>>(Check, CanRun);
+                return new Commands<Dictionary<long, string>>((param) =>
+                {
+                    foreach (var item in param)
+                    {
+                        if (Path.ContainsKey(item.Key))
+                            Path.Remove(item.Key);
+                        else
+                            Path.Add(item.Key, item.Value);
+                    }
+                }, () => true);
             }
         }
         public Commands<string> ReturnPage
         {
             get
             {
-                return new Commands<string>(PageGo, CanRun);
+                return new Commands<string>((No) =>
+                {
+                    int.TryParse(No, out int Page);
+                    CurrentPage = Page <= 0 ? 1 : Page;
+                    RootData = Konachan.GetPic(CurrentPage);
+                }, () => true);
             }
         }
         public Commands<object> Search
@@ -133,59 +168,15 @@ namespace Mily.Forms.DataModel
             {
                 return new Commands<object>((obj) =>
                 {
+                    CurrentPage = 1;
                     if (!SelectedValue.IsNullOrEmpty() && SelectItem != null)
-                    {
-                        CurrentPage = 1;
                         RootData = Konachan.GetPic(1, SelectedValue);
-                    }
                     else
-                    {
-                        CurrentPage = 1;
                         RootData = Konachan.GetPic(1);
-                    }
+
                 }, () => true);
             }
         }
-        private void PageGo(string No)
-        {
-            int.TryParse(No, out int Page);
-            CurrentPage = Page <= 0 ? 1 : Page;
-            RootData = Konachan.GetPic(CurrentPage);
-        }
-        private void Check(Dictionary<long, string> param)
-        {
-            foreach (var item in param)
-            {
-                if (Path.ContainsKey(item.Key))
-                    Path.Remove(item.Key);
-                else
-                    Path.Add(item.Key, item.Value);
-            }
-        }
-        private void GoNext(object param)
-        {
-            if (Path.Count != 0)
-                Path.Clear();
-            CurrentPage += 1;
-            if (!SelectedValue.IsNullOrEmpty() && SelectItem != null)
-                RootData = Konachan.GetPic(CurrentPage, SelectedValue);
-            else
-                RootData = Konachan.GetPic(CurrentPage);
-        }
-        private void GoPre(object param)
-        {
-            if (CurrentPage > 1)
-            {
-                if (Path.Count != 0)
-                    Path.Clear();
-                CurrentPage -= 1;
-                if (!SelectedValue.IsNullOrEmpty() && SelectItem != null)
-                    RootData = Konachan.GetPic(CurrentPage, SelectedValue);
-                else
-                    RootData = Konachan.GetPic(CurrentPage);
-            }
-        }
-        private bool CanRun() => true;
         #endregion
 
         #region Common
