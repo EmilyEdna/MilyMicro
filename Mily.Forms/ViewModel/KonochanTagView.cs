@@ -1,16 +1,18 @@
 ﻿using Mily.Forms.Core;
-using Mily.Forms.DataModel.ViewModel;
+using Mily.Forms.DataModel;
+using Mily.Forms.Utils;
+using Mily.Forms.ViewModel.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
 
-namespace Mily.Forms.DataModel
+namespace Mily.Forms.ViewModel
 {
-    public class TagView : BaseView
+    public class KonochanTagView : BaseView
     {
-        public TagView()
+        public KonochanTagView()
         {
             CustomerTag = Konachan.LoadLocalTag(1, out int Total).ToList();
             Count = Total;

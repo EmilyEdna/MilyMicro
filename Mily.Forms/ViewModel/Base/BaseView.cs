@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
-namespace Mily.Forms.DataModel.ViewModel
+namespace Mily.Forms.ViewModel.Base
 {
     public class BaseView : INotifyPropertyChanged
     {

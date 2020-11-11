@@ -1,25 +1,22 @@
 ﻿using Mily.Forms.Core;
-using Mily.Forms.DataModel.ViewModel;
-using MongoDB.Driver;
+using Mily.Forms.DataModel;
+using Mily.Forms.Utils;
+using Mily.Forms.ViewModel.Base;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 using XExten.XCore;
 
-namespace Mily.Forms.DataModel
+namespace Mily.Forms.ViewModel
 {
-    public class ModelView : BaseView
+    public class konochanMainView: BaseView
     {
-        public static Dictionary<string, ModelView> Ioc = new Dictionary<string, ModelView>();
-        public ModelView()
+        public static Dictionary<string, konochanMainView> Ioc = new Dictionary<string, konochanMainView>();
+        public konochanMainView()
         {
             RootData = Konachan.GetPic(1);
             CurrentPage = 1;
@@ -31,8 +28,8 @@ namespace Mily.Forms.DataModel
         public static readonly Dictionary<long, string> Path = new Dictionary<long, string>();
 
         #region Property
-        private Root _RootDate;
-        public Root RootData
+        private ImageRoot _RootDate;
+        public ImageRoot RootData
         {
             get
             {
@@ -59,8 +56,8 @@ namespace Mily.Forms.DataModel
             }
         }
 
-        private List<JsonTag> _Json;
-        public List<JsonTag> Json
+        private List<CustomerTag> _Json;
+        public List<CustomerTag> Json
         {
             get
             {
@@ -72,8 +69,8 @@ namespace Mily.Forms.DataModel
                 OnPropertyChanged("Json");
             }
         }
-        private JsonTag _SelectItem;
-        public JsonTag SelectItem
+        private CustomerTag _SelectItem;
+        public CustomerTag SelectItem
         {
             get
             {
@@ -185,7 +182,7 @@ namespace Mily.Forms.DataModel
         /// </summary>
         /// <param name="Path"></param>
         /// <returns></returns>
-        private List<JsonTag> Read(out string Path)
+        private List<CustomerTag> Read(out string Path)
         {
             var BasePath = AppDomain.CurrentDomain.BaseDirectory + "config.cof";
             Path = BasePath;
@@ -195,7 +192,7 @@ namespace Mily.Forms.DataModel
             var res = reader.ReadToEnd();
             reader.Close();
             reader.Dispose();
-            return !res.IsNullOrEmpty() ? res.ToLzStringDec().ToModel<List<JsonTag>>() : new List<JsonTag>();
+            return !res.IsNullOrEmpty() ? res.ToLzStringDec().ToModel<List<CustomerTag>>() : new List<CustomerTag>();
         }
 
         /// <summary>

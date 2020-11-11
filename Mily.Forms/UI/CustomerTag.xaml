@@ -1,20 +1,21 @@
-﻿<Ctrl:WindowBase x:Class="Mily.Forms.SourceWindow"
+﻿<Ctrl:WindowBase 
+        xmlns:Ctrl="clr-namespace:Mily.Forms.Controls" 
+        x:Class="Mily.Forms.UI.CustomerTag"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Mily.Forms"
-        xmlns:view="clr-namespace:Mily.Forms.DataModel"
-        xmlns:Ctrl="clr-namespace:Mily.Forms.Controls"
+        xmlns:local="clr-namespace:Mily.Forms.UI"
         mc:Ignorable="d"
-        Height="265" 
+        xmlns:view="clr-namespace:Mily.Forms.ViewModel"
+        xmlns:conver="clr-namespace:Mily.Forms.Utils.Converters"
         Style="{StaticResource MainWindows}"
-        Width="400">
+        Title="CustomerTag" Height="265" Width="400">
     <Window.DataContext>
-        <view:JosnView/>
+        <view:CustomerTagView/>
     </Window.DataContext>
     <Window.Resources>
-        <view:CheckBoxConvter x:Key="obj"/>
+        <conver:FmtConverter x:Key="obj"/>
     </Window.Resources>
     <Grid x:Name="Gload">
         <Grid.RowDefinitions>

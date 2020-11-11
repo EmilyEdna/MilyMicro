@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Ctrl="clr-namespace:Mily.Forms.Controls"
         xmlns:local="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
-        xmlns:view="clr-namespace:Mily.Forms.DataModel" 
+        xmlns:view="clr-namespace:Mily.Forms.ViewModel" 
+        xmlns:conver="clr-namespace:Mily.Forms.Utils.Converters" 
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         WindowShadowColor="#888888"
@@ -18,10 +19,10 @@
         Foreground="#5C5C5C"
         Style="{StaticResource MainWindows}">
     <Window.DataContext>
-        <view:ModelView/>
+        <view:konochanMainView/>
     </Window.DataContext>
     <Window.Resources>
-        <view:ObjectConvter x:Key="obj"/>
+        <conver:DictionaryConverter x:Key="obj"/>
     </Window.Resources>
     <Grid x:Name="Gload">
         <Grid.RowDefinitions>

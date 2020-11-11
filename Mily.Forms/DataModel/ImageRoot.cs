@@ -11,7 +11,7 @@ namespace Mily.Forms.DataModel
 {
     [Serializable]
     [XmlRoot("posts")]
-    public class Root
+    public class ImageRoot
     {
         /// <summary>
         /// 总页数
@@ -23,11 +23,11 @@ namespace Mily.Forms.DataModel
         [XmlAttribute("count")]
         public int Total { get; set; }
         [XmlElement("post")]
-        public List<Elements> Post { get; set; }
+        public List<ImgElements> Post { get; set; }
     }
 
     [Serializable]
-    public class Elements
+    public class ImgElements
     {
         /// <summary>
         /// Id
@@ -97,44 +97,5 @@ namespace Mily.Forms.DataModel
         public string Author { get; set; }
 
 
-    }
-
-
-    [Serializable]
-    [XmlRoot("tags")]
-    public class Tags
-    {
-        /// <summary>
-        /// 标签
-        /// </summary>
-        [XmlElement("tag")]
-        public List<TagElements> Post { get; set; }
-
-    }
-    [Serializable]
-    public class TagElements 
-    {
-        /// <summary>
-        /// Id
-        /// </summary>
-        [XmlAttribute("id")]
-        public long Id { get; set; }
-        /// <summary>
-        /// 标签名称
-        /// </summary>
-        [XmlAttribute("name")]
-        public string TagName { get; set; }
-        /// <summary>
-        /// 标签
-        /// </summary>
-        [XmlAttribute("count")]
-        public int Count { get; set; }
-    }
-
-    public class JsonTag
-    {
-        public string Key { get; set; }
-        public string Value { get; set; }
-        public DateTime AddTime { get; set; }
     }
 }

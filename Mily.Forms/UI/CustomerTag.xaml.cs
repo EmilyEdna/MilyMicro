@@ -10,14 +10,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Mily.Forms
+namespace Mily.Forms.UI
 {
     /// <summary>
-    /// TagSearch.xaml 的交互逻辑
+    /// CustomerTag.xaml 的交互逻辑
     /// </summary>
-    public partial class TagSearch
+    public partial class CustomerTag
     {
-        public TagSearch()
+        public CustomerTag()
         {
             InitializeComponent();
         }

@@ -1,4 +1,5 @@
-﻿using Mily.Forms.DataModel;
+﻿using Mily.Forms.UI;
+using Mily.Forms.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -69,11 +70,11 @@ namespace Mily.Forms.Controls
             else if (Item.Header.ToString().Equals("下载"))
             {
                 MessageBox.Show("下载时候软件会进进入假死状态！请不要关闭！", "通知", MessageBoxButton.OK);
-                if (ModelView.Path.Count == 0)
+                if (konochanMainView.Path.Count == 0)
                     MessageBox.Show("你还未选择需要下载的图片！", "通知", MessageBoxButton.OK);
                 else
                 {
-                    foreach (var item in ModelView.Path)
+                    foreach (var item in konochanMainView.Path)
                     {
                         Task.Factory.StartNew(() =>
                         {
@@ -100,7 +101,7 @@ namespace Mily.Forms.Controls
             }
             else
             {
-                SourceWindow win = new SourceWindow
+                UI.CustomerTag win = new UI.CustomerTag
                 {
                     Width = 400,
                     Height = 265
