@@ -10,9 +10,9 @@ using System.Windows;
 
 namespace Mily.Forms.ViewModel
 {
-    public class KonochanTagView : BaseView
+    public class KonachanTagView : BaseView
     {
-        public KonochanTagView()
+        public KonachanTagView()
         {
             CustomerTag = Konachan.LoadLocalTag(1, out int Total).ToList();
             Count = Total;

@@ -18,120 +18,18 @@ namespace Mily.Forms.Controls
 {
     public partial class WindowBase : Window
     {
-        public Grid Gloads;
-        private readonly Dictionary<string, ContextMenu> Ioc = new Dictionary<string, ContextMenu>();
-        private readonly List<string> Data;
         public WindowBase()
         {
-            Data = new List<string>{
-                "下载",
-                "打开目录",
-                "标签查询",
-                "自定义标签"
-            };
             InitEvent();
         }
-
-        #region 公用
-
-        private ContextMenu GetRightMenu()
-        {
-            if (Ioc.ContainsKey("Right")) return Ioc["Right"];
-            else
-            {
-                ContextMenu Menu = new ContextMenu();
-                CreateMenu(Menu, Data);
-                Ioc.Add("Right", Menu);
-                return Menu;
-            }
-        }
-
-        private void CreateMenu(ContextMenu Menu, List<string> Title)
-        {
-            Title.ForEach(t =>
-            {
-                MenuItem Item = new MenuItem();
-                Item.Header = t;
-                Item.Click += Item_Click;
-                Menu.Items.Add(Item);
-            });
-        }
-
-        private void Item_Click(object sender, RoutedEventArgs e)
-        {
-            var Item = (sender as MenuItem);
-            if (Item.Header.ToString().Equals("打开目录"))
-            {
-                string Path = AppDomain.CurrentDomain.BaseDirectory + "SaveImg";
-                if (Directory.Exists(Path) == false)
-                    Directory.CreateDirectory(Path);
-                Process.Start("explorer.exe", Path);
-            }
-            else if (Item.Header.ToString().Equals("下载"))
-            {
-                MessageBox.Show("下载时候软件会进进入假死状态！请不要关闭！", "通知", MessageBoxButton.OK);
-                if (konochanMainView.Path.Count == 0)
-                    MessageBox.Show("你还未选择需要下载的图片！", "通知", MessageBoxButton.OK);
-                else
-                {
-                    foreach (var item in konochanMainView.Path)
-                    {
-                        Task.Factory.StartNew(() =>
-                        {
-                            string NewName = Guid.NewGuid() + Path.GetExtension(item.Value);
-                            string Paths = AppDomain.CurrentDomain.BaseDirectory + "SaveImg\\";
-                            if (Directory.Exists(Paths) == false)
-                                Directory.CreateDirectory(Paths);
-                            new WebClient().DownloadFile(item.Value, Paths + NewName);
-                        });
-                    }
-                    MessageBox.Show("下载完成！", "通知", MessageBoxButton.OK);
-                }
-            }
-            else if (Item.Header.ToString().Equals("标签查询")) {
-                TagSearch win = new TagSearch
-                {
-                    Width = 500,
-                    Height = 265
-                };
-                WindowStartupLocation = WindowStartupLocation.Manual;
-                win.Left = SystemParameters.PrimaryScreenWidth / 3;
-                win.Top = SystemParameters.PrimaryScreenHeight / 3;
-                win.ShowDialog();
-            }
-            else
-            {
-                UI.CustomerTag win = new UI.CustomerTag
-                {
-                    Width = 400,
-                    Height = 265
-                };
-                WindowStartupLocation = WindowStartupLocation.Manual;
-                win.Left = SystemParameters.PrimaryScreenWidth / 3;
-                win.Top = SystemParameters.PrimaryScreenHeight / 3;
-                win.ShowDialog();
-            }
-        }
-        #endregion
 
         #region 事件
         IntPtr Prt = IntPtr.Zero;
         private void InitEvent()
         {
-
             SourceInitialized += WindowBase_SourceInitialized;
             MouseLeftButtonDown += WindowBase_MouseLeftButtonDown;
-            MouseRightButtonDown += WindowBase_MouseRightButtonDown;
         }
-
-        private void WindowBase_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.OriginalSource is Grid || e.OriginalSource is Window || e.OriginalSource is Border)
-            {
-                Gloads.ContextMenu = GetRightMenu();
-            }
-        }
-
         private void WindowBase_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.OriginalSource is Grid || e.OriginalSource is Window || e.OriginalSource is Border)
