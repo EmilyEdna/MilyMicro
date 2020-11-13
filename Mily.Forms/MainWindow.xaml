@@ -92,6 +92,11 @@
                                     <MouseBinding Command="{Binding SelectedPage}" MouseAction="LeftClick" CommandParameter="Konachan"/>
                                 </TextBlock.InputBindings>
                             </TextBlock>
+                            <TextBlock Text="Bangumi" Margin="10,5,0,0" Foreground="Black">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding Command="{Binding SelectedPage}" MouseAction="LeftClick" CommandParameter="Sakura"/>
+                                </TextBlock.InputBindings>
+                            </TextBlock>
                         </StackPanel>
                     </Expander>
                 </StackPanel>

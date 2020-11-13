@@ -77,5 +77,6 @@ namespace Mily.Forms.Utils
 
         public static WelCome WelComePage = new WelCome();
         public static KonachanPage KonachanPage = new KonachanPage();
+        public static SakuraBangumiPage BangumiPage = new SakuraBangumiPage();
     }
 }

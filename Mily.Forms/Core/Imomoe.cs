@@ -86,7 +86,7 @@ namespace Mily.Forms.Core
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);
             var node = document.DocumentNode.SelectSingleNode("//div[@class='play']//div[@data-vid]");
-            return node.GetAttributeValue("data-vid", "$").Replace("$", ".");
+            return node.GetAttributeValue("data-vid", "$").Replace("$mp4", "");
         }
     }
 }

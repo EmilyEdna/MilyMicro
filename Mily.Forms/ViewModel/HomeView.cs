@@ -1,5 +1,4 @@
-﻿using Mily.Forms.Core;
-using Mily.Forms.DataModel.Konochan;
+﻿using Mily.Forms.DataModel.Konochan;
 using Mily.Forms.Utils;
 using Mily.Forms.ViewModel.Base;
 using System;
@@ -15,7 +14,6 @@ namespace Mily.Forms.ViewModel
         public static Dictionary<string, HomeView> Ioc = new Dictionary<string, HomeView>();
         public HomeView()
         {
-            Imomoe.GetVedio();
             DropData = Help.Boxs();
             Json = Read();
             if (!Ioc.ContainsKey(GetType().Name))

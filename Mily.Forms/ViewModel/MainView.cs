@@ -40,8 +40,10 @@ namespace Mily.Forms.ViewModel
                 {
                     if (str.Equals("Home"))
                         CurrentPage = Help.WelComePage;
-                    else
+                    else if(str.Equals("Konachan"))
                         CurrentPage = Help.KonachanPage;
+                    else
+                        CurrentPage = Help.BangumiPage;
                 }, () => true);
             }
         }
