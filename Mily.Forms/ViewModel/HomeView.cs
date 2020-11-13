@@ -81,6 +81,17 @@ namespace Mily.Forms.ViewModel
                 OnPropertyChanged("SelectedValue");
             }
         }
+
+        private string _TextValue;
+        public string TextValue
+        {
+            get { return _TextValue; }
+            set
+            {
+                _TextValue = value;
+                OnPropertyChanged("TextValue");
+            }
+        }
         #endregion
 
         #region Commands
@@ -95,6 +106,10 @@ namespace Mily.Forms.ViewModel
                     {
                         KonachanMainView.Ioc.Values.FirstOrDefault().Search(SelectedValue);
                         MainView.Ioc.Values.FirstOrDefault().CurrentPage = Help.KonachanPage;
+                    }
+                    else {
+                        BangumiView.Ioc.Values.FirstOrDefault().Search(TextValue);
+                        MainView.Ioc.Values.FirstOrDefault().CurrentPage = Help.BangumiPage;
                     }
                 }, () => true);
             }

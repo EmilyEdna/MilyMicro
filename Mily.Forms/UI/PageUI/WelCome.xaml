@@ -36,6 +36,7 @@
                     <locals:AutoCompleteComboBox 
                                     SelectedValuePath="Value"
                                     TextSearch.TextPath="Key"
+                                    Text="{Binding TextValue}"
                                     ItemsSource="{Binding Json}"
                                     SelectedItem="{Binding SelectItem}"
                                     SelectedValue="{Binding SelectedValue}"

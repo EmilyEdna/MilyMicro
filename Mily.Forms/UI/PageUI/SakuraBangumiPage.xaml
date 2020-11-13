@@ -11,10 +11,36 @@
         <view:BangumiView/>
     </Page.DataContext>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
-        </Grid.RowDefinitions>
-        <MediaElement Source="{Binding VedioURL}" LoadedBehavior="Play"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1.3*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox ItemsSource="{Binding Sukura.Post}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <WrapPanel Orientation="Horizontal">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+                            <Image Source="{Binding Conver}" Height="100" Width="80"/>
+                            <WrapPanel Orientation="Vertical" Grid.Column="1" Margin="1,5,0,0">
+                                <TextBlock Text="{Binding BangumiName}"  />
+                                <Button Content="查看"
+                                        Height="20" 
+                                        Width="50" 
+                                        Background="White"
+                                        Margin="5,40,0,0"
+                                        HorizontalAlignment="Left" 
+                                        VerticalAlignment="Bottom"/>
+                            </WrapPanel>
+                        </WrapPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Page>

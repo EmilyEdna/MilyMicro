@@ -6,9 +6,7 @@
       xmlns:local="clr-namespace:Mily.Forms.UI.PageUI"
       mc:Ignorable="d" 
       xmlns:view="clr-namespace:Mily.Forms.ViewModel"
-      xmlns:conver="clr-namespace:Mily.Forms.Utils.Converters"
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="KonochanPage">
+      xmlns:conver="clr-namespace:Mily.Forms.Utils.Converters">
     <Page.DataContext>
         <view:KonachanMainView/>
     </Page.DataContext>
@@ -24,9 +22,9 @@
                           Cursor="Hand"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Top"
-                          Height="320"
+                          Height="520"
                           ItemsSource="{Binding RootData.Post}"
-                          Width="666">
+                          Width="900">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal"/>
@@ -34,8 +32,8 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderBrush="Pink" BorderThickness="1" Margin="5,5,0,0" Height="150" Width="150">
-                        <WrapPanel ItemHeight="150" ItemWidth="150" Orientation="Horizontal">
+                    <Border BorderBrush="Pink" BorderThickness="1" Margin="5,5,0,0" Height="200" Width="200">
+                            <WrapPanel ItemHeight="200" ItemWidth="200" Orientation="Horizontal">
                             <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top"
                                               Command="{Binding DataContext.CheckPic, RelativeSource={RelativeSource AncestorType=Page}}">
                                 <CheckBox.CommandParameter>

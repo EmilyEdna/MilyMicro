@@ -6,6 +6,7 @@ using HtmlAgilityPack;
 using System.Linq;
 using Mily.Forms.DataModel.Imomoe;
 using System.Text.RegularExpressions;
+using XExten.XCore;
 
 namespace Mily.Forms.Core
 {
@@ -27,12 +28,13 @@ namespace Mily.Forms.Core
             return LoadPlayPage(data);
         }
 
-        public static string GetVedio()
+        public static string GetVedio(string PlayHtml)
         {
-            var data = HttpMultiClient.HttpMulti.AddNode(BaseURL + "/v/4901-1.html").Build().RunString().FirstOrDefault();
+            var data = HttpMultiClient.HttpMulti.AddNode(BaseURL + PlayHtml).Build().RunString().FirstOrDefault();
             return LoadBangumi(data);
         }
 
+        #region 爬虫
         private static SearchRoot LoadSearchPage(string html)
         {
             HtmlDocument document = new HtmlDocument();
@@ -86,7 +88,12 @@ namespace Mily.Forms.Core
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);
             var node = document.DocumentNode.SelectSingleNode("//div[@class='play']//div[@data-vid]");
-            return node.GetAttributeValue("data-vid", "$").Replace("$mp4", "");
+            var URL = node.GetAttributeValue("data-vid", "$").Replace("$mp4", "");
+            var res = HttpMultiClient.HttpMulti.AddNode(URL).Build().RunString().FirstOrDefault();
+            if (!res.IsNullOrEmpty())
+              return  Regex.Match(res, "http(.*)").Value;
+            return "";
         }
+        #endregion
     }
 }
