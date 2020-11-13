@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Mily.Forms.DataModel
+namespace Mily.Forms.DataModel.Konochan
 {
     [Serializable]
     [XmlRoot("tags")]

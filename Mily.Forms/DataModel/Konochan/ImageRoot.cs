@@ -7,7 +7,7 @@ using System.Web;
 using System.Xml.Serialization;
 using XExten.XPlus;
 
-namespace Mily.Forms.DataModel
+namespace Mily.Forms.DataModel.Konochan
 {
     [Serializable]
     [XmlRoot("posts")]

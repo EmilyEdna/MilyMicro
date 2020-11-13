@@ -1,5 +1,5 @@
 ﻿using Mily.Forms.Core;
-using Mily.Forms.DataModel;
+using Mily.Forms.DataModel.Konochan;
 using Mily.Forms.Utils;
 using Mily.Forms.ViewModel.Base;
 using System;

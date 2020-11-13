@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mily.Forms.DataModel
+namespace Mily.Forms.DataModel.Konochan
 {
     public class CustomerTag
     {
