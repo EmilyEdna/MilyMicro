@@ -53,9 +53,13 @@
         </ListBox>
         <WrapPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
             <TextBlock Text="{Binding Sukura.Total,StringFormat='总数：0'}" VerticalAlignment="Center"/>
-            <Button Style="{StaticResource PageBtn}" Content="上一页" Margin="170,0,0,0" Command="{Binding PrePage}"/>
+            <Button Style="{StaticResource PageBtn}" Content="上一页" Margin="150,0,0,0" Command="{Binding PrePage}"/>
             <WrapPanel Orientation="Horizontal" Margin="5,8,5,0">
-                <TextBox Text="{Binding CurrentPage}" Foreground="Red" Style="{StaticResource PageBox}"/>
+                <TextBox Text="{Binding CurrentPage}" Foreground="Red" Style="{StaticResource PageBox}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding ReturnPage}" CommandParameter="{Binding Text, RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TextBox}}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
                 <TextBlock Text="/"/>
                 <TextBlock Text="{Binding Sukura.TotalPage}" Foreground="Red"/>
             </WrapPanel>

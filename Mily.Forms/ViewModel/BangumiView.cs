@@ -132,6 +132,18 @@ namespace Mily.Forms.ViewModel
                 }, () => true);
             }
         }
+        public Commands<string> ReturnPage
+        {
+            get
+            {
+                return new Commands<string>((str) =>
+                {
+                    int.TryParse(str, out int Page);
+                    CurrentPage = Page == 0 ? 1 : Page;
+                    Sukura = Imomoe.GetBangumi(Kw, CurrentPage);
+                }, () => true);
+            }
+        }
         #endregion
 
         /// <summary>
