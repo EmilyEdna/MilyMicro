@@ -75,7 +75,7 @@ namespace Mily.Forms.UI.PageUI
             }
             else if (Item.Header.ToString().Equals("下载"))
             {
-                MessageBox.Show("下载时候软件会进进入假死状态！请不要关闭！", "通知", MessageBoxButton.OK);
+                MessageBox.Show("进入多线程下载中！通知下载完成实际并未下载完成！请勿关闭软件！", "通知", MessageBoxButton.OK);
                 if (KonachanMainView.Path.Count == 0)
                     MessageBox.Show("你还未选择需要下载的图片！", "通知", MessageBoxButton.OK);
                 else

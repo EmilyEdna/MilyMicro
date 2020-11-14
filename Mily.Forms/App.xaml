@@ -8,6 +8,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Style.xaml" />
                 <ResourceDictionary Source="Expander.xaml" />
+                <ResourceDictionary Source="ScrollView.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

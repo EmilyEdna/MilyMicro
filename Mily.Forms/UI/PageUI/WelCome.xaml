@@ -55,6 +55,7 @@
                         </locals:AutoCompleteComboBox.ItemTemplate>
                     </locals:AutoCompleteComboBox>
                     <Button Grid.Column="1" 
+                            IsDefault="True"
                             Background="#00FFFFFF"
                             BorderThickness="0" 
                             Style="{StaticResource Search}" 

@@ -65,7 +65,8 @@ namespace Mily.Forms.Core
                  {
                      int.TryParse(Regex.Match(page.Descendants("a").FirstOrDefault().InnerText, "\\d+").Value, out int Total);
                      roots.Total = Total;
-                 }
+                 }else
+                     roots.Total = 1;
                  return roots;
              }, ex =>
              {
@@ -94,8 +95,8 @@ namespace Mily.Forms.Core
                          roots.Post.Add(new DetailPage
                          {
                              PlayPage = item.Descendants("a").FirstOrDefault().GetAttributeValue("href", ""),
-                             Collection = item.Descendants("a").FirstOrDefault().InnerText
-                         });
+                             Collection = item.Descendants("a").FirstOrDefault().InnerText.Replace("'", "")
+                         }); ;
                      }
                  }
                  return roots;
@@ -113,6 +114,8 @@ namespace Mily.Forms.Core
                 document.LoadHtml(html);
                 var node = document.DocumentNode.SelectSingleNode("//div[@class='play']//div[@data-vid]");
                 var URL = node.GetAttributeValue("data-vid", "$").Replace("$mp4", "");
+                if (URL.Contains(".mp4"))
+                    return URL;
                 var res = HttpMultiClient.HttpMulti.AddNode(URL).Build().RunString().FirstOrDefault();
                 if (!res.IsNullOrEmpty())
                     return Regex.Match(res, "http(.*)").Value;

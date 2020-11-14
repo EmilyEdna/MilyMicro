@@ -6,12 +6,56 @@
         xmlns:local="clr-namespace:Mily.Forms.UI.PlayUI"
         mc:Ignorable="d"
         Title="全网动漫播放" Height="450" Width="800" WindowState="Maximized">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style x:Key="PlayBtn" TargetType="Button">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderBrush" Value="Red"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Margin" Value="5,0,5,0"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
-        <MediaElement x:Name="Bangumi" LoadedBehavior="Manual"/>
-        <Button Content="test" Click="Button_Click" Grid.Row="1"/>
+        <MediaElement x:Name="Bangumi" 
+                      LoadedBehavior="Manual" 
+                      Style="{StaticResource Player}"
+                      Volume="{Binding Path=Value,ElementName=voice}"/>
+        <Grid Grid.Row="1" Width="500">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <WrapPanel  Margin="0,10,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Label Content="音量：" HorizontalAlignment="Left" Margin="0,2,0,0"/>
+                <Slider 
+                        Margin="0,5,0,0"
+                        Minimum="0" 
+                        Maximum="1" 
+                        Value="0.5" 
+                        Width="100" 
+                        x:Name="voice"/>
+            </WrapPanel>
+            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Margin="0,16,0,0">
+                <Button Content="暂停" Click="Button_Click" Style="{StaticResource PlayBtn}"/>
+                <Button Content="播放" Click="Button_Click" Style="{StaticResource PlayBtn}" IsDefault="True"/>
+                <Button Content="停止" Click="Button_Click" Style="{StaticResource PlayBtn}"/>
+            </WrapPanel>
+            <WrapPanel  Margin="0,10,0,0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left">
+                <Label Content="进度：" HorizontalAlignment="Left" Margin="0,2,0,0"/>
+                <Slider 
+                        Margin="0,5,0,0"
+                        Minimum="0" 
+                        Value="0" 
+                        Width="100" 
+                        x:Name="procss"
+                        ValueChanged="Slider_ValueChanged"/>
+            </WrapPanel>
+        </Grid>
     </Grid>
 </Window>

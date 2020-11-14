@@ -11,14 +11,44 @@ namespace Mily.Forms.ViewModel
 {
     public class BangumiView : BaseView
     {
+        public string Kw { get; set; }
         public static readonly Dictionary<string, BangumiView> Ioc = new Dictionary<string, BangumiView>();
         public BangumiView()
         {
+            CurrentPage = 1;
             if (!Ioc.ContainsKey(GetType().Name))
                 Ioc.Add(GetType().Name, this);
         }
 
         #region Property
+        private int _CurrentPage;
+        public int CurrentPage
+        {
+            get
+            {
+                return _CurrentPage;
+            }
+            set
+            {
+                _CurrentPage = value;
+                OnPropertyChanged("CurrentPage");
+            }
+        }
+
+        private string _Info;
+        public string Info
+        {
+            get
+            {
+                return _Info;
+            }
+            set
+            {
+                _Info = value;
+                OnPropertyChanged("Info");
+            }
+        }
+
         private SearchRoot _Sukura;
         public SearchRoot Sukura
         {
@@ -55,6 +85,7 @@ namespace Mily.Forms.ViewModel
             {
                 return new Commands<string>((str) =>
                 {
+                    Info = "介绍：";
                     SukuraDetail = Imomoe.GetBangumiPage(str);
                 }, () => true);
             }
@@ -70,19 +101,49 @@ namespace Mily.Forms.ViewModel
                         MediaURL = new Uri(Imomoe.GetVedio(str))
                     };
                     full.Show();
-            }, () => true);
+                }, () => true);
             }
-}
-#endregion
+        }
+        public Commands<object> NextPage
+        {
+            get
+            {
+                return new Commands<object>((obj) =>
+                {
+                    if (CurrentPage < Sukura.TotalPage)
+                    {
+                        CurrentPage += 1;
+                        Sukura = Imomoe.GetBangumi(Kw, CurrentPage);
+                    }
+                }, () => true);
+            }
+        }
+        public Commands<object> PrePage
+        {
+            get
+            {
+                return new Commands<object>((obj) =>
+                {
+                    if (CurrentPage > 1)
+                    {
+                        CurrentPage -= 1;
+                        Sukura = Imomoe.GetBangumi(Kw, CurrentPage);
+                    }
+                }, () => true);
+            }
+        }
+        #endregion
 
-/// <summary>
-/// 检索动漫列表
-/// </summary>
-/// <param name="KeyWord"></param>
-/// <param name="page"></param>
-public void Search(string KeyWord, int page = 1)
-{
-    Sukura = Imomoe.GetBangumi(KeyWord, page);
-}
+        /// <summary>
+        /// 检索动漫列表
+        /// </summary>
+        /// <param name="KeyWord"></param>
+        /// <param name="page"></param>
+        public void Search(string KeyWord, int page = 1)
+        {
+            CurrentPage = 1;
+            Kw = KeyWord;
+            Sukura = Imomoe.GetBangumi(KeyWord, page);
+        }
     }
 }

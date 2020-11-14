@@ -78,21 +78,21 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel>
                     <Expander
-                            Header="文化"
+                            Header="我的菜单"
                             Margin="2,5,0,0"
                             IsExpanded="True">
                         <StackPanel>
-                            <TextBlock Text="Home" Margin="10,0,0,0" Foreground="Black">
+                            <TextBlock Text="首页" Margin="10,0,0,0" Foreground="Black">
                                 <TextBlock.InputBindings>
                                     <MouseBinding Command="{Binding SelectedPage}" MouseAction="LeftClick" CommandParameter="Home"/>
                                 </TextBlock.InputBindings>
                             </TextBlock>
-                            <TextBlock Text="Konachan" Margin="10,5,0,0" Foreground="Black">
+                            <TextBlock Text="K站" Margin="10,5,0,0" Foreground="Black">
                                 <TextBlock.InputBindings>
                                     <MouseBinding Command="{Binding SelectedPage}" MouseAction="LeftClick" CommandParameter="Konachan"/>
                                 </TextBlock.InputBindings>
                             </TextBlock>
-                            <TextBlock Text="Bangumi" Margin="10,5,0,0" Foreground="Black">
+                            <TextBlock Text="全网动漫" Margin="10,5,0,0" Foreground="Black">
                                 <TextBlock.InputBindings>
                                     <MouseBinding Command="{Binding SelectedPage}" MouseAction="LeftClick" CommandParameter="Sakura"/>
                                 </TextBlock.InputBindings>

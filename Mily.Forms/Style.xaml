@@ -296,7 +296,7 @@
                                     <DropShadowEffect Color="Black" BlurRadius="2" ShadowDepth="0" Opacity="0.5"/>
                                 </Border.Effect>
                                 <ScrollViewer Margin="4,6,4,6" Style="{DynamicResource ScrollViewerStyle}" MaxHeight="{TemplateBinding MaxDropDownHeight}" SnapsToDevicePixels="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" CanContentScroll="True">
-                                     <!--StackPanel 用于显示子级，方法是将 IsItemsHost 设置为 True--> 
+                                    <!--StackPanel 用于显示子级，方法是将 IsItemsHost 设置为 True-->
                                     <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" Background="White"/>
                                 </ScrollViewer>
                             </Border>
@@ -305,6 +305,15 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    <!--#endregion-->
+
+    <!--#region 列表-->
+
+    <!--#endregion-->
+    
+    <!--#region 播放器-->
+    <Style x:Key="Player" TargetType="MediaElement">
     </Style>
     <!--#endregion-->
 </ResourceDictionary>
