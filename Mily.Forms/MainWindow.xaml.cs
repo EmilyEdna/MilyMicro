@@ -22,7 +22,7 @@ namespace Mily.Forms
         public MainWindow()
         {
             InitializeComponent();
-            //Task.Factory.StartNew(() => Konachan.LoadTagToLocal());
+            Task.Factory.StartNew(() => Konachan.LoadTagToLocal());
         }
     }
 }

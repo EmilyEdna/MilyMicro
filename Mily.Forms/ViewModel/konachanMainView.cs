@@ -14,7 +14,7 @@ namespace Mily.Forms.ViewModel
         public string KeyWord { get; set; }
         public KonachanMainView()
         {
-            //RootData = Konachan.GetPic(1);
+            RootData = Konachan.GetPic(1);
             CurrentPage = 1;
             if (!Ioc.ContainsKey(GetType().Name))
                 Ioc.Add(GetType().Name, this);

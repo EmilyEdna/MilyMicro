@@ -72,7 +72,7 @@ namespace Mily.Forms.Utils
 
         public static List<string> Boxs()
         {
-            return new List<string> { "图片","视频" };
+            return new List<string> { "图片","动漫" };
         }
 
         public static WelCome WelComePage = new WelCome();

@@ -1,5 +1,7 @@
 ﻿using Mily.Forms.Core;
 using Mily.Forms.DataModel.Imomoe;
+using Mily.Forms.UI.PlayUI;
+using Mily.Forms.Utils;
 using Mily.Forms.ViewModel.Base;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,7 @@ namespace Mily.Forms.ViewModel
                 Ioc.Add(GetType().Name, this);
         }
 
+        #region Property
         private SearchRoot _Sukura;
         public SearchRoot Sukura
         {
@@ -30,14 +33,56 @@ namespace Mily.Forms.ViewModel
             }
         }
 
-        /// <summary>
-        /// 检索动漫列表
-        /// </summary>
-        /// <param name="KeyWord"></param>
-        /// <param name="page"></param>
-        public void Search(string KeyWord,int page=1)
+        private DetailRoot _SukuraDetail;
+        public DetailRoot SukuraDetail
         {
-            Sukura = Imomoe.GetBangumi(KeyWord, page);
+            get
+            {
+                return _SukuraDetail;
+            }
+            set
+            {
+                _SukuraDetail = value;
+                OnPropertyChanged("SukuraDetail");
+            }
         }
+        #endregion
+
+        #region Commands
+        public Commands<string> ShowPage
+        {
+            get
+            {
+                return new Commands<string>((str) =>
+                {
+                    SukuraDetail = Imomoe.GetBangumiPage(str);
+                }, () => true);
+            }
+        }
+        public Commands<string> WacthPage
+        {
+            get
+            {
+                return new Commands<string>((str) =>
+                {
+                    BangumiFull full = new BangumiFull()
+                    {
+                        MediaURL = new Uri(Imomoe.GetVedio(str))
+                    };
+                    full.Show();
+            }, () => true);
+            }
+}
+#endregion
+
+/// <summary>
+/// 检索动漫列表
+/// </summary>
+/// <param name="KeyWord"></param>
+/// <param name="page"></param>
+public void Search(string KeyWord, int page = 1)
+{
+    Sukura = Imomoe.GetBangumi(KeyWord, page);
+}
     }
 }

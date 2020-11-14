@@ -7,6 +7,8 @@ using System.Linq;
 using Mily.Forms.DataModel.Imomoe;
 using System.Text.RegularExpressions;
 using XExten.XCore;
+using XExten.XPlus;
+using System.Windows;
 
 namespace Mily.Forms.Core
 {
@@ -22,7 +24,7 @@ namespace Mily.Forms.Core
             return LoadSearchPage(data);
         }
 
-        public static List<DetailRoot> GetBangumiPage(string Route)
+        public static DetailRoot GetBangumiPage(string Route)
         {
             var data = HttpMultiClient.HttpMulti.AddNode(BaseURL + Route).Build().RunString().FirstOrDefault();
             return LoadPlayPage(data);
@@ -37,62 +39,89 @@ namespace Mily.Forms.Core
         #region 爬虫
         private static SearchRoot LoadSearchPage(string html)
         {
-            HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(html);
-            var data = document.DocumentNode.SelectNodes("//div[@class='lpic']//li");
-            SearchRoot roots = new SearchRoot
-            {
-                Post = new List<Elements>()
-            };
-            if (data.Count != 0)
-            {
-                foreach (var item in data)
-                {
-                    roots.Post.Add(new Elements
-                    {
-                        Conver = item.Descendants("img").FirstOrDefault().GetAttributeValue("src", ""),
-                        DetailPage = item.Descendants("a").FirstOrDefault().GetAttributeValue("href", ""),
-                        BangumiName = item.Descendants("img").FirstOrDefault().GetAttributeValue("alt", "")
-                    });
-                }
-            }
-            var page = document.DocumentNode.SelectSingleNode("//div[@class='pages']");
-            if (page != null)
-            {
-                int.TryParse(Regex.Match(page.Descendants("a").FirstOrDefault().InnerText, "\\d+").Value, out int Total);
-                roots.Total = Total;
-            }
-            return roots;
+            return XPlusEx.XTry(() =>
+             {
+                 SearchRoot roots = new SearchRoot
+                 {
+                     Post = new List<Elements>()
+                 };
+                 HtmlDocument document = new HtmlDocument();
+                 document.LoadHtml(html);
+                 var data = document.DocumentNode.SelectNodes("//div[@class='lpic']//li");
+                 if (data.Count != 0)
+                 {
+                     foreach (var item in data)
+                     {
+                         roots.Post.Add(new Elements
+                         {
+                             Conver = item.Descendants("img").FirstOrDefault().GetAttributeValue("src", ""),
+                             DetailPage = item.Descendants("a").FirstOrDefault().GetAttributeValue("href", ""),
+                             BangumiName = item.Descendants("img").FirstOrDefault().GetAttributeValue("alt", "")
+                         });
+                     }
+                 }
+                 var page = document.DocumentNode.SelectSingleNode("//div[@class='pages']");
+                 if (page != null)
+                 {
+                     int.TryParse(Regex.Match(page.Descendants("a").FirstOrDefault().InnerText, "\\d+").Value, out int Total);
+                     roots.Total = Total;
+                 }
+                 return roots;
+             }, ex =>
+             {
+                 MessageBox.Show("未找到资源请检查检索名称是否正确！", "通知", MessageBoxButton.OK);
+                 return null;
+             });
         }
-        private static List<DetailRoot> LoadPlayPage(string html)
+        private static DetailRoot LoadPlayPage(string html)
         {
-            HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(html);
-            var data = document.DocumentNode.SelectNodes("//div[@class='movurl']//li");
-            List<DetailRoot> roots = new List<DetailRoot>();
-            if (data.Count != 0)
-            {
-                foreach (var item in data)
-                {
-                    roots.Add(new DetailRoot
-                    {
-                        PlayPage = item.Descendants("a").FirstOrDefault().GetAttributeValue("href", ""),
-                        Collection = item.Descendants("a").FirstOrDefault().InnerText
-                    });
-                }
-            }
-            return roots;
+            return XPlusEx.XTry(() =>
+             {
+                 DetailRoot roots = new DetailRoot
+                 {
+                     Post = new List<DetailPage>()
+                 };
+                 HtmlDocument document = new HtmlDocument();
+                 document.LoadHtml(html);
+                 var Nodes = document.DocumentNode;
+                 roots.Conver = Nodes.SelectSingleNode("//div[@class='thumb l']//img").GetAttributeValue("src", "");
+                 roots.Description = Nodes.SelectSingleNode("//div[@class='info']").InnerText.Replace("\r\n","");
+                 var data = Nodes.SelectNodes("//div[@class='movurl']//li");
+                 if (data.Count != 0)
+                 {
+                     foreach (var item in data)
+                     {
+                         roots.Post.Add(new DetailPage
+                         {
+                             PlayPage = item.Descendants("a").FirstOrDefault().GetAttributeValue("href", ""),
+                             Collection = item.Descendants("a").FirstOrDefault().InnerText
+                         });
+                     }
+                 }
+                 return roots;
+             }, ex =>
+             {
+                 MessageBox.Show("未找到资源！", "通知", MessageBoxButton.OK);
+                 return null;
+             });
         }
         private static string LoadBangumi(string html)
         {
-            HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(html);
-            var node = document.DocumentNode.SelectSingleNode("//div[@class='play']//div[@data-vid]");
-            var URL = node.GetAttributeValue("data-vid", "$").Replace("$mp4", "");
-            var res = HttpMultiClient.HttpMulti.AddNode(URL).Build().RunString().FirstOrDefault();
-            if (!res.IsNullOrEmpty())
-              return  Regex.Match(res, "http(.*)").Value;
-            return "";
+            return XPlusEx.XTry(() =>
+            {
+                HtmlDocument document = new HtmlDocument();
+                document.LoadHtml(html);
+                var node = document.DocumentNode.SelectSingleNode("//div[@class='play']//div[@data-vid]");
+                var URL = node.GetAttributeValue("data-vid", "$").Replace("$mp4", "");
+                var res = HttpMultiClient.HttpMulti.AddNode(URL).Build().RunString().FirstOrDefault();
+                if (!res.IsNullOrEmpty())
+                    return Regex.Match(res, "http(.*)").Value;
+                return "";
+            }, ex =>
+            {
+                MessageBox.Show("未找到资源！", "通知", MessageBoxButton.OK);
+                return null;
+            });
         }
         #endregion
     }
