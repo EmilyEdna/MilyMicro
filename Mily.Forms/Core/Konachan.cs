@@ -48,37 +48,48 @@ namespace Mily.Forms.Core
 
         }
         private static List<TagElements> Cache { get; set; }
-        public static void LoadTagToLocal()
+        public static void LoadTagToLocal(bool AllawysExcute=false)
         {
-            var Flag = Help.FileCreater(Help.Tags_xml, () =>
+            if (AllawysExcute)
             {
-                var data = XPlusEx.XmlSerializer(GetTag());
-                Help.Write(Help.Tags_xml, data);
-            });
-            if (!Flag)
-            {
-                Help.FileCreater(Help.Config_json);
-                var Search = Help.Read(Help.Config_json)?.ToModel<Dictionary<string, string>>();
-                if (Search == null)
+                Help.FileDeleteCreater(Help.Tags_xml, () =>
                 {
-                    List<int> Days = new List<int>
+                    var data = XPlusEx.XmlSerializer(GetTag());
+                    Help.Write(Help.Tags_xml, data);
+                });
+            }
+            else
+            {
+                var Flag = Help.FileCreater(Help.Tags_xml, () =>
+                {
+                    var data = XPlusEx.XmlSerializer(GetTag());
+                    Help.Write(Help.Tags_xml, data);
+                });
+                if (!Flag)
+                {
+                    Help.FileCreater(Help.Config_json);
+                    var Search = Help.Read(Help.Config_json)?.ToModel<Dictionary<string, string>>();
+                    if (Search == null)
+                    {
+                        List<int> Days = new List<int>
                     {
                         1,5,10,15,20,25,30
                      };
-                    if (Days.Contains(DateTime.Now.Day))
-                    {
-                        var data = XPlusEx.XmlSerializer(GetTag());
-                        Help.Write(Help.Tags_xml, data);
-                        Help.Write(Help.Config_json, (new { Key = DateTime.Now.ToFmtDate(4, "yyyy-MM-dd") }).ToJson());
+                        if (Days.Contains(DateTime.Now.Day))
+                        {
+                            var data = XPlusEx.XmlSerializer(GetTag());
+                            Help.Write(Help.Tags_xml, data);
+                            Help.Write(Help.Config_json, (new { Key = DateTime.Now.ToFmtDate(4, "yyyy-MM-dd") }).ToJson());
+                        }
                     }
-                }
-                else
-                {
-                    if (DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd")) != DateTime.Parse(Search.Values.FirstOrDefault()))
+                    else
                     {
-                        var data = XPlusEx.XmlSerializer(GetTag());
-                        Help.Write(Help.Tags_xml, data);
-                        Help.Write(Help.Config_json, (new { Key = DateTime.Now.ToFmtDate(4, "yyyy-MM-dd") }).ToJson());
+                        if (DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd")) != DateTime.Parse(Search.Values.FirstOrDefault()))
+                        {
+                            var data = XPlusEx.XmlSerializer(GetTag());
+                            Help.Write(Help.Tags_xml, data);
+                            Help.Write(Help.Config_json, (new { Key = DateTime.Now.ToFmtDate(4, "yyyy-MM-dd") }).ToJson());
+                        }
                     }
                 }
             }
@@ -91,6 +102,11 @@ namespace Mily.Forms.Core
                 return Cache.Skip((PageNo - 1) * 20).Take(20);
             }
             var res = Help.Read(Help.Tags_xml);
+            if (res.IsNullOrEmpty())
+            {
+                LoadTagToLocal(true);
+                res = Help.Read(Help.Tags_xml);
+            }
             Cache = XPlusEx.XmlDeserialize<TagRoot>(res).Post;
             Total = Cache.Count();
             return XPlusEx.XmlDeserialize<TagRoot>(res).Post.Skip((PageNo - 1) * 20).Take(20);

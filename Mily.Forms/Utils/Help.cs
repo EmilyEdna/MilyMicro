@@ -25,6 +25,19 @@ namespace Mily.Forms.Utils
             }
             return Flag;
         }
+        public static void FileDeleteCreater(string Path, Action action = null)
+        {
+            if (File.Exists(Path))
+            {
+                File.Delete(Path);
+                File.Create(Path).Dispose();
+                action?.Invoke();
+            }
+            else {
+                File.Create(Path).Dispose();
+                action?.Invoke();
+            }
+        }
         public static string Read(string Path)
         {
             using StreamReader reader = new StreamReader(Path);
