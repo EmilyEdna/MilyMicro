@@ -6,6 +6,8 @@ using Mily.Forms.ViewModel.Base;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
+using XExten.XCore;
 
 namespace Mily.Forms.ViewModel
 {
@@ -96,9 +98,15 @@ namespace Mily.Forms.ViewModel
             {
                 return new Commands<string>((str) =>
                 {
+                    var PLAY = Imomoe.GetVedio(str);
+                    if (PLAY.IsNullOrEmpty())
+                    {
+                        MessageBox.Show("未找到资源！", "通知", MessageBoxButton.OK);
+                        return;
+                    }
                     BangumiFull full = new BangumiFull()
                     {
-                        MediaURL = new Uri(Imomoe.GetVedio(str))
+                        MediaURL = new Uri(PLAY)
                     };
                     full.Show();
                 }, () => true);

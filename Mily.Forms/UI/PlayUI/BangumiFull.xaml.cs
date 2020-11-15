@@ -35,6 +35,7 @@ namespace Mily.Forms.UI.PlayUI
                 Bangumi.MediaOpened += (obj, e) =>
                 {
                     procss.Maximum = Bangumi.NaturalDuration.TimeSpan.TotalSeconds;
+                    TotalProcss.Text = Bangumi.NaturalDuration.TimeSpan.ToString().Split(".")[0];
                 };
                 timer = new DispatcherTimer
                 {
@@ -43,6 +44,7 @@ namespace Mily.Forms.UI.PlayUI
                 timer.Tick += new EventHandler((obj, e) =>
                 {
                     procss.Value = Bangumi.Position.TotalSeconds;
+                    PlayProcss.Text = Bangumi.Position.ToString().Split(".")[0];
                 });
                 timer.Start();
             }

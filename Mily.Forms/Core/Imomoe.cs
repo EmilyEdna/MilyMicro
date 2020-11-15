@@ -120,11 +120,7 @@ namespace Mily.Forms.Core
                 if (!res.IsNullOrEmpty())
                     return Regex.Match(res, "http(.*)").Value;
                 return "";
-            }, ex =>
-            {
-                MessageBox.Show("未找到资源！", "通知", MessageBoxButton.OK);
-                return null;
-            });
+            }, ex =>null);
         }
         #endregion
     }
