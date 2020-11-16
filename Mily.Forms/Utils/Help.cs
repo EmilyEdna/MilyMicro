@@ -15,6 +15,7 @@ namespace Mily.Forms.Utils
         public static string Config_cof = AppDomain.CurrentDomain.BaseDirectory + "config.cof";
         public static string Tags_xml = AppDomain.CurrentDomain.BaseDirectory + "tags.xml";
         public static string Config_json = AppDomain.CurrentDomain.BaseDirectory + "config.json";
+        public static string SqlLite = AppDomain.CurrentDomain.BaseDirectory + "db.sqllite";
 
         #region 页面实例
         public static WelCome WelComePage = new WelCome();

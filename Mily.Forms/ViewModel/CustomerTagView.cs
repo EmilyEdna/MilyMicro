@@ -1,4 +1,6 @@
-﻿using Mily.Forms.DataModel.Konochan;
+﻿using Mily.Forms.Core.Sql;
+using Mily.Forms.DataModel.Konochan;
+using Mily.Forms.DataModel.SqlModel;
 using Mily.Forms.Utils;
 using Mily.Forms.ViewModel.Base;
 using System;
@@ -15,7 +17,7 @@ namespace Mily.Forms.ViewModel
     {
         public CustomerTagView()
         {
-            Json = Read();
+            Json = ReadTag();
         }
 
         #region Property
@@ -67,21 +69,56 @@ namespace Mily.Forms.ViewModel
         {
             get
             {
-                return new Commands<string>((str) => CreateConfig(), () => true);
+                return new Commands<string>((str) => AddTag(), () => true);
             }
         }
         public Commands<string> Remove
         {
             get
             {
-                return new Commands<string>((str) => RemoveConfig(str), () => true);
+                return new Commands<string>((str) => RemoveTag(str), () => true);
             }
         }
         #endregion
 
+        #region 新操作
         /// <summary>
         /// 创建配置
         /// </summary>
+        private void AddTag()
+        {
+           var data = DbContext.Db().Queryable<UserTag>().Where(t => t.Key.Equals(Key)).First();
+            if (data == null)
+            {
+                UserTag Tag = new UserTag { Key = Key, Value = Val, AddTime = DateTime.Now };
+                DbContext.Db().Insertable(Tag).ExecuteCommand();
+                var res = DbContext.Db().Queryable<UserTag>().ToList().ToAutoMapper<UserTag, CustomerTag>();
+                HomeView.Ioc.Values.FirstOrDefault().Json = res;
+                Json = res;
+            }
+        }
+        /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <param name="key"></param>
+        private void RemoveTag(string key)
+        {
+            DbContext.Db().Deleteable<UserTag>().Where(t => t.Key == key).ExecuteCommand();
+            var res = DbContext.Db().Queryable<UserTag>().ToList().ToAutoMapper<UserTag, CustomerTag>();
+            HomeView.Ioc.Values.FirstOrDefault().Json = res;
+            Json = res;
+        }
+        private List<CustomerTag> ReadTag()
+        {
+            return DbContext.Db().Queryable<UserTag>().ToList().ToAutoMapper<UserTag, CustomerTag>();
+        }
+        #endregion
+
+        #region 弃用
+        /// <summary>
+        /// 创建配置
+        /// </summary>
+        [Obsolete("使用AddTag替代")]
         private void CreateConfig()
         {
             if (Key.IsNullOrEmpty() || Val.IsNullOrEmpty()) return;
@@ -96,6 +133,7 @@ namespace Mily.Forms.ViewModel
         /// <summary>
         /// 删除配置
         /// </summary>
+        [Obsolete]
         private void RemoveConfig(string key)
         {
             List<CustomerTag> Datas;
@@ -105,8 +143,8 @@ namespace Mily.Forms.ViewModel
             Json = Datas;
             HomeView.Ioc.Values.FirstOrDefault().Json = Datas;
         }
-
-        #region 读
+       
+        [Obsolete]
         private List<CustomerTag> Read()
         {
             Help.FileCreater(Help.Config_cof);

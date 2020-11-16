@@ -14,7 +14,7 @@ namespace Mily.Forms.ViewModel
     {
         public KonachanTagView()
         {
-            CustomerTag = Konachan.LoadLocalTag(1, out int Total).ToList();
+            CustomerTag = Konachan.LoadTag(1, out int Total);
             Count = Total;
             TotalPage = Convert.ToInt64(Math.Ceiling(Count / 20.0));
             CurrentPage = 1;
@@ -77,7 +77,7 @@ namespace Mily.Forms.ViewModel
                 return new Commands<object>((obj) =>
                 {
                     CurrentPage += 1;
-                    CustomerTag = Konachan.LoadLocalTag(CurrentPage, out int Total).ToList();
+                    CustomerTag = Konachan.LoadTag(CurrentPage, out int Total);
                 }, () => true);
             }
         }
@@ -90,7 +90,7 @@ namespace Mily.Forms.ViewModel
                     if (CurrentPage > 1)
                     {
                         CurrentPage -= 1;
-                        CustomerTag = Konachan.LoadLocalTag(CurrentPage, out int Total).ToList();
+                        CustomerTag = Konachan.LoadTag(CurrentPage, out int Total);
                     }
                 }, () => true);
             }
@@ -103,7 +103,7 @@ namespace Mily.Forms.ViewModel
                 {
                     int.TryParse(obj, out int Page);
                     CurrentPage = Page <= 0 ? 1 : Page;
-                    CustomerTag = Konachan.LoadLocalTag(CurrentPage, out int Total).ToList();
+                    CustomerTag = Konachan.LoadTag(CurrentPage, out int Total);
                 }, () => true);
             }
         }
