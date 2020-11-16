@@ -23,6 +23,13 @@ namespace Mily.Forms.Core
             var data = HttpMultiClient.HttpMulti.AddNode(BaseURL + string.Format(Search, kw, page)).Build().RunString().FirstOrDefault();
             return LoadSearchPage(data);
         }
+        public static SearchRoot GetBangumi(int kw, int page = 0)
+        {
+            //每页15条数据
+            var host = (page == 0 || page == 1) ? $"/{kw}" : $"/{kw}/{page}.html";
+            var data = HttpMultiClient.HttpMulti.AddNode(BaseURL + host).Build().RunString().FirstOrDefault();
+            return LoadSearchPage(data, 15);
+        }
 
         public static DetailRoot GetBangumiPage(string Route)
         {
@@ -37,7 +44,7 @@ namespace Mily.Forms.Core
         }
 
         #region 爬虫
-        private static SearchRoot LoadSearchPage(string html)
+        private static SearchRoot LoadSearchPage(string html, double pageNo = 20)
         {
             return XPlusEx.XTry(() =>
              {
@@ -65,8 +72,13 @@ namespace Mily.Forms.Core
                  {
                      int.TryParse(Regex.Match(page.Descendants("a").FirstOrDefault().InnerText, "\\d+").Value, out int Total);
                      roots.Total = Total;
-                 }else
+                     roots.TotalPage = Convert.ToInt32(Math.Ceiling(Total / pageNo));
+                 }
+                 else
+                 {
                      roots.Total = 1;
+                     roots.TotalPage = 1;
+                 }
                  return roots;
              }, ex =>
              {
@@ -86,7 +98,7 @@ namespace Mily.Forms.Core
                  document.LoadHtml(html);
                  var Nodes = document.DocumentNode;
                  roots.Conver = Nodes.SelectSingleNode("//div[@class='thumb l']//img").GetAttributeValue("src", "");
-                 roots.Description = Nodes.SelectSingleNode("//div[@class='info']").InnerText.Replace("\r\n","");
+                 roots.Description = Nodes.SelectSingleNode("//div[@class='info']").InnerText.Replace("\r\n", "");
                  var data = Nodes.SelectNodes("//div[@class='movurl']//li");
                  if (data.Count != 0)
                  {
@@ -120,7 +132,7 @@ namespace Mily.Forms.Core
                 if (!res.IsNullOrEmpty())
                     return Regex.Match(res, "http(.*)").Value;
                 return "";
-            }, ex =>null);
+            }, ex => null);
         }
         #endregion
     }

@@ -21,7 +21,7 @@ namespace Mily.Forms.DataModel.Imomoe
     }
     public class SearchRoot
     {
-        public int TotalPage => Convert.ToInt32(Math.Ceiling(Total / 20.0));
+        public int TotalPage { get; set; }
         public int Total { get; set; }
         public List<Elements> Post { get; set; }
     }

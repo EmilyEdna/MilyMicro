@@ -107,8 +107,13 @@ namespace Mily.Forms.ViewModel
                         KonachanMainView.Ioc.Values.FirstOrDefault().Search(SelectedValue);
                         MainView.Ioc.Values.FirstOrDefault().CurrentPage = Help.KonachanPage;
                     }
+                    else if (CurrentDropData.Equals("动漫(名称)"))
+                    {
+                        BangumiView.Ioc.Values.FirstOrDefault().SearchForName(TextValue);
+                        MainView.Ioc.Values.FirstOrDefault().CurrentPage = Help.BangumiPage;
+                    }
                     else {
-                        BangumiView.Ioc.Values.FirstOrDefault().Search(TextValue);
+                        BangumiView.Ioc.Values.FirstOrDefault().SearchForTime(TextValue);
                         MainView.Ioc.Values.FirstOrDefault().CurrentPage = Help.BangumiPage;
                     }
                 }, () => true);

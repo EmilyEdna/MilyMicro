@@ -15,6 +15,14 @@ namespace Mily.Forms.Utils
         public static string Config_cof = AppDomain.CurrentDomain.BaseDirectory + "config.cof";
         public static string Tags_xml = AppDomain.CurrentDomain.BaseDirectory + "tags.xml";
         public static string Config_json = AppDomain.CurrentDomain.BaseDirectory + "config.json";
+
+        #region 页面实例
+        public static WelCome WelComePage = new WelCome();
+        public static KonachanPage KonachanPage = new KonachanPage();
+        public static SakuraBangumiPage BangumiPage = new SakuraBangumiPage();
+        #endregion
+
+        #region 读写公用
         public static bool FileCreater(string Path, Action action = null)
         {
             bool Flag = !File.Exists(Path);
@@ -59,6 +67,7 @@ namespace Mily.Forms.Utils
                 writer.Dispose();
             });
         }
+        #endregion
 
         /// <summary>
         /// 获取子控件
@@ -85,11 +94,8 @@ namespace Mily.Forms.Utils
 
         public static List<string> Boxs()
         {
-            return new List<string> { "图片","动漫" };
+            return new List<string> { "图片","动漫(年份)","动漫(名称)" };
         }
 
-        public static WelCome WelComePage = new WelCome();
-        public static KonachanPage KonachanPage = new KonachanPage();
-        public static SakuraBangumiPage BangumiPage = new SakuraBangumiPage();
     }
 }

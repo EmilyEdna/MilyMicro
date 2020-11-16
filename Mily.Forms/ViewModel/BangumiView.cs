@@ -14,6 +14,7 @@ namespace Mily.Forms.ViewModel
     public class BangumiView : BaseView
     {
         public string Kw { get; set; }
+        public int Kwy { get; set; }
         public static readonly Dictionary<string, BangumiView> Ioc = new Dictionary<string, BangumiView>();
         public BangumiView()
         {
@@ -121,7 +122,7 @@ namespace Mily.Forms.ViewModel
                     if (CurrentPage < Sukura.TotalPage)
                     {
                         CurrentPage += 1;
-                        Sukura = Imomoe.GetBangumi(Kw, CurrentPage);
+                        Sukura = !Kw.IsNullOrEmpty()?Imomoe.GetBangumi(Kw, CurrentPage):Imomoe.GetBangumi(Kwy,CurrentPage);
                     }
                 }, () => true);
             }
@@ -135,7 +136,7 @@ namespace Mily.Forms.ViewModel
                     if (CurrentPage > 1)
                     {
                         CurrentPage -= 1;
-                        Sukura = Imomoe.GetBangumi(Kw, CurrentPage);
+                        Sukura = !Kw.IsNullOrEmpty() ? Imomoe.GetBangumi(Kw, CurrentPage) : Imomoe.GetBangumi(Kwy, CurrentPage);
                     }
                 }, () => true);
             }
@@ -148,7 +149,7 @@ namespace Mily.Forms.ViewModel
                 {
                     int.TryParse(str, out int Page);
                     CurrentPage = Page == 0 ? 1 : Page;
-                    Sukura = Imomoe.GetBangumi(Kw, CurrentPage);
+                    Sukura = !Kw.IsNullOrEmpty() ? Imomoe.GetBangumi(Kw, CurrentPage) : Imomoe.GetBangumi(Kwy, CurrentPage);
                 }, () => true);
             }
         }
@@ -159,11 +160,22 @@ namespace Mily.Forms.ViewModel
         /// </summary>
         /// <param name="KeyWord"></param>
         /// <param name="page"></param>
-        public void Search(string KeyWord, int page = 1)
+        public void SearchForName(string KeyWord, int page = 1)
         {
+            Kwy = 0;
             CurrentPage = 1;
             Kw = KeyWord;
             Sukura = Imomoe.GetBangumi(KeyWord, page);
+        }
+
+        public void SearchForTime(string KeyWord) 
+        {
+            Kw = string.Empty;
+            int.TryParse(KeyWord,out int KeyWords);
+            if (KeyWords == 0) return;
+            CurrentPage = 1;
+            Kwy = KeyWords;
+            Sukura = Imomoe.GetBangumi(KeyWords);
         }
     }
 }
